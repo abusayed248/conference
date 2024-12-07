@@ -1,0 +1,42 @@
+.play{
+    border: 1px solid gray;
+    padding: 5px 10px;
+    margin-left: 10px;
+    width: 100px;
+    background-position: right 0.1rem center;
+  }
+  .custom-file {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.file-label {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-name {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+.l-magin{
+  margin-left: 35px;
+}
+
+.text-decoration {
+  color: #0c3ed5;
+  text-decoration: underline;
+}
+
+.large-text{
+  font-size: 30px;
+}
