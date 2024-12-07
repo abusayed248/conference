@@ -17,7 +17,9 @@
             
               
             </div>
-            <a class="text-decoration" href="">Replace</a>
+            <a id="replace-file-text" class="text-decoration" href="javascript:void(0)">Replace</a>
+            <input id="replace-file-input" type="file" style="display:none" class="replace-img" />
+
           </div>
         </div>
         <div class="col-md-3">
@@ -47,38 +49,8 @@
             
               
             </div>
-              <a class="l-magin text-decoration" href="">Replace</a>
-          </div>
-        
-        </div>
-        <div class="col-md-3">
-          <div class="d-flex justify-content-center align-items-center flex-column">
-           <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-          
-              <label for="">Function</label>
-       
-          
-              <select name="cars" id="cars" form="" class="play">
-                <option value="volvo">Play MP3</option>
-                <option value="saab">Saab</option>
-                <option value="opel">Opel</option>
-                <option value="audi">Audi</option>
-              </select>
-           
-           </div>
-           <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-         
-              <label id="file-name"  for="file-input">File</label>
-          
-              <div class="custom-file l-magin">
-                <label id="file-name" class="file-label play" for="file-input">choose File</label>
-                <input type="file" id="file-input" class="file-input" />
-              </div>
-          
-            
-              
-            </div>
-              <a class="l-magin text-decoration" href="">Replace</a>
+            <a id="replace-file-text" class="text-decoration" href="javascript:void(0)">Replace</a>
+            <input id="replace-file-input" type="file" style="display:none" class="replace-img" />
           </div>
         
         </div>
@@ -109,7 +81,40 @@
             
               
             </div>
-              <a class="l-magin text-decoration" href="">Replace</a>
+            <a id="replace-file-text" class="text-decoration" href="javascript:void(0)">Replace</a>
+            <input id="replace-file-input" type="file" style="display:none" class="replace-img" />
+          </div>
+        
+        </div>
+        <div class="col-md-3">
+          <div class="d-flex justify-content-center align-items-center flex-column">
+           <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+          
+              <label for="">Function</label>
+       
+          
+              <select name="cars" id="cars" form="" class="play">
+                <option value="volvo">Play MP3</option>
+                <option value="saab">Saab</option>
+                <option value="opel">Opel</option>
+                <option value="audi">Audi</option>
+              </select>
+           
+           </div>
+           <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+         
+              <label id="file-name"  for="file-input">File</label>
+          
+              <div class="custom-file l-magin">
+                <label id="file-name" class="file-label play" for="file-input">choose File</label>
+                <input type="file" id="file-input" class="file-input" />
+              </div>
+          
+            
+              
+            </div>
+            <a id="replace-file-text" class="text-decoration" href="javascript:void(0)">Replace</a>
+            <input id="replace-file-input" type="file" style="display:none" class="replace-img" />
           </div>
         
         </div>
@@ -146,7 +151,8 @@
             
               
             </div>
-              <a class="l-magin text-decoration" href="">Replace</a>
+            <a id="replace-file-text" class="text-decoration" href="javascript:void(0)">Replace</a>
+            <input id="replace-file-input" type="file" style="display:none" class="replace-img" />
           </div>
         
         </div>
@@ -250,4 +256,22 @@
         </div>
       
       </div>
+
+      <script>
+        // Get the elements by their correct IDs
+            const replaceFileText = document.getElementById('replace-file-text');
+            const replaceFileInput = document.getElementById('replace-file-input');
+        
+            // Add a click event to the link to trigger the file input
+            replaceFileText.addEventListener('click', () => {
+                replaceFileInput.click(); // Simulate a click on the hidden file input
+            });
+        
+            // Add a change event to the file input to display the selected file name
+            replaceFileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                replaceFileText.textContent = file ? file.name : 'No file chosen';
+            });
+        </script>
+    
 </x-app-layout>
