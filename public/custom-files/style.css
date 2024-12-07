@@ -40,3 +40,11 @@
 .large-text{
   font-size: 30px;
 }
+
+#replace-file-text {
+  margin-left: 27px;
+  margin-top: 10px;
+}
+.no-style{
+  margin: inherit !important;
+}

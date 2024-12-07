@@ -17,7 +17,7 @@
             
               
             </div>
-            <a id="replace-file-text" class="text-decoration" href="javascript:void(0)">Replace</a>
+            <a id="replace-file-text" class="text-decoration  no-style" href="javascript:void(0)">Replace</a>
             <input id="replace-file-input" type="file" style="display:none" class="replace-img" />
 
           </div>
