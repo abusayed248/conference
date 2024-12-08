@@ -46,5 +46,21 @@
   margin-top: 10px;
 }
 .no-style{
-  margin: inherit !important;
+  margin: 0;
+}
+
+.bg-green-600 {
+  background-color: #258000;
+}
+.bg-inherit {
+  background-color: white;
+}
+.mt-10 {
+  margin-top: 6rem;
+  height: 16rem;
+}
+
+.container .row.sub-menu .my-0 {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
 }
