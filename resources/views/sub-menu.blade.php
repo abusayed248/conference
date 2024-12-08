@@ -4,6 +4,7 @@
     <div class="container">
 
       <div class="row sub-menu">
+        <h3 class="h3"><a class="text-decoration" href="{{ route('sub-menu') }}">Go Back</a></h3>
         <div class="col-md-4 my-0">
           <div class="d-flex bg-green-600 mt-10 justify-content-center flex-column align-items-center">
             <h3 class="h3">Greeting for Sub-menu 6</h3>
@@ -18,13 +19,10 @@
                 </div>
               </div>
             </div>
-            <a id="replace-file-text" class="text-decoration  no-style" href="javascript:void(0)">Replace</a>
+            <a id="replace-file-text" class="text-decoration  no-style" href="javascript:void(0)">Replace File</a>
             <input id="replace-file-input" type="file" style="display:none" class="replace-img" />
           </div>
 
-          <div class="mt-5 d-flex justify-content-center">
-            <h3><a class="text-center large-text text-decoration" href="">Manage Subscribers</a></h3>
-          </div>
         </div>
 
         <div class="col-md-8 py-5 bg-green-600">
