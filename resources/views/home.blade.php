@@ -41,7 +41,7 @@
             </div>
 
             <div class="mt-5 d-flex justify-content-center">
-              <h3><a class="text-center large-text text-decoration" href="">Manage Subscribers</a></h3>
+              <h3><a class="text-center large-text text-decoration" href="{{ route('manage.subscribers') }}">Manage Subscribers</a></h3>
             </div>
           </div>
 

@@ -4,7 +4,7 @@
     <div class="container">
 
       <div class="row sub-menu">
-        <h3 class="h3"><a class="text-decoration" href="{{ route('sub-menu') }}">Go Back</a></h3>
+        <h3 class="h3"><a class="text-decoration" href="{{ url('/') }}">Go Back</a></h3>
         <div class="col-md-4 my-0">
           <div class="d-flex bg-green-600 mt-10 justify-content-center flex-column align-items-center">
             <h3 class="h3">Greeting for Sub-menu 6</h3>

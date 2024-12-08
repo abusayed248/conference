@@ -64,3 +64,50 @@
   padding-right: 0 !important;
   padding-left: 0 !important;
 }
+
+.sub-card {
+  background-color: #cdcbcb;
+  border: 1px solid;
+  padding: 20px 0px;
+  text-align: center;
+}
+
+.sub-card h3 {
+  margin-bottom: 18px;
+}
+
+.sub-card button {
+  text-decoration: underline;
+  color: #1085dd;
+  font-weight: 600;
+}
+
+.user-visit-card {
+  text-align: center;
+  background-color: #e3d41d;
+  font-size: 20px;
+  margin-top: 20px;
+  padding: 25px;
+}
+
+.user-visit-card a {
+  color: #00b900;
+}
+
+.sub-list-card {
+  background-color: #8f8f8f;
+  margin-bottom: 30px;
+  padding: 15px;
+}
+
+.search input {
+  margin-bottom: 30px;
+  border-radius: 50px;
+}
+
+.sub-menu h3.h3 {
+  font-size: 33px;
+  color: red;
+  text-shadow: 2px 2px 2px #000000;
+  margin-bottom: 20px;
+}
