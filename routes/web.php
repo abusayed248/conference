@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return view('home');
-    });
+    })->name('home');
 
     Route::get('/dashboard', function () {
         return view('dashboard');
@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/sub-menu', [SubscriberController::class, 'subMenu'])->name('sub-menu');
     Route::get('/manage-subscribers', [SubscriberController::class, 'manageSubscriber'])->name('manage.subscribers');
+    Route::get('/billing-subscription-plan', [SubscriberController::class, 'subscriptionPlan'])->name('subscription.plans');
 });
 
 Route::middleware('auth')->group(function () {

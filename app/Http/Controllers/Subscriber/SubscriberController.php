@@ -13,4 +13,10 @@ class SubscriberController extends Controller
     public function manageSubscriber() {
         return view('manage-subscriber');
     }
+
+    // subscription plans
+    public function subscriptionPlan() {
+        return view('subscription');
+    }
+    
 }

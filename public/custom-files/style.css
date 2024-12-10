@@ -98,6 +98,7 @@
   background-color: #8f8f8f;
   margin-bottom: 30px;
   padding: 15px;
+  font-size: 20px;
 }
 
 .search input {
@@ -111,3 +112,78 @@
   text-shadow: 2px 2px 2px #000000;
   margin-bottom: 20px;
 }
+
+
+/* billing subscription page design start */
+#subscription-bg {
+  background: #f9f9f9;
+  font-family: 'Roboto', sans-serif;
+}
+
+.pricing-header {
+  margin-bottom: 2rem;
+}
+
+.card-pricing {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card-pricing:hover {
+  transform: translateY(-5px);
+}
+
+.card-header {
+  background: linear-gradient(90deg, #007bff, #6610f2);
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.price {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  color: #007bff;
+}
+
+.price-period {
+  font-size: 1rem;
+  color: gray;
+}
+
+.btn-subscribe {
+  background: linear-gradient(90deg, #007bff, #6610f2);
+  border: none;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+.btn-subscribe:hover {
+  background: linear-gradient(90deg, #6610f2, #007bff);
+}
+
+.highlight {
+  border: 2px solid #007bff;
+}
+
+.form-check-label {
+  font-weight: bold;
+}
+
+.features-list {
+  font-size: 0.95rem;
+  color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .card-pricing {
+      margin-bottom: 2rem;
+  }
+}
+/* billing subscription page design end */
