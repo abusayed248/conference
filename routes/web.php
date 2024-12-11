@@ -1,8 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Subscriber\SubscriberController;
-use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    Route::get('/subscription', [SubscriberController::class, 'showForm'])->name('subscription.form');
+    Route::post('/create-subscription', [SubscriberController::class, 'createSubscription'])->name('create.subscription');
+
+
+    Route::post('/subscription/create', [PlanController::class, 'createSubscriptions'])->name('subscription.create');
+
+
+
+    Route::get('plans', [PlanController::class, 'index']);
+    Route::get('plans/{plan}', [PlanController::class, 'show'])->name("plans.show");
+    //  Route::post('subscription', [PlanController::class, 'subscription'])->name("subscription.create");
 });
 
 require __DIR__ . '/auth.php';
