@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Plan;
+use App\Models\UserPlans;
 use Stripe\StripeClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,54 @@ class PlanController extends Controller
         $plans = Plan::query()->get();
 
         return view("plans", compact("plans"));
+    }
+
+    public function updateUserPlan(Request $request, $id)
+    {
+        $request->validate([
+            'monthly_fee' => 'required|numeric|min:0',
+            'free_trial' => 'required|integer|min:0',
+        ]);
+
+        // Find the UserPlan by ID
+        $userPlan = UserPlans::query()->where('id', $id)->first();
+
+        if ($userPlan && $userPlan->monthly_fee != $request->input('monthly_fee')) {
+            $stripe = new StripeClient(env('STRIPE_SECRET'));
+            $product = $stripe->products->retrieve($userPlan->stripe_product_id);
+            if ($product) {
+                $productId = $product->id;
+            } else {
+                $product = $stripe->products->create([
+                    'name' => 'Monthly Subscription', // Product name
+                    'description' => 'A subscription plan for premium users.', // Optional description
+                ]);
+                $productId = $product->id;
+            }
+
+            $unitAmount = $request->monthly_fee * 100;
+            // Step 2: Create the price for the product (recurring monthly)
+            $price = $stripe->prices->create([
+                'unit_amount' => $unitAmount, // The amount in cents (e.g., $12)
+                'currency' => 'usd',
+                'recurring' => ['interval' => 'month'], // Monthly subscription
+                'product' => $productId, // Link to the created product
+            ]);
+
+            $userPlan->update([
+                'monthly_fee' => $request->monthly_fee,
+                'stripe_price_id' => $price->id,
+                'free_trial' => $request->free_trial,
+                'stripe_product_id' => $productId
+            ]);
+        } else {
+            $userPlan->update([
+                'free_trial' => $request->free_trial,
+            ]);
+        }
+
+        // Redirect with success message
+        return redirect()->back()->with('success', 'User Plan updated successfully!');
     }
 
     /**
@@ -51,7 +100,7 @@ class PlanController extends Controller
     public function createSubscriptions(Request $request)
     {
         $stripe = new StripeClient(env('STRIPE_SECRET'));
-   
+
         $user = Auth::user();
 
         // Step 1: Create a Stripe customer if not already exists
@@ -87,17 +136,16 @@ class PlanController extends Controller
         $paymentIntent = $subscription->latest_invoice->payment_intent;
 
         if ($paymentIntent->status === 'succeeded') {
-            // Payment was successful
-            return response()->json([
-                'success' => true,
-                'subscription_id' => $subscription->id,
-            ]);
+
+            $user->payment_done = 1;
+            $user->payment_date = now();
+            $user->stripe_subcription_id = $subscription->id;
+            $user->payment_end = now()->addMonth();;
+            $user->save();
+            return redirect()->route('payment.page')->with('success', 'Your payment was successful. Thank you for subscribing!');
         } else {
-            // Payment failed or requires further action
-            return response()->json([
-                'success' => false,
-                'message' => 'Payment failed or requires further action.',
-            ]);
+
+            return redirect()->route('payment.page')->with('error', 'Payment failed. Please try again.');
         }
     }
 }

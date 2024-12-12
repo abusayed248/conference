@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Plans extends Model
+class UserPlans extends Model
 {
     use HasFactory;
 
@@ -17,10 +17,12 @@ class Plans extends Model
      */
     protected $fillable = [
         'name',
-        'slug',
-        'stripe_plan',
-        'price',
         'description',
+        'slug',
+        'monthly_fee',
+        'free_trial',
+        'stripe_price_id',
+        'stripe_product_id'
     ];
 
     /**

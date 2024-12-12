@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Subscriber;
 
+use App\Models\User;
 use Stripe\StripeClient;
+use App\Models\UserPlans;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -15,9 +17,33 @@ class SubscriberController extends Controller
     }
     public function manageSubscriber()
     {
+        $per_page = 20;
+        $userPlan = UserPlans::query()->first();
+        $subscribers = User::query()->where('payment_done', 1)->cursorPaginate($per_page);
+        return view("manage-subscriber", compact("userPlan", "subscribers"));
+    }
 
-        
-        return view('manage-subscriber');
+    public function showSubscribers(Request $request)
+    {
+        $perPage = $request->get('per_page', 2);
+        $search = $request->get('search', '');
+
+        // Query the User model to get subscribers who have payment_done = 1
+        $query = User::query()->where('payment_done', 1);
+
+        // If search query is provided, filter the results by name or phone
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Paginate the result and return the data
+        $subscribers = $query->paginate($perPage);
+
+        // Return the subscribers as JSON
+        return response()->json($subscribers);
     }
 
     public function createProduct()
@@ -34,6 +60,14 @@ class SubscriberController extends Controller
             'product_id' => $product->id, // Use this ID for your prices
         ]);
     }
+
+    // app/Http/Controllers/SubscriptionController.php
+    public function showPaymentPage()
+    {
+        $userPlan = UserPlans::query()->first();
+        return view("payment", compact("userPlan"));
+    }
+
 
     public function listProducts()
     {
@@ -113,44 +147,7 @@ class SubscriberController extends Controller
     // subscription plans
     public function subscriptionPlan()
     {
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
-        //    sub_1QUjb0KpSAQYC19tSMiLXbNn
-        //   $subscription = $stripe->subscriptions->retrieve($request->subscription_id);
-        //   $subscription = $stripe->subscriptions->all();
-
-        // Update the subscription to use the new price
-        // $stripe->subscriptions->update($subscription->id, [
-        //     'items' => [
-        //         [
-        //             'id' => $subscription->items->data[0]->id, // Replace the first item
-        //             'price' => $subscription,
-        //         ],
-        //     ],
-        // ]);
-
-
-        // $user = Auth::user();
-        // if (!$user->stripe_customer_id) {
-        //     $customer = $stripe->customers->create([
-        //         'email' => $user->email,
-        //         'name' => $user->name,
-        //     ]);
-        //     $user->stripe_customer_id = $customer->id;
-        //     $user->save();
-        // }
-
-        // $stripeCustomerId = $user->stripe_customer_id;
-        // $subscription = $stripe->subscriptions->create([
-        //     'customer' => $stripeCustomerId,
-        //     'items' => [['price' => 'price_1QUjDHKpSAQYC19tXIoTHd4L']],
-        //     'trial_period_days' => 7, // Default to 0 if not provided
-        //     'billing_cycle_anchor_config' => ['day_of_month' => 31], // Custom billing anchor
-        // ]);
-        // return response()->json([
-        //     'success' => true,
-        //     'subscription_id' => $subscription->data,
-        // ]);
-
-        return view('subscription');
+        $userPlan = UserPlans::query()->first();
+        return view("subscription", compact("userPlan"));
     }
 }
