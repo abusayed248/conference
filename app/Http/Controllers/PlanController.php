@@ -81,21 +81,6 @@ class PlanController extends Controller
 
         return view("subscription", compact("plan", "intent"));
     }
-    // /**
-    //  * Write code on Method
-    //  *
-    //  * @return response()
-    //  */
-    // public function subscription1(Request $request)
-    // {
-    //     dd($request->all());
-    //     $plan = Plan::find($request->plan);
-
-    //     $subscription = $request->user()->newSubscription($request->plan, $plan->stripe_plan)
-    //         ->create($request->token);
-
-    //     return view("subscription_success");
-    // }
 
     public function createSubscriptions(Request $request)
     {
