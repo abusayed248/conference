@@ -17,6 +17,10 @@ class SubscriberController extends Controller
     }
     public function manageSubscriber()
     {
+
+        if (auth()->user()->role != 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
         $per_page = 20;
         $userPlan = UserPlans::query()->first();
         $subscribers = User::query()->where('payment_done', 1)->cursorPaginate($per_page);
@@ -43,7 +47,8 @@ class SubscriberController extends Controller
         $subscribers = $query->paginate($perPage);
 
         // Return the subscribers as JSON
-        return response()->json($subscribers);
+      //  return response()->json($subscribers);
+        return response()->json($subscribers)->header('Access-Control-Allow-Origin', '*');
     }
 
     public function createProduct()
