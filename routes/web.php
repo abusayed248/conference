@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Subscriber\SubscriberController;
@@ -34,6 +35,23 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    Route::get('/subscription', [SubscriberController::class, 'showForm'])->name('subscription.form');
+    Route::post('/create-subscription', [SubscriberController::class, 'createSubscription'])->name('create.subscription');
+
+
+    Route::post('/subscription/create', [PlanController::class, 'createSubscriptions'])->name('subscription.create');
+
+
+
+    Route::get('plans', [PlanController::class, 'index']);
+    Route::get('plans/{plan}', [PlanController::class, 'show'])->name("plans.show");
+    // routes/web.php
+    Route::get('/payment', [SubscriberController::class, 'showPaymentPage'])->name('payment.page');
+    Route::post('/user-plan/update/{id}', [PlanController::class, 'updateUserPlan'])->name('userPlan.update');
+    Route::get('subscribers', [SubscriberController::class, 'showSubscribers']);
+    //  Route::post('subscription', [PlanController::class, 'subscription'])->name("subscription.create");
 });
 
 

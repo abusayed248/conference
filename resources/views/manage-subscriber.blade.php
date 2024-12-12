@@ -1,102 +1,120 @@
 <x-app-layout>
 
-    <div class="mt-5">
-      <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h3 class="h3"><a class="text-decoration" href="{{ url('/') }}">Go Back</a></h3>
-            </div>
-            <div class="col-md-6 text-right">
-                <h3 class="h3">Total Subscribers: 437</h3>
-            </div>
-        </div>
-  
-        <div class="row sub-menu">
-            
-            <div class="col-md-5 my-0">
-                  <h3 class="h3">Subscriber management</h3>
-                  
-                  <div class="sub-card">
-                    <form action="">
-                        <h3>Monthly Fee ($):  <input type="number" value="12.99" class="border" /></h3>
-                        <h3>Free trial (days): <input type="number" value="7" class="border" /></h3>
-                        <h3><button type="submit">Save Chanages</button></h3>
-                    </form>
-                  </div>
-    
-                  <div class="user-visit-card">
-                    <h3>User can visit</h3>
-                    <a href="onetimeonetime.com/hotline" class="">onetimeonetime.com/hotline</a><br>
-                    <span>to subscribe, change or cancel their subscription</span>
-                  </div>
-      
-              </div>
-      
-              <div class="col-md-7 py-5">
-                <div class="search">
-                    <input type="search" class="form-control" placeholder="Search subscribers">
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="sub-list-card">
-                        <h2>Arron Alexon</h2>
-                        <h3>+115655888</h3>
-                        <h4>01/27/25</h4>
-                        <a href="">More Info/Edit</a>
-                    </div>
-                  </div>
-                 
-                  <div class="col-md-6">
-                    <div class="sub-list-card">
-                        <h2>Arron Tomber</h2>
-                        <h3>+115655888</h3>
-                        <h4>01/14/25</h4>
-                        <a href="">More Info/Edit</a>
-                    </div>
-                  </div>
-                 
-                  <div class="col-md-6">
-                    <div class="sub-list-card">
-                        <h2>Aj Liv</h2>
-                        <h3>+115655888</h3>
-                        <h4>01/14/25</h4>
-                        <a href="">More Info/Edit</a>
-                    </div>
-                  </div>
-                 
-                  <div class="col-md-6">
-                    <div class="sub-list-card">
-                        <h2>Andrew Tomber</h2>
-                        <h3>+7884545554</h3>
-                        <h4>01/17/25</h4>
-                        <a href="">More Info/Edit</a>
-                    </div>
-                  </div>
-                 
-                  <div class="col-md-6">
-                    <div class="sub-list-card">
-                        <h2>Bob Howpen</h2>
-                        <h3>+115655888</h3>
-                        <h4>01/14/25</h4>
-                        <a href="">More Info/Edit</a>
-                    </div>
-                  </div>
-                 
-                  <div class="col-md-6">
-                    <div class="sub-list-card">
-                        <h2>Bob Jerf</h2>
-                        <h3>+7884545554</h3>
-                        <h4>01/17/25</h4>
-                        <a href="">More Info/Edit</a>
-                    </div>
-                  </div>
+  <div class="mt-5">
+    <div class="container">
+      @if (session('success'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      @endif
 
-                </div>
-              </div>
+      @if (session('error'))
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      @endif
+
+      <div id="subscriber-management">
+        <div class="row">
+          <div class="col-md-6">
+            <h3 class="h3"><a class="text-decoration" href="{{ url('/') }}">Go Back</a></h3>
+          </div>
+          <div class="col-md-6 text-right">
+            <h3 class="h3">Total Subscribers: @{{ totalSubscribers }}</h3>
           </div>
         </div>
+
+        <div class="row sub-menu">
+          <div class="col-md-5 my-0">
+            <h3 class="h3">Subscriber Management</h3>
+
+            <div class="sub-card">
+              <form action="{{ route('userPlan.update', $userPlan->id) }}" method="POST">
+                @csrf
+                <h3>
+                  Monthly Fee ($):
+                  <input type="number" name="monthly_fee" value="{{ $userPlan->monthly_fee }}" class="border" required />
+                </h3>
+                <h3>
+                  Free Trial (days):
+                  <input type="number" name="free_trial" value="{{ $userPlan->free_trial }}" class="border" required />
+                </h3>
+                <h3>
+                  <button type="submit">Save Changes</button>
+                </h3>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-md-7 py-5">
+            <div class="search mb-4">
+              <input type="search" v-model="searchQuery" @input="searchSubscribers" class="form-control" placeholder="Search subscribers">
+            </div>
+            <div class="row">
+              <div v-for="subscriber in subscribers" :key="subscriber.id" class="col-md-6 mb-4">
+                <div class="sub-list-card">
+                  <h2>@{{ subscriber.name }}</h2>
+                  <h3>@{{ subscriber.email }}</h3>
+                  <h4>@{{ subscriber.payment_end }}</h4>
+                  <a :href="'/subscriber/' + subscriber.id">More Info/Edit</a>
+                </div>
+              </div>
+            </div>
+            <button v-if="hasMore" @click="loadMore" class="btn btn-primary w-100 mt-4">Load More</button>
+          </div>
+        </div>
+      </div>
     </div>
-  
-  
-  
-  </x-app-layout>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    new Vue({
+      el: '#subscriber-management',
+      data: {
+        subscribers: [],
+        page: 1,
+        perPage: 2,
+        hasMore: true,
+        searchQuery: '',
+        totalSubscribers: 0,
+      },
+      methods: {
+        fetchSubscribers() {
+          axios
+            .get(`/subscribers`, {
+              params: {
+                page: this.page,
+                per_page: this.perPage,
+                search: this.searchQuery
+              }
+            })
+            .then((response) => {
+              this.subscribers = [...this.subscribers, ...response.data.data];
+              this.hasMore = response.data.next_page_url !== null;
+              this.totalSubscribers = response.data.total;
+              this.page++;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        },
+        loadMore() {
+          this.fetchSubscribers();
+        },
+        searchSubscribers() {
+          this.page = 1;
+          this.subscribers = [];
+          this.fetchSubscribers();
+        },
+      },
+      mounted() {
+        this.fetchSubscribers();
+      },
+    });
+  </script>
+
+</x-app-layout>
