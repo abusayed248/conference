@@ -49,7 +49,6 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('plans/{plan}', [PlanController::class, 'show'])->name("plans.show");
     // routes/web.php
     Route::get('/payment', [SubscriberController::class, 'showPaymentPage'])->name('payment.page');
-    Route::post('/user-plan/update/{id}', [PlanController::class, 'updateUserPlan'])->name('userPlan.update');
     //  Route::post('subscription', [PlanController::class, 'subscription'])->name("subscription.create");
 });
 
@@ -59,6 +58,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 });
 Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::post('/user-plan/update/{id}', [PlanController::class, 'updateUserPlan'])->name('userPlan.update');
     Route::get('subscribers', [SubscriberController::class, 'showSubscribers']);
 });
 
