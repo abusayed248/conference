@@ -12,8 +12,15 @@
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="email" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
+
+        <!-- Phone number -->
+        <div class="mt-4">
+            <x-input-label for="number" :value="__('Phone Number')" />
+            <x-text-input id="number" class="block mt-1 w-full" type="number" name="number" :value="old('number')" required autocomplete="number" />
+            <x-input-error :messages="$errors->get('number')" class="mt-2" />
         </div>
 
         <!-- Password -->
@@ -37,6 +44,15 @@
                             name="password_confirmation" required autocomplete="new-password" />
 
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        </div>
+
+        <!-- photo -->
+        <div class="mt-4">
+            <x-input-label for="photo" :value="__('Photo')" />
+
+            <input type="file" class="block mt-1 w-full" name="photo" />
+
+            <x-input-error :messages="$errors->get('photo')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
