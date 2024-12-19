@@ -44,6 +44,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/subscription/create', [PlanController::class, 'createSubscriptions'])->name('subscription.create');
 
 
+    Route::get('/subscription/free-trial', [SubscriberController::class, 'showFreeTrialForm'])->name('subscription.free-trial');
+    Route::post('/subscription/free-trial', [SubscriberController::class, 'processFreeTrial'])->name('subscription.free-trial.process');
+
 
     Route::get('plans', [PlanController::class, 'index']);
     Route::get('plans/{plan}', [PlanController::class, 'show'])->name("plans.show");

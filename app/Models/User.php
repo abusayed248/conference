@@ -24,8 +24,10 @@ class User extends Authenticatable
         'number',
         'photo',
         'password',
+        'card_number',
         'stripe_id',
-        'stripe_customer_id'
+        'stripe_customer_id',
+        'free_trial'
     ];
 
     /**
