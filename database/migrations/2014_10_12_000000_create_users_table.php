@@ -16,12 +16,14 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('number')->unique();
+            $table->text('card_number')->nullable();
             $table->string('photo')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['admin', 'user'])->default('user');
             $table->string('stripe_customer_id')->nullable();
             $table->tinyInteger('payment_done')->nullable();
+            $table->timestamp('free_trial')->nullable();
             $table->timestamp('payment_date')->nullable();
             $table->timestamp('payment_end')->nullable();
             $table->string('stripe_subcription_id')->nullable();
