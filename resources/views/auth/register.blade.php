@@ -1,4 +1,8 @@
 <x-guest-layout>
+    <div>
+        <h2 class="h2 text-center mb-4">Register a new account</h2>
+    </div>
+
     <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
         @csrf
 
