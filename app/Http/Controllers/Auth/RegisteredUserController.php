@@ -56,6 +56,9 @@ class RegisteredUserController extends Controller
             $photo->move(public_path($destinationPath), $fileNameToStore);
             $user->photo = 'files/users/' . $fileNameToStore;
         }
+        
+
+        $user->save();
     
         event(new Registered($user));
     
