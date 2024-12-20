@@ -22,6 +22,11 @@
                         {{ __('Our Plans') }}
                     </x-nav-link>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('subscription.free-trial')" :active="request()->routeIs('subscription.free-trial')">
+                        {{ __('Free Trial') }}
+                    </x-nav-link>
+                </div>
                 @if(auth()->user()->role == 'admin')
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('manage.subscribers')" :active="request()->routeIs('manage.subscribers')">

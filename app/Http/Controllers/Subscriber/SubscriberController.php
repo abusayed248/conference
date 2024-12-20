@@ -8,6 +8,7 @@ use App\Models\UserPlans;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class SubscriberController extends Controller
 {
@@ -25,6 +26,62 @@ class SubscriberController extends Controller
         $userPlan = UserPlans::query()->first();
         $subscribers = User::query()->where('payment_done', 1)->cursorPaginate($per_page);
         return view("manage-subscriber", compact("userPlan", "subscribers"));
+    }
+
+    public function showFreeTrialForm()
+    {
+        $user = auth()->user();
+
+        $cardNumber = Crypt::decryptString($user->card_number);
+        return view('free-trial', compact('user'));
+    }
+
+    public function processFreeTrial(Request $request)
+    {
+        // Validate the request
+        $validated = $request->validate([
+            'card_number' => ['required', 'numeric', 'digits_between:13,19'], // Card number validation
+            'expiry_date' => ['required', 'regex:/^(0[1-9]|1[0-2])\/?([0-9]{2})$/'], // MM/YY format
+            'ccv' => ['required', 'numeric', 'digits:3'], // CCV should be exactly 3 digits
+        ]);
+
+        // Simulate card validation (replace this with actual payment gateway logic if needed)
+        if (!$this->isValidCard($validated['card_number'])) {
+            return back()->withErrors(['card_number' => 'Invalid card number'])->withInput();
+        }
+
+        // Save the card data to the user table (or handle as needed)
+        $user = auth()->user();
+        $user->update([
+            'card_number' => encrypt($validated['card_number']),
+            'free_trial' => now()
+        ]);
+
+        // Redirect with success message
+        return redirect()->back()->with('success', 'Your free trial has started!');
+    }
+
+    private function isValidCard($cardNumber)
+    {
+        // Basic Luhn Algorithm for card number validation
+        $sum = 0;
+        $shouldDouble = false;
+
+        for ($i = strlen($cardNumber) - 1; $i >= 0; $i--) {
+            $digit = (int) $cardNumber[$i];
+
+            if ($shouldDouble) {
+                $digit *= 2;
+                if ($digit > 9) {
+                    $digit -= 9;
+                }
+            }
+
+            $sum += $digit;
+            $shouldDouble = !$shouldDouble;
+        }
+
+        return $sum % 10 === 0;
     }
 
     public function showSubscribers(Request $request)
@@ -47,7 +104,7 @@ class SubscriberController extends Controller
         $subscribers = $query->paginate($perPage);
 
         // Return the subscribers as JSON
-      //  return response()->json($subscribers);
+        //  return response()->json($subscribers);
         return response()->json($subscribers)->header('Access-Control-Allow-Origin', '*');
     }
 
