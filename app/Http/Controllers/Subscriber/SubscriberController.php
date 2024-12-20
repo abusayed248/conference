@@ -32,7 +32,7 @@ class SubscriberController extends Controller
     {
         $user = auth()->user();
 
-        $cardNumber = Crypt::decryptString($user->card_number);
+        // $cardNumber = Crypt::decryptString($user->card_number);
         return view('free-trial', compact('user'));
     }
 
