@@ -5,6 +5,7 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Subscriber\SubscriberController;
+use App\Http\Controllers\TelnyxWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,5 +69,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 // admin routes end
+
+Route::post('/webhook/telnyx', [TelnyxWebhookController::class, 'handle']);
 
 require __DIR__ . '/auth.php';
