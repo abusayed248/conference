@@ -2,18 +2,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Telnyx\Call;
+use GuzzleHttp\Client;
 
 class TelnyxWebhookController extends Controller
 {
     private $apiKey;
+    private $apiBaseUrl;
 
     public function __construct()
     {
         $this->apiKey = env('TELNYX_API_KEY');
-        
-        // Initialize Telnyx with your API key once
-        \Telnyx\Telnyx::setApiKey($this->apiKey);
+        $this->apiBaseUrl = env('TELNYX_API_BASE_URL', 'https://api.telnyx.com/v2');
     }
 
     public function handle(Request $request)
@@ -43,12 +42,14 @@ class TelnyxWebhookController extends Controller
                 // Handle the event when a DTMF digit (button press) is received
                 $digit = $payload['data']['digit'] ?? null;
                 if ($digit !== null && method_exists($this, "handleDigit$digit")) {
+                    \Log::info('Processing DTMF digit', ['digit' => $digit]);
                     $this->{"handleDigit$digit"}($callControlId);
                 }
                 break;
 
             case 'call.hangup':
                 // Handle the event when the call is hung up
+                \Log::info('Call hangup received', ['call_control_id' => $callControlId]);
                 break;
 
             case 'call.gather.ended':
@@ -61,22 +62,25 @@ class TelnyxWebhookController extends Controller
 
             default:
                 // Handle any other events that do not match
+                \Log::info('Unhandled event type', ['event' => $event]);
                 break;
         }
     }
 
     private function handleCallInit(): void
     {
-        // Logic for call initiated
+        \Log::info('Call initiated');
     }
 
     private function handleCallAnswered(string $callControlId): void
     {
+        \Log::info('Call answered', ['call_control_id' => $callControlId]);
         $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/pre.mp3');
     }
 
     private function handleDigit0(string $callControlId): void
     {
+        \Log::info('No input timeout', ['call_control_id' => $callControlId]);
         $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/pre.mp3');
     }
 
@@ -127,21 +131,56 @@ class TelnyxWebhookController extends Controller
 
     private function handleTimeout(string $callControlId): void
     {
+        \Log::info('No input timeout', ['call_control_id' => $callControlId]);
         $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/Wed.mp3');
     }
 
     private function playAudioPrompt(string $callControlId, string $audioUrl): void
     {
-        echo $callControlId.'<br>';
-        echo $audioUrl.'<br>';
         try {
-            // Using the correct Telnyx Call::create method
-            Call::create([
+            \Log::info('Attempting to play audio prompt', [
                 'call_control_id' => $callControlId,
                 'audio_url' => $audioUrl,
             ]);
-        } catch (\Exception $e) {
-            \Log::error('Error creating call with audio: ' . $e->getMessage());
+
+            // Create the call with audio prompt
+            $response = $this->makeTelnyxApiCall('/calls', 'POST', [
+                'call_control_id' => $callControlId,
+                'audio_url' => $audioUrl,
+            ]);
+            
+            // Log the response from Telnyx
+            \Log::info('Audio prompt played successfully', [
+                'response' => $response,
+            ]);
         }
+        catch (\Exception $e) {
+            // Log the error if the API call fails
+            \Log::error('Error playing audio prompt', [
+                'call_control_id' => $callControlId,
+                'audio_url' => $audioUrl,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function makeTelnyxApiCall($endpoint, $method = 'GET', $data = [])
+    {
+        $client = new Client();
+        
+        $options = [
+            'headers' => [
+                'Authorization' => "Bearer $this->apiKey",
+                'Content-Type' => 'application/json',
+            ],
+        ];
+        
+        if ($method === 'POST' || $method === 'PUT') {
+            $options['json'] = $data;
+        }
+
+        $response = $client->request($method, $this->apiBaseUrl . $endpoint, $options);
+
+        return json_decode((string) $response->getBody(), true);
     }
 }
