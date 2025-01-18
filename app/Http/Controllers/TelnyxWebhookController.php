@@ -81,7 +81,7 @@ class TelnyxWebhookController extends Controller
     private function handleDigit0(string $callControlId): void
     {
         \Log::info('No input timeout', ['call_control_id' => $callControlId]);
-        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/pre.mp3');
+        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fingerer.mp3');
     }
 
     private function handleDigit1(string $callControlId): void
@@ -91,7 +91,7 @@ class TelnyxWebhookController extends Controller
 
     private function handleDigit2(string $callControlId): void
     {
-        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fires.mp3');
+        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fingerer.mp3');
     }
 
     private function handleDigit3(string $callControlId): void
@@ -101,7 +101,7 @@ class TelnyxWebhookController extends Controller
 
     private function handleDigit4(string $callControlId): void
     {
-        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fires.wav');
+        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fingerer.mp3');
     }
 
     private function handleDigit5(string $callControlId): void
@@ -111,7 +111,7 @@ class TelnyxWebhookController extends Controller
 
     private function handleDigit6(string $callControlId): void
     {
-        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fires.wav');
+        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fingerer.mp3');
     }
 
     private function handleDigit7(string $callControlId): void
@@ -121,7 +121,7 @@ class TelnyxWebhookController extends Controller
 
     private function handleDigit8(string $callControlId): void
     {
-        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fires.wav');
+        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fingerer.mp3');
     }
 
     private function handleDigit9(string $callControlId): void
@@ -132,7 +132,7 @@ class TelnyxWebhookController extends Controller
     private function handleTimeout(string $callControlId): void
     {
         \Log::info('No input timeout', ['call_control_id' => $callControlId]);
-        $this->playAudioPrompt($callControlId, `https://onetimeonetime.net/audio/fires.mp3`);
+        $this->playAudioPrompt($callControlId, `https://onetimeonetime.net/audio/fingerer.mp3`);
     }
 
     private function playAudioPrompt(string $callControlId, string $audioUrl): void
