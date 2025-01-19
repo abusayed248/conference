@@ -17,9 +17,22 @@ class TelnyxWebhookController extends Controller
 
     public function handle(Request $request)
     {
+        \Log::info('Call initiated');
+
+        // Log telnyx request
+        \Log::info('Telnyx API Request', [
+            'request' => $request,
+        ]);
+
         // Get the raw POST data from the webhook
         $rawPayload = file_get_contents('php://input');
         $payload = json_decode($rawPayload, true);
+    
+        // Log telnyx request
+        \Log::info('Telnyx API Request', [
+            'payload' => $payload,
+        ]);
+
         $event = $payload['data']['event_type'] ?? null;
         $callControlId = $payload['data']['call_control_id'] ?? null;
 
