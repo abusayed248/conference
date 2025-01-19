@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Ramsey\Uuid\Uuid;
 
 class TelnyxWebhookController extends Controller
 {
@@ -34,7 +35,7 @@ class TelnyxWebhookController extends Controller
         ]);
 
         $event = $payload['data']['event_type'] ?? null;
-        $callControlId = $payload['data']['call_control_id'] ?? null;
+        $callControlId = $payload['data']['payload']['call_control_id'] ?? null;
 
         if (!$event || !$callControlId) {
             return response()->json(['error' => 'Invalid payload'], 400);
@@ -43,7 +44,7 @@ class TelnyxWebhookController extends Controller
         switch ($event) {
             case 'call.initiated':
                 // Handle the event when the call is initiated
-                $this->handleCallInit();
+                $this->handleCallInit($callControlId, $payload['data']['payload']);
                 break;
 
             case 'call.answered':
@@ -80,9 +81,34 @@ class TelnyxWebhookController extends Controller
         }
     }
 
-    private function handleCallInit(): void
+    private function handleCallInit($callControlId, $payload): void
     {
-        \Log::info('Call initiated');
+        \Log::info('Call initiated for answer');
+        $endpoint = "/calls/$callControlId/actions/answer";
+        $commandId = Uuid::uuid4()->toString();
+
+        \Log::info('Attempting to answer call', [
+            'call_control_id' => $callControlId,
+        ]);
+
+        try {
+            $response = $this->makeTelnyxApiCall($endpoint, 'POST', [
+                'client_state' => $payload['client_state'],
+                'command_id' => $commandId,
+                'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx',
+                'webhook_url_method' => 'POST',
+                'send_silence_when_idle' => true,
+            ]);
+
+            \Log::info('Call answered successfully', [
+                'response' => $response,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error answering call', [
+                'call_control_id' => $callControlId,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     private function handleCallAnswered(string $callControlId): void
