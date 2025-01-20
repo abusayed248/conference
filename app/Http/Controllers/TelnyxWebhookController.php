@@ -49,15 +49,15 @@ class TelnyxWebhookController extends Controller
 
             case 'call.answered':
                 // Handle the event when the call is answered
-                $this->handleCallAnswered($callControlId);
+                $this->handleCallAnswered($callControlId, $payload['data']['payload']);
                 break;
 
             case 'call.dtmf.received':
                 // Handle the event when a DTMF digit (button press) is received
-                $digit = $payload['data']['digit'] ?? null;
+                $digit = $payload['data']['payload']['digit'] ?? null;
                 if ($digit !== null && method_exists($this, "handleDigit$digit")) {
                     \Log::info('Processing DTMF digit', ['digit' => $digit]);
-                    $this->{"handleDigit$digit"}($callControlId);
+                    $this->{"handleDigit$digit"}($callControlId, $payload['data']['payload']);
                 }
                 break;
 
@@ -70,7 +70,7 @@ class TelnyxWebhookController extends Controller
                 // Handle the event when the gather has ended (no input received)
                 $result = $payload['data']['result'];
                 if ($result === 'no_input') {
-                    $this->handleTimeout($callControlId);
+                    $this->handleTimeout($callControlId, $payload['data']['payload']);
                 }
                 break;
 
@@ -81,7 +81,7 @@ class TelnyxWebhookController extends Controller
         }
     }
 
-    private function handleCallInit($callControlId, $payload): void
+    private function handleCallInit(string $callControlId, $payload): void
     {
         \Log::info('Call initiated for answer');
         $endpoint = "/calls/$callControlId/actions/answer";
@@ -111,89 +111,95 @@ class TelnyxWebhookController extends Controller
         }
     }
 
-    private function handleCallAnswered(string $callControlId): void
+    private function handleCallAnswered(string $callControlId, $payload): void
     {
         \Log::info('Call answered', ['call_control_id' => $callControlId]);
-        $this->playAudioPrompt($callControlId, `https://onetimeonetime.net/audio/fingerer.mp3`);
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
     }
 
-    private function handleDigit0(string $callControlId): void
+    private function handleDigit0(string $callControlId, $payload): void
     {
         \Log::info('No input timeout', ['call_control_id' => $callControlId]);
-        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fingerer.mp3');
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
     }
 
-    private function handleDigit1(string $callControlId): void
+    private function handleDigit1(string $callControlId, $payload): void
     {
-        $this->playAudioPrompt($callControlId, `https://onetimeonetime.net/audio/fires.mp3`);
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fires.mp3", $payload);
     }
 
-    private function handleDigit2(string $callControlId): void
+    private function handleDigit2(string $callControlId, $payload): void
     {
-        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fingerer.mp3');
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
     }
 
-    private function handleDigit3(string $callControlId): void
+    private function handleDigit3(string $callControlId, $payload): void
     {
-        $this->playAudioPrompt($callControlId, `https://onetimeonetime.net/audio/fires.mp3`);
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fires.mp3", $payload);
     }
 
-    private function handleDigit4(string $callControlId): void
+    private function handleDigit4(string $callControlId, $payload): void
     {
-        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fingerer.mp3');
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
     }
 
-    private function handleDigit5(string $callControlId): void
+    private function handleDigit5(string $callControlId, $payload): void
     {
-        $this->playAudioPrompt($callControlId, `https://onetimeonetime.net/audio/fires.mp3`);
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fires.mp3", $payload);
     }
 
-    private function handleDigit6(string $callControlId): void
+    private function handleDigit6(string $callControlId, $payload): void
     {
-        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fingerer.mp3');
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
     }
 
-    private function handleDigit7(string $callControlId): void
+    private function handleDigit7(string $callControlId, $payload): void
     {
-        $this->playAudioPrompt($callControlId, `https://onetimeonetime.net/audio/fires.mp3`);
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fires.mp3", $payload);
     }
 
-    private function handleDigit8(string $callControlId): void
+    private function handleDigit8(string $callControlId, $payload): void
     {
-        $this->playAudioPrompt($callControlId, 'https://onetimeonetime.net/audio/fingerer.mp3');
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
     }
 
-    private function handleDigit9(string $callControlId): void
+    private function handleDigit9(string $callControlId, $payload): void
     {
-        $this->playAudioPrompt($callControlId, `https://onetimeonetime.net/audio/fires.mp3`);
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fires.mp3", $payload);
     }
 
-    private function handleTimeout(string $callControlId): void
+    private function handleTimeout(string $callControlId, $payload): void
     {
         \Log::info('No input timeout', ['call_control_id' => $callControlId]);
-        $this->playAudioPrompt($callControlId, `https://onetimeonetime.net/audio/fingerer.mp3`);
+        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
     }
 
-    private function playAudioPrompt(string $callControlId, string $audioUrl): void
+    private function playAudioPrompt(string $callControlId, string $audioUrl, $payload): void
     {
+        \Log::info('Attempting to play audio prompt', [
+            'call_control_id' => $callControlId,
+            'audio_url' => $audioUrl,
+        ]);
+
+        $endpoint = "/calls/$callControlId/actions/playback_start";
+        $commandId = Uuid::uuid4()->toString();
+
         try {
-            \Log::info('Attempting to play audio prompt', [
-                'call_control_id' => $callControlId,
+            $response = $this->makeTelnyxApiCall($endpoint, 'POST', [
                 'audio_url' => $audioUrl,
+                'loop' => 'infinity',
+                'overlay' => true,
+                'stop' => 'current',
+                'target_legs' => 'self',
+                'client_state' => $payload['client_state'],
+                'command_id' => $commandId,
             ]);
-
-            // Create the call with audio prompt
-            $response = $this->makeTelnyxApiCall('/calls', 'POST', [
-                'call_control_id' => $callControlId,
-                'audio_url' => $audioUrl,
-            ]);
-            
+    
             // Log the response from Telnyx
             \Log::info('Audio prompt played successfully', [
                 'response' => $response,
             ]);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             // Log the error if the API call fails
             \Log::error('Error playing audio prompt', [
                 'call_control_id' => $callControlId,
