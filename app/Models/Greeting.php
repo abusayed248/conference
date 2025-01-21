@@ -24,6 +24,6 @@ class Greeting extends  Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('audio_file');
+        $this->addMediaCollection('audio_file_greeting');
     }
 }

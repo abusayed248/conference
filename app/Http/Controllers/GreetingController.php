@@ -20,13 +20,13 @@ class GreetingController extends Controller
 
 
         if ($request->file('audio_file')) {
-            if ($greeting->hasMedia('audio_file')) {
+            if ($greeting->hasMedia('audio_file_greeting')) {
                 // Delete the existing media
-                $greeting->clearMediaCollection('audio_file');
+                $greeting->clearMediaCollection('audio_file_greeting');
             }
 
             $greeting->addMedia($request->file('audio_file'))
-                ->toMediaCollection('audio_file');
+                ->toMediaCollection('audio_file_greeting');
 
             $greeting->update([
                 'audio_link' => $greeting->getFirstMediaUrl('audio_file')
@@ -48,18 +48,17 @@ class GreetingController extends Controller
 
 
         if ($request->file('audio_file')) {
-            if ($greeting->hasMedia('audio_file')) {
+            if ($greeting->hasMedia('audio_file_greeting')) {
                 // Delete the existing media
-                $greeting->clearMediaCollection('audio_file');
+                $greeting->clearMediaCollection('audio_file_greeting');
             }
 
             $greeting->addMedia($request->file('audio_file'))
-                ->toMediaCollection('audio_file');
+                ->toMediaCollection('audio_file_greeting');
 
             $greeting->update([
                 'audio_link' => $greeting->getFirstMediaUrl('audio_file')
             ]);
-
         }
         return back()->with('success', 'Audio link updated successfully!');
     }
