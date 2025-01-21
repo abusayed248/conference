@@ -3,10 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\GreetingController;
+use App\Http\Controllers\CallActionController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Subscriber\SubscriberController;
 use App\Http\Controllers\TelnyxWebhookController;
-
+use App\Http\Controllers\Subscriber\SubscriberController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -64,6 +65,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/user-plan/update/{id}', [PlanController::class, 'updateUserPlan'])->name('userPlan.update');
     Route::get('subscribers', [SubscriberController::class, 'showSubscribers']);
+
+    Route::post('/greetings-subs/update-audio', [GreetingController::class, 'updateAudio'])->name('greetings.updateAudio');
+    Route::post('/greetings-non-subs/update-audio', [GreetingController::class, 'updateAudioNonSubscription'])->name('greetings.updateAudioNonSubscribtion');
+    Route::post('/save-call-action', [CallActionController::class, 'store'])->name('call-action.store');
+    Route::post('/save-mp3-call-action', [CallActionController::class, 'storeMp3CallAction'])->name('mp3-call-action.store');
 });
 
 
