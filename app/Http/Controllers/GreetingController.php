@@ -12,7 +12,7 @@ class GreetingController extends Controller
     {
         $request->validate([
             'type' => 'required|string',
-            'audio_file' => 'required|file|mimes:mp3,wav|max:2048', // Validate file type and size
+            'audio_file' => 'required|file|mimes:mp3,wav', // Validate file type and size
         ]);
 
         // Find or create a greeting record based on the type
@@ -40,7 +40,7 @@ class GreetingController extends Controller
 
         $request->validate([
             'type' => 'required|string',
-            'audio_file' => 'required|file|mimes:mp3,wav|max:2048', // Validate file type and size
+            'audio_file' => 'required|file|mimes:mp3,wav', // Validate file type and size
         ]);
 
         // Find or create a greeting record based on the type
