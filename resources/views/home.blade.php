@@ -734,7 +734,6 @@
         function saveNumber9() {
             const numberInput = document.getElementById('number-input-9').value;
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            console.log(numberInput, 'numberInput');
             if (numberInput.trim() !== "") {
                 fetch("{{ route('call-action.store') }}", {
                         method: "POST",
