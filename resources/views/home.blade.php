@@ -25,7 +25,7 @@
                                         <label id="file-name" class="file-label play" for="file-input">choose File</label>
                                         <input type="file" id="file-input" accept="audio/mp3,audio/*;capture=microphone" name="audio_file" class="file-input" />
 
-                                        <input id="replace-file-input" name="type" type="hidden" style="display:none" value="subscribers" class="replace-img" />
+                                        <input id="replace-file-input" name="type" type="hidden" style="display:none" value="greetings" class="replace-img" />
 
                                         <!-- <input type="file" name="audio_file" id="file-input" class="form-control" accept="audio/mp3,audio/wav"> -->
 
@@ -57,7 +57,7 @@
 
                                         <input type="file" id="file-input-non-subscribers" accept="audio/mp3,audio/*;capture=microphone" name="audio_file" class="file-input" />
 
-                                        <input id="replace-file-input-non-subscribers" name="type" type="hidden" style="display:none" value="non_subscribers" class="replace-img" />
+                                        <input id="replace-file-input-non-subscribers" name="type" type="hidden" style="display:none" value="non_subscriber_greetings" class="replace-img" />
                                     </div>
                                 </div>
                             </div>

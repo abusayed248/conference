@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Greeting;
+use App\Models\CallAction;
 use Illuminate\Http\Request;
 
 class GreetingController extends Controller
@@ -15,23 +16,36 @@ class GreetingController extends Controller
             'audio_file' => 'required|file|mimes:mp3,wav', // Validate file type and size
         ]);
 
-        // Find or create a greeting record based on the type
-        $greeting = Greeting::firstOrCreate(['type' => $request->type]);
 
+        $callAction = CallAction::query()->where([
+            'type' => $request->type,
+        ])->first();
+        if ($callAction) {
 
-        if ($request->file('audio_file')) {
-            if ($greeting->hasMedia('audio_file_greeting')) {
+            if ($callAction->hasMedia('audio_file')) {
                 // Delete the existing media
-                $greeting->clearMediaCollection('audio_file_greeting');
+                $callAction->clearMediaCollection('audio_file');
             }
 
-            $greeting->addMedia($request->file('audio_file'))
-                ->toMediaCollection('audio_file_greeting');
+            $callAction->addMedia($request->file('audio_file'))
+                ->toMediaCollection('audio_file');
 
-            $greeting->update([
-                'audio_link' => $greeting->getFirstMediaUrl('audio_file')
+            $callAction->update([
+                'audio_link' => $callAction->getFirstMediaUrl('audio_file')
+            ]);
+        } else {
+            $callAction = CallAction::create([
+                'type' => $request->type
+            ]);
+
+            $callAction->addMedia($request->file('audio_file'))
+                ->toMediaCollection('audio_file');
+
+            $callAction->update([
+                'audio_link' => $callAction->getFirstMediaUrl('audio_file')
             ]);
         }
+
         return back()->with('success', 'Audio link updated successfully!');
     }
 
@@ -43,21 +57,33 @@ class GreetingController extends Controller
             'audio_file' => 'required|file|mimes:mp3,wav', // Validate file type and size
         ]);
 
-        // Find or create a greeting record based on the type
-        $greeting = Greeting::firstOrCreate(['type' => $request->type]);
 
+        $callAction = CallAction::query()->where([
+            'type' => $request->type,
+        ])->first();
+        if ($callAction) {
 
-        if ($request->file('audio_file')) {
-            if ($greeting->hasMedia('audio_file_greeting')) {
+            if ($callAction->hasMedia('audio_file')) {
                 // Delete the existing media
-                $greeting->clearMediaCollection('audio_file_greeting');
+                $callAction->clearMediaCollection('audio_file');
             }
 
-            $greeting->addMedia($request->file('audio_file'))
-                ->toMediaCollection('audio_file_greeting');
+            $callAction->addMedia($request->file('audio_file'))
+                ->toMediaCollection('audio_file');
 
-            $greeting->update([
-                'audio_link' => $greeting->getFirstMediaUrl('audio_file')
+            $callAction->update([
+                'audio_link' => $callAction->getFirstMediaUrl('audio_file')
+            ]);
+        } else {
+            $callAction = CallAction::create([
+                'type' => $request->type
+            ]);
+
+            $callAction->addMedia($request->file('audio_file'))
+                ->toMediaCollection('audio_file');
+
+            $callAction->update([
+                'audio_link' => $callAction->getFirstMediaUrl('audio_file')
             ]);
         }
         return back()->with('success', 'Audio link updated successfully!');
