@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class CallAction extends Model
+class CallAction extends Model implements HasMedia
 {
     use HasFactory;
-        /**
+    use InteractsWithMedia;
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -17,5 +20,14 @@ class CallAction extends Model
         'event',
         'digit',
         'type',
+        'transfer_to',
+        'call_transfer_timer',
+        'afer_time',
+        'audio_link'
     ];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('audio_file');
+    }
 }

@@ -37,30 +37,17 @@ class CallActionController extends Controller
             'digit' => $request->digit
         ])->first();
         if ($callAction) {
-            $callActionDetails =   CallActionDetails::query()->where('call_action_id', $callAction->id)->first();
-            if ($callActionDetails) {
-                $callActionDetails->update([
-                    'number' => $request->number,
-                    'need_time_for_transfer' => $request->need_time_for_transfer,
-                    'afer_time' => $request->afer,
-                ]);
-            } else {
-                CallActionDetails::create([
-                    'call_action_id' => $callAction->id,
-                    'number' => $request->number,
-                    'need_time_for_transfer' => $request->need_time_for_transfer,
-                    'afer_time' => $request->afer,
-                ]);
-            }
+            $callAction->update([
+                'transfer_to' => $request->number,
+                'call_transfer_timer' => $request->call_transfer_timer,
+                'afer_time' => $request->afer,
+            ]);
         } else {
             $callAction = CallAction::create([
                 'type' => $request->type,
-                'digit' => $request->digit
-            ]);
-            CallActionDetails::create([
-                'call_action_id' => $callAction->id,
-                'number' => $request->number,
-                'need_time_for_transfer' => $request->need_time_for_transfer,
+                'digit' => $request->digit,
+                'transfer_to' => $request->number,
+                'call_transfer_timer' => $request->call_transfer_timer,
                 'afer_time' => $request->afer,
             ]);
         }
@@ -85,46 +72,30 @@ class CallActionController extends Controller
             'digit' => $request->digit
         ])->first();
         if ($callAction) {
-            $callActionDetails =   CallActionDetails::query()->where('call_action_id', $callAction->id)->first();
-            if ($callActionDetails) {
 
-                if ($callActionDetails->hasMedia('audio_file')) {
-                    // Delete the existing media
-                    $callActionDetails->clearMediaCollection('audio_file');
-                }
-
-                $callActionDetails->addMedia($request->file('audio_file'))
-                    ->toMediaCollection('audio_file');
-
-                $callActionDetails->update([
-                    'audio_link' => $callActionDetails->getFirstMediaUrl('audio_file')
-                ]);
-            } else {
-                $callActionDetails =  CallActionDetails::create([
-                    'call_action_id' => $callAction->id,
-                ]);
-
-                $callActionDetails->addMedia($request->file('audio_file'))
-                    ->toMediaCollection('audio_file');
-
-                $callActionDetails->update([
-                    'audio_link' => $callActionDetails->getFirstMediaUrl('audio_file')
-                ]);
+            if ($callAction->hasMedia('audio_file')) {
+                // Delete the existing media
+                $callAction->clearMediaCollection('audio_file');
             }
+
+            $callAction->addMedia($request->file('audio_file'))
+                ->toMediaCollection('audio_file');
+
+            $callAction->update([
+                'audio_link' => $callAction->getFirstMediaUrl('audio_file')
+            ]);
         } else {
             $callAction = CallAction::create([
                 'type' => $request->type,
                 'digit' => $request->digit
             ]);
-            $callActionDetails =  CallActionDetails::create([
-                'call_action_id' => $callAction->id,
-            ]);
 
-            $callActionDetails->addMedia($request->file('audio_file'))
+
+            $callAction->addMedia($request->file('audio_file'))
                 ->toMediaCollection('audio_file');
 
-            $callActionDetails->update([
-                'audio_link' => $callActionDetails->getFirstMediaUrl('audio_file')
+            $callAction->update([
+                'audio_link' => $callAction->getFirstMediaUrl('audio_file')
             ]);
         }
 

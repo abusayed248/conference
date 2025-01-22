@@ -93,9 +93,7 @@
                                     'type' => 'transfer',
                                     'digit' => 1
                                 ])->first();
-                                if ($callAction) {
-                                    $callActionDetails =   App\Models\CallActionDetails::query()->where('call_action_id', $callAction->id)->first();
-                                }
+
                                 ?>
                                 <div class="d-flex justify-content-center align-items-center mt-2 w-100">
                                     <label for="">To</label>
@@ -103,7 +101,7 @@
                                     <input
                                         name="number"
                                         type="text"
-                                        value="{{ @$callActionDetails->number}}"
+                                        value="{{ @$callAction->transfer_to}}"
                                         class="w-100"
                                         placeholder="+1123355656"
                                         id="number-input"
@@ -262,10 +260,6 @@
                                     'type' => 'transfer',
                                     'digit' => 9
                                 ])->first();
-                                if ($callActionFor9) {
-                                    $callActionDetails9 =   App\Models\CallActionDetails::query()->where('call_action_id', $callActionFor9->id)->first();
-
-                                }
                                 ?>
                                 <div class="d-flex justify-content-center align-items-center mt-2 w-100">
                                     <label for="">To</label>
@@ -273,7 +267,7 @@
                                     <input
                                         name="number"
                                         type="text"
-                                        value="{{ @$callActionDetails9->number }}"
+                                        value="{{ @$callActionFor9->transfer_to}}"
                                         class="w-100"
                                         placeholder="+1123355656"
                                         id="number-input-9"
@@ -582,7 +576,7 @@
             if (selectedFile) {
                 const formData = new FormData();
                 formData.append("audio_file", selectedFile); // Append the selected file
-                formData.append("type", "play-mp3"); // Add any other required data
+                formData.append("type", "audio"); // Add any other required data
                 formData.append("digit", 2); // Add any other required data
 
                 fetch("{{ route('mp3-call-action.store') }}", {
@@ -625,7 +619,7 @@
             if (selectedFile) {
                 const formData = new FormData();
                 formData.append("audio_file", selectedFile); // Append the selected file
-                formData.append("type", "play-mp3"); // Add any other required data
+                formData.append("type", "audio"); // Add any other required data
                 formData.append("digit", 3); // Add any other required data
 
                 fetch("{{ route('mp3-call-action.store') }}", {
@@ -668,7 +662,7 @@
             if (selectedFile) {
                 const formData = new FormData();
                 formData.append("audio_file", selectedFile); // Append the selected file
-                formData.append("type", "play-mp3"); // Add any other required data
+                formData.append("type", "audio"); // Add any other required data
                 formData.append("digit", 4); // Add any other required data
 
                 fetch("{{ route('mp3-call-action.store') }}", {
@@ -740,7 +734,7 @@
         function saveNumber9() {
             const numberInput = document.getElementById('number-input-9').value;
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-console.log(numberInput,'numberInput');
+            console.log(numberInput, 'numberInput');
             if (numberInput.trim() !== "") {
                 fetch("{{ route('call-action.store') }}", {
                         method: "POST",
