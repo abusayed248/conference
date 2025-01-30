@@ -66,10 +66,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/user-plan/update/{id}', [PlanController::class, 'updateUserPlan'])->name('userPlan.update');
     Route::get('subscribers', [SubscriberController::class, 'showSubscribers']);
 
-    Route::post('/greetings-subs/update-audio', [GreetingController::class, 'updateAudio'])->name('greetings.updateAudio');
-    Route::post('/greetings-non-subs/update-audio', [GreetingController::class, 'updateAudioNonSubscription'])->name('greetings.updateAudioNonSubscribtion');
+    Route::post('/greetings-subs/update-audio', [CallActionController::class, 'updateAudio'])->name('greetings.updateAudio');
+    Route::post('/greetings-non-subs/update-audio', [CallActionController::class, 'updateAudioNonSubscription'])->name('greetings.updateAudioNonSubscribtion');
     Route::post('/save-call-action', [CallActionController::class, 'store'])->name('call-action.store');
     Route::post('/save-mp3-call-action', [CallActionController::class, 'storeMp3CallAction'])->name('mp3-call-action.store');
+    Route::post('/save-mp3-sub-call-action', [CallActionController::class, 'storeMp3SubCallAction'])->name('mp3-call-action-sub.store');
 });
 
 
