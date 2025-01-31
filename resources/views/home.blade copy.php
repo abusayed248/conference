@@ -369,7 +369,7 @@
                             <div class="row sub-menu">
                                 <div class="col-md-4 my-0">
                                     <div class="d-flex bg-green-600 mt-10 justify-content-center flex-column align-items-center">
-                                        <h3 class="h3">Greeting for Sub-menu</h3>
+                                        <h3 class="h3">Greeting for Sub-menu 6</h3>
                                         <div class="d-flex justify-content-center align-items-center">
                                             <div class="col-md-1">
                                                 <label id="file-name" for="file-input"> File</label>
@@ -382,15 +382,15 @@
                                             </div>
                                         </div>
 
-                                        <a id="option-1-sub-menu-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1SubMenu()">Replace File</a>
+                                        <a id="option-6-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6()">Replace File</a>
                                         <input
-                                            id="option-1-sub-menu-replace-file-input"
+                                            id="option-6-replace-file-input"
                                             type="file"
                                             name="option_6_replace"
                                             style="display:none"
                                             class="replace-img"
                                             accept="audio/mp3,audio/*;capture=microphone"
-                                            onchange="uploadFileDigit1SubMenu()" />
+                                            onchange="uploadFileDigit6()" />
                                     </div>
 
                                 </div>
@@ -400,28 +400,6 @@
                                         <div class="col-md-4">
                                             <div class="d-flex justify-content-center align-items-center flex-column">
                                                 <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-                                                    <label for="">Function</label>
-                                                    <select name="cars" id="cars" form="" class="play">
-                                                        <option value="volvo">Play MP3</option>
-                                                        <option value="saab">Saab</option>
-                                                        <option value="opel">Opel</option>
-                                                        <option value="audi">Audi</option>
-                                                    </select>
-                                                </div>
-                                                <a id="option-1-sub-1-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub1()">Replace File</a>
-                                                <input
-                                                    id="option-1-sub-1-replace-file-input"
-                                                    type="file"
-                                                    name="option_6_replace_sub_1"
-                                                    style="display:none"
-                                                    class="replace-img"
-                                                    accept="audio/mp3,audio/*;capture=microphone"
-                                                    onchange="uploadFileDigit1Sub1()" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 ">
-                                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
 
                                                     <label for="">Function</label>
 
@@ -436,21 +414,52 @@
                                                 </div>
 
 
-                                                <a id="option-1-sub-2-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub2()">Replace File</a>
+
+
+                                                <a id="option-6-sub-1-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub1()">Replace File</a>
                                                 <input
-                                                    id="option-1-sub-2-replace-file-input"
+                                                    id="option-6-sub-1-replace-file-input"
                                                     type="file"
                                                     name="option_6_replace_sub_1"
                                                     style="display:none"
                                                     class="replace-img"
                                                     accept="audio/mp3,audio/*;capture=microphone"
-                                                    onchange="uploadFileDigit1Sub2()" />
+                                                    onchange="uploadFileDigit6Sub1()" />
                                             </div>
 
                                         </div>
                                         <div class="col-md-4 ">
                                             <div class="d-flex justify-content-center align-items-center flex-column">
                                                 <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+
+                                                    <label for="">Function</label>
+
+
+                                                    <select name="cars" id="cars" form="" class="play">
+                                                        <option value="volvo">Play MP3</option>
+                                                        <option value="saab">Saab</option>
+                                                        <option value="opel">Opel</option>
+                                                        <option value="audi">Audi</option>
+                                                    </select>
+
+                                                </div>
+
+
+                                                <a id="option-6-sub-2-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub2()">Replace File</a>
+                                                <input
+                                                    id="option-6-sub-2-replace-file-input"
+                                                    type="file"
+                                                    name="option_6_replace_sub_1"
+                                                    style="display:none"
+                                                    class="replace-img"
+                                                    accept="audio/mp3,audio/*;capture=microphone"
+                                                    onchange="uploadFileDigit6Sub2()" />
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-4 ">
+                                            <div class="d-flex justify-content-center align-items-center flex-column">
+                                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
                                                     <label for="">Function</label>
                                                     <select name="cars" id="cars" form="" class="play">
                                                         <option value="volvo">Play MP3</option>
@@ -459,15 +468,15 @@
                                                         <option value="audi">Audi</option>
                                                     </select>
                                                 </div>
-                                                <a id="option-1-sub-3-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub3()">Replace File</a>
+                                                <a id="option-6-sub-3-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub3()">Replace File</a>
                                                 <input
-                                                    id="option-1-sub-3-replace-file-input"
+                                                    id="option-6-sub-3-replace-file-input"
                                                     type="file"
                                                     name="option_6_replace_sub_1"
                                                     style="display:none"
                                                     class="replace-img"
                                                     accept="audio/mp3,audio/*;capture=microphone"
-                                                    onchange="uploadFileDigit1Sub3()" />
+                                                    onchange="uploadFileDigit6Sub3()" />
                                             </div>
 
                                         </div>
@@ -484,15 +493,15 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-4-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub4()">Replace File</a>
+                                                <a id="option-6-sub-4-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub4()">Replace File</a>
                                                 <input
-                                                    id="option-1-sub-4-replace-file-input"
+                                                    id="option-6-sub-4-replace-file-input"
                                                     type="file"
                                                     name="option_6_replace_sub_1"
                                                     style="display:none"
                                                     class="replace-img"
                                                     accept="audio/mp3,audio/*;capture=microphone"
-                                                    onchange="uploadFileDigit1Sub4()" />
+                                                    onchange="uploadFileDigit6Sub4()" />
                                             </div>
 
                                         </div>
@@ -508,15 +517,15 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-5-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub5()">Replace File</a>
+                                                <a id="option-6-sub-5-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub5()">Replace File</a>
                                                 <input
-                                                    id="option-1-sub-5-replace-file-input"
+                                                    id="option-6-sub-5-replace-file-input"
                                                     type="file"
                                                     name="option_6_replace_sub_1"
                                                     style="display:none"
                                                     class="replace-img"
                                                     accept="audio/mp3,audio/*;capture=microphone"
-                                                    onchange="uploadFileDigit1Sub5()" />
+                                                    onchange="uploadFileDigit6Sub5()" />
                                             </div>
 
                                         </div>
@@ -534,15 +543,15 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-6-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub6()">Replace File</a>
+                                                <a id="option-6-sub-6-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub6()">Replace File</a>
                                                 <input
-                                                    id="option-1-sub-6-replace-file-input"
+                                                    id="option-6-sub-6-replace-file-input"
                                                     type="file"
                                                     name="option_6_replace_sub_6"
                                                     style="display:none"
                                                     class="replace-img"
                                                     accept="audio/mp3,audio/*;capture=microphone"
-                                                    onchange="uploadFileDigit1Sub6()" />
+                                                    onchange="uploadFileDigit6Sub6()" />
                                             </div>
 
                                         </div>
@@ -560,15 +569,15 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-7-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub7()">Replace File</a>
+                                                <a id="option-6-sub-7-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub7()">Replace File</a>
                                                 <input
-                                                    id="option-1-sub-7-replace-file-input"
+                                                    id="option-6-sub-7-replace-file-input"
                                                     type="file"
                                                     name="option_6_replace_sub_7"
                                                     style="display:none"
                                                     class="replace-img"
                                                     accept="audio/mp3,audio/*;capture=microphone"
-                                                    onchange="uploadFileDigit1Sub7()" />
+                                                    onchange="uploadFileDigit6Sub7()" />
                                             </div>
 
                                         </div>
@@ -586,15 +595,15 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-8-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub8()">Replace File</a>
+                                                <a id="option-6-sub-8-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub8()">Replace File</a>
                                                 <input
-                                                    id="option-1-sub-8-replace-file-input"
+                                                    id="option-6-sub-8-replace-file-input"
                                                     type="file"
                                                     name="option_6_replace_sub_8"
                                                     style="display:none"
                                                     class="replace-img"
                                                     accept="audio/mp3,audio/*;capture=microphone"
-                                                    onchange="uploadFileDigit1Sub8()" />
+                                                    onchange="uploadFileDigit6Sub8()" />
                                             </div>
 
                                         </div>
@@ -612,9 +621,9 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-9-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub9()">Replace File</a>
+                                                <a id="option-6-sub-9-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub9()">Replace File</a>
                                                 <input
-                                                    id="option-1-sub-9-replace-file-input"
+                                                    id="option-6-sub-9-replace-file-input"
                                                     type="file"
                                                     name="option_6_replace_sub_9"
                                                     style="display:none"
@@ -805,288 +814,58 @@
             document.getElementById("option-3-replace-file-input").click();
         }
 
-        function triggerFileInputForDigit1SubMenu() {
+        function triggerFileInputForDigit6() {
             // Trigger file input click
-            document.getElementById("option-1-sub-menu-replace-file-input").click();
+            document.getElementById("option-6-replace-file-input").click();
         }
 
-
-        function triggerFileInputForDigit1Sub1() {
+        function triggerFileInputForDigit6Sub1() {
             // Trigger file input click
-            document.getElementById("option-1-sub-1-replace-file-input").click();
+            document.getElementById("option-6-sub-1-replace-file-input").click();
         }
 
-        function triggerFileInputForDigit1Sub2() {
+        function triggerFileInputForDigit6Sub2() {
             // Trigger file input click
-            document.getElementById("option-1-sub-2-replace-file-input").click();
+            document.getElementById("option-6-sub-2-replace-file-input").click();
         }
 
-        function triggerFileInputForDigit1Sub3() {
+        function triggerFileInputForDigit6Sub3() {
             // Trigger file input click
-            document.getElementById("option-1-sub-3-replace-file-input").click();
+            document.getElementById("option-6-sub-3-replace-file-input").click();
         }
 
-        function triggerFileInputForDigit1Sub4() {
+        function triggerFileInputForDigit6Sub4() {
             // Trigger file input click
-            document.getElementById("option-1-sub-4-replace-file-input").click();
+            document.getElementById("option-6-sub-4-replace-file-input").click();
         }
 
-        function triggerFileInputForDigit1Sub5() {
+        function triggerFileInputForDigit6Sub5() {
             // Trigger file input click
-            document.getElementById("option-1-sub-5-replace-file-input").click();
+            document.getElementById("option-6-sub-5-replace-file-input").click();
         }
 
-        function triggerFileInputForDigit1Sub6() {
+        function triggerFileInputForDigit6Sub6() {
             // Trigger file input click
-            document.getElementById("option-1-sub-6-replace-file-input").click();
+            document.getElementById("option-6-sub-6-replace-file-input").click();
         }
 
-        function triggerFileInputForDigit1Sub7() {
+        function triggerFileInputForDigit6Sub7() {
             // Trigger file input click
-            document.getElementById("option-1-sub-7-replace-file-input").click();
+            document.getElementById("option-6-sub-7-replace-file-input").click();
         }
 
-        function triggerFileInputForDigit1Sub8() {
+        function triggerFileInputForDigit6Sub8() {
             // Trigger file input click
-            document.getElementById("option-1-sub-8-replace-file-input").click();
+            document.getElementById("option-6-sub-8-replace-file-input").click();
         }
 
-        function triggerFileInputForDigit1Sub9() {
+        function triggerFileInputForDigit6Sub9() {
             // Trigger file input click
-            document.getElementById("option-1-sub-9-replace-file-input").click();
+            document.getElementById("option-6-sub-9-replace-file-input").click();
         }
 
-        function uploadFileDigit1Sub1() {
-            const fileInput = document.getElementById("option-1-sub-1-replace-file-input");
-            const selectedFile = fileInput.files[0];
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            if (selectedFile) {
-                const formData = new FormData();
-                formData.append("audio_file", selectedFile); // Append the selected file
-                formData.append("type", "audio"); // Add any other required data
-                formData.append("digit", 1); // Add any other required data
-                formData.append("sub", 1); // Add any other required data
-                formData.append("sub_type", "audio");
-
-                fetch("{{ route('mp3-call-action-sub.store') }}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": csrfToken, // Include CSRF token
-                        },
-                        body: formData, // Send the file and other data
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            console.log("File uploaded successfully:", data);
-                            alert("File uploaded successfully.");
-                        } else {
-                            console.error("Error uploading file:", data);
-                            alert("Failed to upload the file.");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert("An unexpected error occurred.");
-                    });
-            } else {
-                alert("No file selected.");
-            }
-        }
-
-        // function uploadFileDigit6Sub1() {
-        //     const fileInput = document.getElementById("option-1-sub-1-replace-file-input");
-        //     const selectedFile = fileInput.files[0];
-        //     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-        //     if (selectedFile) {
-        //         const formData = new FormData();
-        //         formData.append("audio_file", selectedFile); // Append the selected file
-        //         formData.append("type", "audio"); // Add any other required data
-        //         formData.append("digit", 6); // Add any other required data
-        //         formData.append("sub", 1); // Add any other required data
-
-        //         fetch("{{ route('mp3-call-action-sub.store') }}", {
-        //                 method: "POST",
-        //                 headers: {
-        //                     "X-CSRF-TOKEN": csrfToken, // Include CSRF token
-        //                 },
-        //                 body: formData, // Send the file and other data
-        //             })
-        //             .then((response) => response.json())
-        //             .then((data) => {
-        //                 if (data.success) {
-        //                     console.log("File uploaded successfully:", data);
-        //                     alert("File uploaded successfully.");
-        //                 } else {
-        //                     console.error("Error uploading file:", data);
-        //                     alert("Failed to upload the file.");
-        //                 }
-        //             })
-        //             .catch((error) => {
-        //                 console.error("Error:", error);
-        //                 alert("An unexpected error occurred.");
-        //             });
-        //     } else {
-        //         alert("No file selected.");
-        //     }
-        // }
-
-        function uploadFileDigit1Sub2() {
-            const fileInput = document.getElementById("option-1-sub-2-replace-file-input");
-            const selectedFile = fileInput.files[0];
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            if (selectedFile) {
-                const formData = new FormData();
-                formData.append("audio_file", selectedFile); // Append the selected file
-                formData.append("type", "audio"); // Add any other required data
-                formData.append("digit", 1); // Add any other required data
-                formData.append("sub", 2); // Add any other required data
-                formData.append("sub_type", "audio");
-                fetch("{{ route('mp3-call-action-sub.store') }}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": csrfToken, // Include CSRF token
-                        },
-                        body: formData, // Send the file and other data
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            console.log("File uploaded successfully:", data);
-                            alert("File uploaded successfully.");
-                        } else {
-                            console.error("Error uploading file:", data);
-                            alert("Failed to upload the file.");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert("An unexpected error occurred.");
-                    });
-            } else {
-                alert("No file selected.");
-            }
-        }
-
-        function uploadFileDigit1Sub3() {
-            const fileInput = document.getElementById("option-1-sub-3-replace-file-input");
-            const selectedFile = fileInput.files[0];
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            if (selectedFile) {
-                const formData = new FormData();
-                formData.append("audio_file", selectedFile); // Append the selected file
-                formData.append("type", "audio"); // Add any other required data
-                formData.append("digit", 1); // Add any other required data
-                formData.append("sub", 3); // Add any other required data
-                formData.append("sub_type", "audio");
-                fetch("{{ route('mp3-call-action-sub.store') }}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": csrfToken, // Include CSRF token
-                        },
-                        body: formData, // Send the file and other data
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            console.log("File uploaded successfully:", data);
-                            alert("File uploaded successfully.");
-                        } else {
-                            console.error("Error uploading file:", data);
-                            alert("Failed to upload the file.");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert("An unexpected error occurred.");
-                    });
-            } else {
-                alert("No file selected.");
-            }
-        }
-
-        function uploadFileDigit1Sub4() {
-            const fileInput = document.getElementById("option-1-sub-4-replace-file-input");
-            const selectedFile = fileInput.files[0];
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            if (selectedFile) {
-                const formData = new FormData();
-                formData.append("audio_file", selectedFile); // Append the selected file
-                formData.append("type", "audio"); // Add any other required data
-                formData.append("digit", 1); // Add any other required data
-                formData.append("sub", 4); // Add any other required data
-                formData.append("sub_type", "audio");
-                fetch("{{ route('mp3-call-action-sub.store') }}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": csrfToken, // Include CSRF token
-                        },
-                        body: formData, // Send the file and other data
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            console.log("File uploaded successfully:", data);
-                            alert("File uploaded successfully.");
-                        } else {
-                            console.error("Error uploading file:", data);
-                            alert("Failed to upload the file.");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert("An unexpected error occurred.");
-                    });
-            } else {
-                alert("No file selected.");
-            }
-        }
-
-        function uploadFileDigit1Sub5() {
-            const fileInput = document.getElementById("option-1-sub-5-replace-file-input");
-            const selectedFile = fileInput.files[0];
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            if (selectedFile) {
-                const formData = new FormData();
-                formData.append("audio_file", selectedFile); // Append the selected file
-                formData.append("type", "audio"); // Add any other required data
-                formData.append("digit", 1); // Add any other required data
-                formData.append("sub", 5); // Add any other required data
-                formData.append("sub_type", "audio");
-                fetch("{{ route('mp3-call-action-sub.store') }}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": csrfToken, // Include CSRF token
-                        },
-                        body: formData, // Send the file and other data
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            console.log("File uploaded successfully:", data);
-                            alert("File uploaded successfully.");
-                        } else {
-                            console.error("Error uploading file:", data);
-                            alert("Failed to upload the file.");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert("An unexpected error occurred.");
-                    });
-            } else {
-                alert("No file selected.");
-            }
-        }
-
-        function uploadFileDigit1Sub6() {
-            const fileInput = document.getElementById("option-1-sub-6-replace-file-input");
+        function uploadFileDigit6Sub1() {
+            const fileInput = document.getElementById("option-6-sub-1-replace-file-input");
             const selectedFile = fileInput.files[0];
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -1123,8 +902,46 @@
             }
         }
 
-        function uploadFileDigit1Sub7() {
-            const fileInput = document.getElementById("option-1-sub-7-replace-file-input");
+        // function uploadFileDigit6Sub1() {
+        //     const fileInput = document.getElementById("option-6-sub-1-replace-file-input");
+        //     const selectedFile = fileInput.files[0];
+        //     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        //     if (selectedFile) {
+        //         const formData = new FormData();
+        //         formData.append("audio_file", selectedFile); // Append the selected file
+        //         formData.append("type", "audio"); // Add any other required data
+        //         formData.append("digit", 6); // Add any other required data
+        //         formData.append("sub", 1); // Add any other required data
+
+        //         fetch("{{ route('mp3-call-action-sub.store') }}", {
+        //                 method: "POST",
+        //                 headers: {
+        //                     "X-CSRF-TOKEN": csrfToken, // Include CSRF token
+        //                 },
+        //                 body: formData, // Send the file and other data
+        //             })
+        //             .then((response) => response.json())
+        //             .then((data) => {
+        //                 if (data.success) {
+        //                     console.log("File uploaded successfully:", data);
+        //                     alert("File uploaded successfully.");
+        //                 } else {
+        //                     console.error("Error uploading file:", data);
+        //                     alert("Failed to upload the file.");
+        //                 }
+        //             })
+        //             .catch((error) => {
+        //                 console.error("Error:", error);
+        //                 alert("An unexpected error occurred.");
+        //             });
+        //     } else {
+        //         alert("No file selected.");
+        //     }
+        // }
+
+        function uploadFileDigit6Sub2() {
+            const fileInput = document.getElementById("option-6-sub-2-replace-file-input");
             const selectedFile = fileInput.files[0];
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -1132,8 +949,8 @@
                 const formData = new FormData();
                 formData.append("audio_file", selectedFile); // Append the selected file
                 formData.append("type", "audio"); // Add any other required data
-                formData.append("digit", 7); // Add any other required data
-                formData.append("sub", 1); // Add any other required data
+                formData.append("digit", 6); // Add any other required data
+                formData.append("sub", 2); // Add any other required data
 
                 fetch("{{ route('mp3-call-action-sub.store') }}", {
                         method: "POST",
@@ -1161,8 +978,8 @@
             }
         }
 
-        function uploadFileDigit1Sub8() {
-            const fileInput = document.getElementById("option-1-sub-8-replace-file-input");
+        function uploadFileDigit6Sub3() {
+            const fileInput = document.getElementById("option-6-sub-3-replace-file-input");
             const selectedFile = fileInput.files[0];
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -1170,9 +987,199 @@
                 const formData = new FormData();
                 formData.append("audio_file", selectedFile); // Append the selected file
                 formData.append("type", "audio"); // Add any other required data
-                formData.append("digit", 1); // Add any other required data
+                formData.append("digit", 6); // Add any other required data
+                formData.append("sub", 3); // Add any other required data
+
+                fetch("{{ route('mp3-call-action-sub.store') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": csrfToken, // Include CSRF token
+                        },
+                        body: formData, // Send the file and other data
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            console.log("File uploaded successfully:", data);
+                            alert("File uploaded successfully.");
+                        } else {
+                            console.error("Error uploading file:", data);
+                            alert("Failed to upload the file.");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An unexpected error occurred.");
+                    });
+            } else {
+                alert("No file selected.");
+            }
+        }
+
+        function uploadFileDigit6Sub4() {
+            const fileInput = document.getElementById("option-6-sub-4-replace-file-input");
+            const selectedFile = fileInput.files[0];
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append("audio_file", selectedFile); // Append the selected file
+                formData.append("type", "audio"); // Add any other required data
+                formData.append("digit", 6); // Add any other required data
+                formData.append("sub", 4); // Add any other required data
+
+                fetch("{{ route('mp3-call-action-sub.store') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": csrfToken, // Include CSRF token
+                        },
+                        body: formData, // Send the file and other data
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            console.log("File uploaded successfully:", data);
+                            alert("File uploaded successfully.");
+                        } else {
+                            console.error("Error uploading file:", data);
+                            alert("Failed to upload the file.");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An unexpected error occurred.");
+                    });
+            } else {
+                alert("No file selected.");
+            }
+        }
+
+        function uploadFileDigit6Sub5() {
+            const fileInput = document.getElementById("option-6-sub-5-replace-file-input");
+            const selectedFile = fileInput.files[0];
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append("audio_file", selectedFile); // Append the selected file
+                formData.append("type", "audio"); // Add any other required data
+                formData.append("digit", 6); // Add any other required data
+                formData.append("sub", 5); // Add any other required data
+
+                fetch("{{ route('mp3-call-action-sub.store') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": csrfToken, // Include CSRF token
+                        },
+                        body: formData, // Send the file and other data
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            console.log("File uploaded successfully:", data);
+                            alert("File uploaded successfully.");
+                        } else {
+                            console.error("Error uploading file:", data);
+                            alert("Failed to upload the file.");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An unexpected error occurred.");
+                    });
+            } else {
+                alert("No file selected.");
+            }
+        }
+
+        function uploadFileDigit6Sub6() {
+            const fileInput = document.getElementById("option-6-sub-6-replace-file-input");
+            const selectedFile = fileInput.files[0];
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append("audio_file", selectedFile); // Append the selected file
+                formData.append("type", "audio"); // Add any other required data
+                formData.append("digit", 6); // Add any other required data
+                formData.append("sub", 6); // Add any other required data
+
+                fetch("{{ route('mp3-call-action-sub.store') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": csrfToken, // Include CSRF token
+                        },
+                        body: formData, // Send the file and other data
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            console.log("File uploaded successfully:", data);
+                            alert("File uploaded successfully.");
+                        } else {
+                            console.error("Error uploading file:", data);
+                            alert("Failed to upload the file.");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An unexpected error occurred.");
+                    });
+            } else {
+                alert("No file selected.");
+            }
+        }
+
+        function uploadFileDigit6Sub7() {
+            const fileInput = document.getElementById("option-6-sub-7-replace-file-input");
+            const selectedFile = fileInput.files[0];
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append("audio_file", selectedFile); // Append the selected file
+                formData.append("type", "audio"); // Add any other required data
+                formData.append("digit", 7); // Add any other required data
+                formData.append("sub", 7); // Add any other required data
+
+                fetch("{{ route('mp3-call-action-sub.store') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": csrfToken, // Include CSRF token
+                        },
+                        body: formData, // Send the file and other data
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            console.log("File uploaded successfully:", data);
+                            alert("File uploaded successfully.");
+                        } else {
+                            console.error("Error uploading file:", data);
+                            alert("Failed to upload the file.");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An unexpected error occurred.");
+                    });
+            } else {
+                alert("No file selected.");
+            }
+        }
+
+        function uploadFileDigit6Sub8() {
+            const fileInput = document.getElementById("option-6-sub-8-replace-file-input");
+            const selectedFile = fileInput.files[0];
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append("audio_file", selectedFile); // Append the selected file
+                formData.append("type", "audio"); // Add any other required data
+                formData.append("digit", 6); // Add any other required data
                 formData.append("sub", 8); // Add any other required data
-                formData.append("sub_type", "audio");
+
                 fetch("{{ route('mp3-call-action-sub.store') }}", {
                         method: "POST",
                         headers: {
@@ -1200,7 +1207,7 @@
         }
 
         function uploadFileDigit6Sub9() {
-            const fileInput = document.getElementById("option-1-sub-9-replace-file-input");
+            const fileInput = document.getElementById("option-6-sub-9-replace-file-input");
             const selectedFile = fileInput.files[0];
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -1208,9 +1215,9 @@
                 const formData = new FormData();
                 formData.append("audio_file", selectedFile); // Append the selected file
                 formData.append("type", "audio"); // Add any other required data
-                formData.append("digit", 1); // Add any other required data
+                formData.append("digit", 6); // Add any other required data
                 formData.append("sub", 9); // Add any other required data
-                formData.append("sub_type", "audio");
+
                 fetch("{{ route('mp3-call-action-sub.store') }}", {
                         method: "POST",
                         headers: {
@@ -1238,20 +1245,18 @@
         }
 
 
-        function uploadFileDigit1SubMenu() {
-            const fileInput = document.getElementById("option-1-sub-menu-replace-file-input");
+        function uploadFileDigit6() {
+            const fileInput = document.getElementById("option-6-replace-file-input");
             const selectedFile = fileInput.files[0];
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             if (selectedFile) {
                 const formData = new FormData();
                 formData.append("audio_file", selectedFile); // Append the selected file
-                formData.append("type", "sub_menu"); // Add any other required data
-                formData.append("digit", 1); // Add any other required data
-                formData.append("sub_type", 'greetings'); // Add any other required data
-            //    formData.append("sub", 1); // Add any other required data
+                formData.append("type", "audio"); // Add any other required data
+                formData.append("digit", 6); // Add any other required data
 
-                fetch("{{ route('mp3-call-action-sub.store') }}", {
+                fetch("{{ route('mp3-call-action.store') }}", {
                         method: "POST",
                         headers: {
                             "X-CSRF-TOKEN": csrfToken, // Include CSRF token

@@ -183,12 +183,12 @@ class CallActionController extends Controller
     {
         $request->validate([
             'type' => 'required|string',
+            'digit' => 'required',
             'number' => 'nullable|string|max:15',
             'sub' => 'nullable',
         ]);
 
         $callAction = CallAction::query()->where([
-            'type' => $request->type,
             'digit' => $request->digit
         ])->first();
         if (!$callAction) {
@@ -200,7 +200,7 @@ class CallActionController extends Controller
 
         $subCallAction = SubCallAction::query()->where([
             'call_action_id' => $callAction->id,
-            'type' => $request->type,
+            'type' => $request->sub_type,
             'digit' => $request->sub
         ])->first();
 
@@ -219,9 +219,10 @@ class CallActionController extends Controller
                 'audio_link' => $audioUrl
             ]);
         } else {
+
             $subCallAction = SubCallAction::create([
                 'call_action_id' => $callAction->id,
-                'type' => $request->type,
+                'type' => $request->sub_type,
                 'digit' => $request->sub
             ]);
 
@@ -233,8 +234,6 @@ class CallActionController extends Controller
             ]);
         }
 
-
-
         return response()->json([
             'success' => true,
             'message' => 'Call action sub saved successfully.',
@@ -242,12 +241,32 @@ class CallActionController extends Controller
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(CallAction $callAction)
+    public function updateCallAction(Request $request)
     {
-        //
+        $request->validate([
+            'type' => 'required|string',
+            'digit' => 'required',
+        ]);
+
+        $callAction = CallAction::query()->where([
+            'digit' => $request->digit
+        ])->first();
+        if (!$callAction) {
+            $callAction = CallAction::create([
+                'type' => $request->type,
+                'digit' => $request->digit
+            ]);
+        }
+        if ($callAction) {
+            $callAction->update([
+                'type' => $request->type
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Call action saved successfully.',
+            'data' => $callAction,
+        ], 201);
     }
 
     /**

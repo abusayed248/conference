@@ -71,6 +71,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/save-call-action', [CallActionController::class, 'store'])->name('call-action.store');
     Route::post('/save-mp3-call-action', [CallActionController::class, 'storeMp3CallAction'])->name('mp3-call-action.store');
     Route::post('/save-mp3-sub-call-action', [CallActionController::class, 'storeMp3SubCallAction'])->name('mp3-call-action-sub.store');
+
+    Route::post('/update-call-action', [CallActionController::class, 'updateCallAction'])->name('update-call-action');
 });
 
 
