@@ -67,7 +67,7 @@
                             <!-- Phone Number (Read-Only) -->
                             <div class="mb-3">
                                 <label for="phone_number" class="form-label">Phone Number</label>
-                                <input id="phone_number" type="text" class="form-control" value="{{ $user->number }}" readonly>
+                                <input id="phone_number" type="text" class="form-control" value="{{ $user->number }}" required>
                             </div>
 
                             <!-- Email (Read-Only) -->
