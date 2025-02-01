@@ -35,7 +35,6 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
             'number' => ['required', 'numeric', 'unique:users'],
-            'photo' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'], // Ensure valid image
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
     
@@ -45,21 +44,7 @@ class RegisteredUserController extends Controller
             'number' => $request->number,
             'password' => Hash::make($request->password),
         ]);
-    
-        $photo = $request->file('photo');
-        $slug = Str::slug($request->name, '-');
-
-        if ($photo) {
-            $extension = $photo->getClientOriginalExtension();
-            $fileNameToStore = $slug . '_' . time() . '.' . $extension; // Filename to store
-            $destinationPath = 'files/users';
-            $photo->move(public_path($destinationPath), $fileNameToStore);
-            $user->photo = 'files/users/' . $fileNameToStore;
-        }
         
-
-        $user->save();
-    
         event(new Registered($user));
     
         Auth::login($user);

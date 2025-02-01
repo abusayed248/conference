@@ -1,17 +1,60 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Media Control Keypad</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: black;
+        }
+        .keypad-container {
+            max-width: 300px;
+            margin: auto;
+            text-align: center;
+        }
+        .keypad-button {
+            width: 100px;
+            height: 100px;
+            font-size: 1.2rem;
+            background-color: #dbe6f1;
+            color: black;
+            border: none;
+        }
+        .btn-danger {
+            background-color: #dbe6f1;
+            color: black;
+        }
+        .btn-secondary {
+            background-color: #dbe6f1;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center mt-5">
+        <div class="keypad-container">
+            <div class="row g-2">
+                <div class="col-4"><button class="btn keypad-button">1<br><small>Rewind 15 sec</small></button></div>
+                <div class="col-4"><button class="btn keypad-button">2<br><small>Pause/Play</small></button></div>
+                <div class="col-4"><button class="btn keypad-button">3<br><small>Forward 15 sec</small></button></div>
+            </div>
+            <div class="row g-2 mt-2">
+                <div class="col-4"><button class="btn keypad-button">4<br><small>Rewind 1 min</small></button></div>
+                <div class="col-4"><button class="btn keypad-button">5</button></div>
+                <div class="col-4"><button class="btn keypad-button">6<br><small>Forward 1 min</small></button></div>
+            </div>
+            <div class="row g-2 mt-2">
+                <div class="col-4"><button class="btn keypad-button">7<br><small>Rewind 5 min</small></button></div>
+                <div class="col-4"><button class="btn keypad-button">8</button></div>
+                <div class="col-4"><button class="btn keypad-button">9<br><small>Forward 5 min</small></button></div>
+            </div>
+            <div class="row g-2 mt-2">
+                <div class="col-12"><button class="btn btn-danger keypad-button">0<br><small>Main Menu</small></button></div>
             </div>
         </div>
     </div>
-</x-app-layout>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

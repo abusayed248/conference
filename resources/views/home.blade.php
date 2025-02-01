@@ -28,16 +28,12 @@
                                         <input id="replace-file-input" name="type" type="hidden" style="display:none" value="greetings" class="replace-img" />
 
                                         <!-- <input type="file" name="audio_file" id="file-input" class="form-control" accept="audio/mp3,audio/wav"> -->
-
                                     </div>
                                 </div>
 
                             </div>
                             <button id="replace-file-text" type="submit" class="text-decoration  no-style">Replace</button>
                         </div>
-
-
-
                     </form>
 
 
