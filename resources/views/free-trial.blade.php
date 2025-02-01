@@ -18,6 +18,44 @@
             @endif
 
             <div class="col-md-6">
+                @php
+                $freeTrialEnd = auth()->user()->free_trial;
+                $freeTrialCancel = auth()->user()->is_cancel_free_trial;
+                $today = now();
+                @endphp
+
+                @if ($freeTrialEnd)
+
+
+
+                @if ($freeTrialCancel)
+                <div class="alert alert-danger text-center">
+                    Your free trial has ended. Please cancel your free trial.
+                </div>
+
+
+                @else
+
+                @if ($today->lessThanOrEqualTo($freeTrialEnd))
+                <div class="alert alert-success text-center">
+                    Your free trial is active until {{ \Carbon\Carbon::parse($freeTrialEnd)->format('F d, Y h:i A') }}.
+                </div>
+
+                <!-- Cancel Free Trial Button -->
+                <form method="POST" action="{{ route('subscription.free-trial.cancel') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-danger w-100 mt-3">Cancel Free Trial</button>
+                </form>
+                @else
+                <div class="alert alert-danger text-center">
+                    Your free trial has ended. Please subscribe to continue using the service.
+                </div>
+                @endif
+
+                @endif
+
+
+                @else
                 <div class="card shadow-sm">
                     <div class="card-header bg-white text-center">
                         <h4>Start Your Free Trial</h4>
@@ -73,6 +111,9 @@
                         <small>Card will be charged $12.99/mo after trial ends unless canceled.</small>
                     </div>
                 </div>
+                @endif
+
+
             </div>
         </div>
     </div>

@@ -21,6 +21,19 @@ class ProfileController extends Controller
         ]);
     }
 
+        /**
+     * Display the user's profile form.
+     */
+    public function home(Request $request): View
+    {
+        $user = $request->user();
+        if($user->role == 'admin'){
+            return view('home');
+        }else{
+            return view('dashboard');
+        }
+    }
+
     /**
      * Update the user's profile information.
      */
@@ -40,7 +53,7 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
@@ -54,7 +67,7 @@ class ProfileController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        return view('auth.login');
 
-        return Redirect::to('/');
     }
 }

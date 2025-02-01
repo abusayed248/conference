@@ -20,13 +20,13 @@ use App\Http\Controllers\Subscriber\SubscriberController;
 */
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return view('home');
-    })->name('home');
+    Route::get('/', [ProfileController::class, 'home'])->name('home');
 
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+    Route::post('/subscription/free-trial/cancel', [SubscriberController::class, 'cancelFreeTrial'])
+        ->name('subscription.free-trial.cancel');
 
     Route::get('/sub-menu', [SubscriberController::class, 'subMenu'])->name('sub-menu');
     Route::get('/manage-subscribers', [SubscriberController::class, 'manageSubscriber'])->name('manage.subscribers');

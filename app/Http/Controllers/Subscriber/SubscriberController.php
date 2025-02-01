@@ -28,6 +28,17 @@ class SubscriberController extends Controller
         return view("manage-subscriber", compact("userPlan", "subscribers"));
     }
 
+    public function cancelFreeTrial()
+    {
+        $user = auth()->user();
+
+        // Set free_trial to null or mark as canceled
+        $user->update(['is_cancel_free_trial' => 1]);
+
+        return redirect()->back()->with('success', 'Your free trial has been canceled.');
+    }
+
+
     public function showFreeTrialForm()
     {
         $user = auth()->user();
@@ -49,12 +60,14 @@ class SubscriberController extends Controller
         if (!$this->isValidCard($validated['card_number'])) {
             return back()->withErrors(['card_number' => 'Invalid card number'])->withInput();
         }
-
-        // Save the card data to the user table (or handle as needed)
+        $userPlans =      UserPlans::query()->first();
+        $free_trial_day =   $userPlans->free_trial;
         $user = auth()->user();
+
+
         $user->update([
             'card_number' => encrypt($validated['card_number']),
-            'free_trial' => now()
+            'free_trial' => now()->addDays($free_trial_day)
         ]);
 
         // Redirect with success message
