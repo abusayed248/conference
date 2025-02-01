@@ -27,7 +27,8 @@ class User extends Authenticatable
         'card_number',
         'stripe_id',
         'stripe_customer_id',
-        'free_trial'
+        'free_trial',
+        'is_cancel_free_trial'
     ];
 
     /**

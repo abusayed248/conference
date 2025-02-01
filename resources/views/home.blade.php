@@ -79,19 +79,19 @@
                                 <div class="d-flex justify-content-center align-items-center mt-2 w-100">
                                     <?php
                                     $callAction1 = App\Models\CallAction::where('digit', 1)->first();
-                                    $selectedFunction = $callAction1 ? $callAction1->type : null; // Get saved type
+                                    $selectedFunction1 = $callAction1 ? $callAction1->type : null; // Get saved type
 
                                     ?>
                                     <label for="">Function</label>
-                                    <select name="cars" id="cars" class="play form-select">
-                                        <option value="none" {{ $selectedFunction == 'none' ? 'selected' : '' }}>None</option>
-                                        <option value="audio" {{ $selectedFunction == 'audio' ? 'selected' : '' }}>Play MP3</option>
-                                        <option value="transfer" {{ $selectedFunction == 'transfer' ? 'selected' : '' }}>Transfer</option>
-                                        <option value="sub_menu" {{ $selectedFunction == 'sub_menu' ? 'selected' : '' }}>Submenu</option>
+                                    <select name="cars" id="cars1" class="play form-select">
+                                        <option value="none" {{ $selectedFunction1 == 'none' ? 'selected' : '' }}>None</option>
+                                        <option value="audio" {{ $selectedFunction1 == 'audio' ? 'selected' : '' }}>Play MP3</option>
+                                        <option value="transfer" {{ $selectedFunction1 == 'transfer' ? 'selected' : '' }}>Transfer</option>
+                                        <option value="sub_menu" {{ $selectedFunction1 == 'sub_menu' ? 'selected' : '' }}>Submenu</option>
                                     </select>
                                 </div>
 
-                                <div id="mp3-section" class="col-md-12" style="display: none;">
+                                <div id="mp3-section1" class="col-md-12" style="display: none;">
                                     <div class="d-flex justify-content-center align-items-center flex-column">
                                         <a id="option-1-replace-file-text" class="text-decoration" href="javascript:void(0)" onclick="triggerFileInputForDigit1()">Replace</a>
                                         <input id="option-1-replace-file-input" type="file" name="option_1_replace" style="display:none"
@@ -100,7 +100,7 @@
                                 </div>
 
                                 <!-- Transfer Section -->
-                                <div id="transfer-section" class="col-md-12" style="display: none;">
+                                <div id="transfer-section1" class="col-md-12" style="display: none;">
                                     <div class="d-flex justify-content-center align-items-center flex-column">
                                         <div class="d-flex justify-content-center align-items-center mt-2 w-100">
                                             <label for="">To</label>
@@ -122,7 +122,7 @@
                                 </div>
 
                                 <!-- Submenu Section -->
-                                <div id="submenu-section" class="col-md-12" style="display: none;">
+                                <div id="submenu-section1" class="col-md-12" style="display: none;">
                                     <div class="d-flex justify-content-center align-items-center flex-column">
                                         <a id="replace-file-text" class="text-decoration" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)">Edit Submenu</a>
                                     </div>
@@ -131,222 +131,14 @@
                             </div>
                         </div>
 
-                        <!-- Play MP3 Section -->
-
-
-
-
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-                                    <label for="">Function</label>
-                                    <select name="type" id="type" form="" value="transfer" class="play">
-                                        <option value="volvo">Transfer</option>
-                                    </select>
-                                </div>
-                                <?php
-                                $callAction = App\Models\CallAction::query()->where([
-                                    'type' => 'transfer',
-                                    'digit' => 1
-                                ])->first();
-
-                                ?>
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-                                    <label for="">To</label>
-
-                                    <input
-                                        name="number"
-                                        type="text"
-                                        value="{{ @$callAction->transfer_to}}"
-                                        class="w-100"
-                                        placeholder="+1123355656"
-                                        id="number-input"
-                                        onblur="saveNumber(1 , 60)" />
-                                </div>
-
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-                                    <label for="">Enter afer (minutes)</label>
-                                    <input name="afer" type="number" readonly class="w-100 " value="60" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 ">
-                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-                                    <label for="">Function</label>
-                                    <select name="cars" id="cars" class="play">
-                                        <option value="volvo">Play MP3</option>
-                                    </select>
-                                </div>
-                                <!-- <a id="option-2-replace-file-text" class="text-decoration" href="javascript:void(0)" onclick="triggerFileInputForDigit2()">Replace</a>
-                                <input
-                                    id="option-2-replace-file-input"
-                                    type="file"
-                                    name="option_2_replace"
-                                    style="display:none"
-                                    class="replace-img"
-                                    accept="audio/mp3,audio/*;capture=microphone"
-                                    onchange="uploadFileDigit2()" /> -->
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 mt-5 ">
-                            <div class="d-flex justify-content-center align-items-center flex-column">
-
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-                                    <label for="">Function</label>
-                                    <select name="cars" id="cars" class="play form-select" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                        <option value="submenu">Sub-menu</option>
-                                    </select>
-                                </div>
-                                <a id="replace-file-text" class="text-decoration" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)">Edit Submenu</a>
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="col-md-4 ">
-                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-
-                                    <label for="">Function</label>
-
-                                    <select name="cars" id="cars" form="" class="play">
-                                        <option value="volvo">Play MP3</option>
-                                    </select>
-                                </div>
-
-
-                                <a id="option-3-replace-file-text" class="text-decoration" href="javascript:void(0)" onclick="triggerFileInputForDigit3()">Replace</a>
-                                <input
-                                    id="option-3-replace-file-input"
-                                    type="file"
-                                    name="option_3_replace"
-                                    style="display:none"
-                                    class="replace-img"
-                                    accept="audio/mp3,audio/*;capture=microphone"
-                                    onchange="uploadFileDigit3()" />
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-4 mt-5 ">
-                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-                                    <label for="">Function</label>
-
-                                    <select name="cars" id="cars" form="" class="play">
-                                        <option value="volvo">Play MP3</option>
-                                    </select>
-                                </div>
-
-                                <a id="option-4-replace-file-text" class="text-decoration" href="javascript:void(0)" onclick="triggerFileInputForDigit4()">Replace</a>
-                                <input
-                                    id="option-4-replace-file-input"
-                                    type="file"
-                                    name="option_4_replace"
-                                    style="display:none"
-                                    class="replace-img"
-                                    accept="audio/mp3,audio/*;capture=microphone"
-                                    onchange="uploadFileDigit4()" />
-                            </div>
-
-                        </div>
-                        <div class="col-md-4 mt-5 ">
-                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-
-                                    <label for="">Function</label>
-
-                                    <select name="cars" id="cars" class="play">
-                                        <option value="volvo">None</option>
-                                    </select>
-
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-md-4 mt-5 ">
-                            <div class="d-flex justify-content-center align-items-center flex-column">
-
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-                                    <label for="">Function</label>
-                                    <select name="cars" id="cars" class="play form-select" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                        <option value="submenu">Sub-menu</option>
-                                    </select>
-                                </div>
-                                <a id="replace-file-text" class="text-decoration" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)">Edit Submenu</a>
-                            </div>
-
-                        </div>
-                        <div class="col-md-4 mt-5 ">
-                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-
-                                    <label for="">Function</label>
-
-
-                                    <select name="cars" id="cars" form="" class="play">
-                                        <option value="volvo">None</option>
-                                    </select>
-
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-md-4 mt-5 ">
-                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-
-                                    <label for="">Function</label>
-
-                                    <select name="cars" id="cars" form="" class="play">
-                                        <option value="Play MP3">Play MP3</option>
-                                        <option value="Transfer">Transfer</option>
-                                        <option value="Submenu">Submenu</option>
-                                    </select>
-
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-
-                                    <label for="">Function</label>
-
-                                    <select name="cars" id="cars" form="" class="play">
-                                        <option value="volvo">Transfer</option>
-                                    </select>
-                                </div>
-                                <?php
-                                $callActionFor9 = App\Models\CallAction::query()->where([
-                                    'type' => 'transfer',
-                                    'digit' => 9
-                                ])->first();
-                                ?>
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-                                    <label for="">To</label>
-                                    <!-- <input type="text" class="w-100" name="option_9" placeholder="+1123355656" /> -->
-                                    <input
-                                        name="number"
-                                        type="text"
-                                        value="{{ @$callActionFor9->transfer_to}}"
-                                        class="w-100"
-                                        placeholder="+1123355656"
-                                        id="number-input-9"
-                                        onblur="saveNumber9()" />
-                                </div>
-
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-                                    <label for="">Enter afer (minutes)</label>
-                                    <input type="number" readonly class="w-100" value="2" />
-                                </div>
-                            </div>
-
-                        </div>
+                        @include('digit2')
+                        @include('digit3')
+                        @include('digit4')
+                        @include('digit5')
+                        @include('digit6')
+                        @include('digit7')
+                        @include('digit8')
+                        @include('digit9')
                     </div>
                 </div>
             </div>
@@ -628,22 +420,7 @@
                     </div>
 
 
-                    <script>
-                        // Get the elements by their correct IDs
-                        const replaceFileText = document.getElementById('replace-file-text');
-                        const replaceFileInput = document.getElementById('replace-file-input');
 
-                        // Add a click event to the link to trigger the file input
-                        replaceFileText.addEventListener('click', () => {
-                            replaceFileInput.click(); // Simulate a click on the hidden file input
-                        });
-
-                        // Add a change event to the file input to display the selected file name
-                        replaceFileInput.addEventListener('change', (event) => {
-                            const file = event.target.files[0];
-                            replaceFileText.textContent = file ? file.name : 'No file chosen';
-                        });
-                    </script>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -654,38 +431,42 @@
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const selectField = document.getElementById("cars");
-            const mp3Section = document.getElementById("mp3-section");
-            const transferSection = document.getElementById("transfer-section");
-            const submenuSection = document.getElementById("submenu-section");
+            const selectField1 = document.getElementById("cars1");
+            const mp3Section1 = document.getElementById("mp3-section1");
+            const transferSection1 = document.getElementById("transfer-section1");
+            const submenuSection1 = document.getElementById("submenu-section1");
 
 
-            const selectedFunction = "<?php echo $selectedFunction; ?>";
+            const selectedFunction1 = "<?php echo $selectedFunction1; ?>";
 
-            if (selectedFunction == 'audio') {
-                mp3Section.style.display = "block";
+            if (selectedFunction1 == 'audio') {
+                mp3Section1.style.display = "block";
             }
-            if (selectedFunction == 'transfer') {
-                transferSection.style.display = "block";
-            }
-
-            if (selectedFunction == 'sub_menu') {
-                submenuSection.style.display = "block";
+            if (selectedFunction1 == 'transfer') {
+                transferSection1.style.display = "block";
             }
 
-            function toggleSections() {
-                const selectedValue = selectField.value;
-                saveCurrentOption(selectedValue);
-                mp3Section.style.display = selectedValue === "audio" ? "block" : "none";
-                transferSection.style.display = selectedValue === "transfer" ? "block" : "none";
-                submenuSection.style.display = selectedValue === "sub_menu" ? "block" : "none";
+            if (selectedFunction1 == 'sub_menu') {
+                submenuSection1.style.display = "block";
             }
 
-            selectField.addEventListener("change", toggleSections);
+            function toggleSections1() {
+                const selectedValue1 = selectField1.value;
+                saveCurrentOption1(selectedValue1);
+                mp3Section1.style.display = selectedValue1 === "audio" ? "block" : "none";
+                transferSection1.style.display = selectedValue1 === "transfer" ? "block" : "none";
+                submenuSection1.style.display = selectedValue1 === "sub_menu" ? "block" : "none";
+            }
+
+            selectField1.addEventListener("change", toggleSections1);
+
+
+
+
         });
 
 
-        function saveCurrentOption(selectedValue) {
+        function saveCurrentOption1(selectedValue) {
             fetch("/update-call-action", {
                     method: "POST",
                     headers: {
@@ -709,10 +490,10 @@
                 .catch(error => console.error("Error:", error));
         }
 
-        function triggerFileInputForDigit2() {
-            // Trigger file input click
-            document.getElementById("option-2-replace-file-input").click();
-        }
+        // function triggerFileInputForDigit2() {
+        //     // Trigger file input click
+        //     document.getElementById("option-2-replace-file-input").click();
+        // }
 
 
         function triggerFileInputForDigit1() {
@@ -758,42 +539,42 @@
         }
 
 
-        function uploadFileDigit2() {
-            const fileInput = document.getElementById("option-2-replace-file-input");
-            const selectedFile = fileInput.files[0];
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        // function uploadFileDigit2() {
+        //     const fileInput = document.getElementById("option-2-replace-file-input");
+        //     const selectedFile = fileInput.files[0];
+        //     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            if (selectedFile) {
-                const formData = new FormData();
-                formData.append("audio_file", selectedFile); // Append the selected file
-                formData.append("type", "audio"); // Add any other required data
-                formData.append("digit", 2); // Add any other required data
+        //     if (selectedFile) {
+        //         const formData = new FormData();
+        //         formData.append("audio_file", selectedFile); // Append the selected file
+        //         formData.append("type", "audio"); // Add any other required data
+        //         formData.append("digit", 2); // Add any other required data
 
-                fetch("{{ route('mp3-call-action.store') }}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": csrfToken, // Include CSRF token
-                        },
-                        body: formData, // Send the file and other data
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            console.log("File uploaded successfully:", data);
-                            alert("File uploaded successfully.");
-                        } else {
-                            console.error("Error uploading file:", data);
-                            alert("Failed to upload the file.");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert("An unexpected error occurred.");
-                    });
-            } else {
-                alert("No file selected.");
-            }
-        }
+        //         fetch("{{ route('mp3-call-action.store') }}", {
+        //                 method: "POST",
+        //                 headers: {
+        //                     "X-CSRF-TOKEN": csrfToken, // Include CSRF token
+        //                 },
+        //                 body: formData, // Send the file and other data
+        //             })
+        //             .then((response) => response.json())
+        //             .then((data) => {
+        //                 if (data.success) {
+        //                     console.log("File uploaded successfully:", data);
+        //                     alert("File uploaded successfully.");
+        //                 } else {
+        //                     console.error("Error uploading file:", data);
+        //                     alert("Failed to upload the file.");
+        //                 }
+        //             })
+        //             .catch((error) => {
+        //                 console.error("Error:", error);
+        //                 alert("An unexpected error occurred.");
+        //             });
+        //     } else {
+        //         alert("No file selected.");
+        //     }
+        // }
 
 
         function triggerFileInputForDigit3() {
@@ -1090,9 +871,9 @@
                 const formData = new FormData();
                 formData.append("audio_file", selectedFile); // Append the selected file
                 formData.append("type", "audio"); // Add any other required data
-                formData.append("digit", 6); // Add any other required data
-                formData.append("sub", 1); // Add any other required data
-
+                formData.append("digit", 1); // Add any other required data
+                formData.append("sub", 6); // Add any other required data
+                formData.append("sub_type", "audio");
                 fetch("{{ route('mp3-call-action-sub.store') }}", {
                         method: "POST",
                         headers: {
@@ -1128,9 +909,9 @@
                 const formData = new FormData();
                 formData.append("audio_file", selectedFile); // Append the selected file
                 formData.append("type", "audio"); // Add any other required data
-                formData.append("digit", 7); // Add any other required data
-                formData.append("sub", 1); // Add any other required data
-
+                formData.append("digit", 1); // Add any other required data
+                formData.append("sub", 7); // Add any other required data
+                formData.append("sub_type", "audio");
                 fetch("{{ route('mp3-call-action-sub.store') }}", {
                         method: "POST",
                         headers: {
@@ -1245,7 +1026,7 @@
                 formData.append("type", "sub_menu"); // Add any other required data
                 formData.append("digit", 1); // Add any other required data
                 formData.append("sub_type", 'greetings'); // Add any other required data
-            //    formData.append("sub", 1); // Add any other required data
+                //    formData.append("sub", 1); // Add any other required data
 
                 fetch("{{ route('mp3-call-action-sub.store') }}", {
                         method: "POST",
@@ -1424,6 +1205,41 @@
             }
         }
 
+        // function saveNumber2() {
+        //     const numberInput = document.getElementById('number-input-2').value;
+        //     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        //     if (numberInput.trim() !== "") {
+        //         fetch("{{ route('call-action.store') }}", {
+        //                 method: "POST",
+        //                 headers: {
+        //                     "Content-Type": "application/json",
+        //                     "X-CSRF-TOKEN": csrfToken,
+        //                 },
+        //                 body: JSON.stringify({
+        //                     type: "transfer", // Replace with the actual type value
+        //                     number: numberInput,
+        //                     afer: 60, // Adjust as needed
+        //                     digit: 2, // Adjust as needed
+        //                 }),
+        //             })
+        //             .then((response) => response.json())
+        //             .then((data) => {
+        //                 if (data.success) {
+        //                     console.log("Data saved successfully:", data);
+        //                     alert("Number saved successfully.");
+        //                 } else {
+        //                     console.error("Error saving data:", data);
+        //                     alert("Failed to save the number.");
+        //                 }
+        //             })
+        //             .catch((error) => {
+        //                 console.error("Error:", error);
+        //                 alert("An unexpected error occurred.");
+        //             });
+        //     }
+        // }
+
+
 
         function saveNumber9() {
             const numberInput = document.getElementById('number-input-9').value;
@@ -1459,115 +1275,6 @@
             }
         }
     </script>
-
-
-    <script>
-        // Get the elements by their correct IDs
-        const replaceFileText = document.getElementById('replace-file-text');
-        const replaceFileInput = document.getElementById('replace-file-input');
-
-        // Add a click event to the link to trigger the file input
-        replaceFileText.addEventListener('click', () => {
-            replaceFileInput.click(); // Simulate a click on the hidden file input
-        });
-
-        // Add a change event to the file input to display the selected file name
-        replaceFileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            replaceFileText.textContent = file ? file.name : 'No file chosen';
-        });
-    </script>
-
-    <script>
-        // Get the elements by their correct IDs
-        const replaceFileNonSubText = document.getElementById('replace-file-non-sub-text');
-        const replaceNonFileInput = document.getElementById('replace-non-file-input');
-
-        // Add a click event to the link to trigger the file input
-        replaceFileNonSubText.addEventListener('click', () => {
-            replaceNonFileInput.click(); // Simulate a click on the hidden file input
-        });
-
-        // Add a change event to the file input to display the selected file name
-        replaceNonFileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            replaceFileText.textContent = file ? file.name : 'No file chosen';
-        });
-    </script>
-
-    {{-- option 1 --}}
-    <script>
-        // Get the elements by their correct IDs
-        const transferReplaceFileText = document.getElementById('transfer-replace-file-text');
-        const transferReplaceFileInput = document.getElementById('transfer-replace-file-input');
-
-        // Add a click event to the link to trigger the file input
-        transferReplaceFileText.addEventListener('click', () => {
-            transferReplaceFileInput.click(); // Simulate a click on the hidden file input
-        });
-
-        // Add a change event to the file input to display the selected file name
-        transferReplaceFileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            replaceFileText.textContent = file ? file.name : 'No file chosen';
-        });
-    </script>
-
-
-    {{-- option 2 --}}
-    <!-- <script>
-        // Get the elements by their correct IDs
-        const optionTwoReplaceFileText = document.getElementById('option-2-replace-file-text');
-        const optionTwoReplaceFileInput = document.getElementById('option-2-replace-file-input');
-
-        // Add a click event to the link to trigger the file input
-        optionTwoReplaceFileText.addEventListener('click', () => {
-            optionTwoReplaceFileInput.click(); // Simulate a click on the hidden file input
-        });
-
-        // Add a change event to the file input to display the selected file name
-        optionTwoReplaceFileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            optionTwoReplaceFileText.textContent = file ? file.name : 'No file chosen';
-        });
-    </script> -->
-
-    {{-- option 3 --}}
-    <script>
-        // Get the elements by their correct IDs
-        // const optionThreeReplaceFileText = document.getElementById('option-3-replace-file-text');
-        // const optionThreeReplaceFileInput = document.getElementById('option-3-replace-file-input');
-
-        // // Add a click event to the link to trigger the file input
-        // optionThreeReplaceFileText.addEventListener('click', () => {
-        //     optionThreeReplaceFileInput.click(); // Simulate a click on the hidden file input
-        // });
-
-        // // Add a change event to the file input to display the selected file name
-        // optionThreeReplaceFileInput.addEventListener('change', (event) => {
-        //     const file = event.target.files[0];
-        //     optionThreeReplaceFileText.textContent = file ? file.name : 'No file chosen';
-        // });
-    </script>
-
-    {{-- option 4 --}}
-    <script>
-        // Get the elements by their correct IDs
-        // const optionFourReplaceFileText = document.getElementById('option-4-replace-file-text');
-        // const optionFourReplaceFileInput = document.getElementById('option-4-replace-file-input');
-
-        // // Add a click event to the link to trigger the file input
-        // optionFourReplaceFileText.addEventListener('click', () => {
-        //     optionFourReplaceFileInput.click(); // Simulate a click on the hidden file input
-        // });
-
-        // // Add a change event to the file input to display the selected file name
-        // optionFourReplaceFileInput.addEventListener('change', (event) => {
-        //     const file = event.target.files[0];
-        //     optionFourReplaceFileText.textContent = file ? file.name : 'No file chosen';
-        // });
-    </script>
-
 
 
 </x-app-layout>
