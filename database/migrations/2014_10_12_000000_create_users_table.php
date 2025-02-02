@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('')->unique()->nullable();
+            $table->string('phone')->unique()->nullable();
             $table->tinyInteger('is_cancel_free_trial')->nullable();
             $table->text('card_number')->nullable();
             $table->string('photo')->nullable();
