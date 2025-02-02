@@ -76,7 +76,7 @@
 
                         <div class="col-md-4">
                             <div class="d-flex justify-content-center align-items-center flex-column">
-                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+                                <div class="d-flex align-items-center mt-2 w-100">
                                     <?php
                                     $callAction1 = App\Models\CallAction::where('digit', 1)->first();
                                     $selectedFunction1 = $callAction1 ? $callAction1->type : null; // Get saved type
@@ -92,7 +92,7 @@
                                 </div>
 
                                 <div id="mp3-section1" class="col-md-12" style="display: none;">
-                                    <div class="d-flex justify-content-center align-items-center flex-column">
+                                    <div class="d-flex align-items-center flex-column">
                                         <a id="option-1-replace-file-text" class="text-decoration" href="javascript:void(0)" onclick="triggerFileInputForDigit1()">Replace</a>
                                         <input id="option-1-replace-file-input" type="file" name="option_1_replace" style="display:none"
                                             class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit1()" />
@@ -123,7 +123,7 @@
 
                                 <!-- Submenu Section -->
                                 <div id="submenu-section1" class="col-md-12" style="display: none;">
-                                    <div class="d-flex justify-content-center align-items-center flex-column">
+                                    <div class="d-flex align-items-center flex-column">
                                         <a id="replace-file-text" class="text-decoration" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)">Edit Submenu</a>
                                     </div>
                                 </div>
@@ -186,14 +186,11 @@
                                 <div class="col-md-8 py-5 bg-green-600">
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+                                            <div class="d-flex align-items-center flex-column">
+                                                <div class="d-flex align-items-center mt-2 w-100">
                                                     <label for="">Function</label>
                                                     <select name="cars" id="cars" form="" class="play">
                                                         <option value="volvo">Play MP3</option>
-                                                        <option value="saab">Saab</option>
-                                                        <option value="opel">Opel</option>
-                                                        <option value="audi">Audi</option>
                                                     </select>
                                                 </div>
                                                 <a id="option-1-sub-1-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub1()">Replace File</a>
@@ -208,19 +205,12 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4 ">
-                                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
-
+                                            <div class="d-flex align-items-center flex-column">
+                                                <div class="d-flex align-items-center mt-2 w-100">
                                                     <label for="">Function</label>
-
-
                                                     <select name="cars" id="cars" form="" class="play">
                                                         <option value="volvo">Play MP3</option>
-                                                        <option value="saab">Saab</option>
-                                                        <option value="opel">Opel</option>
-                                                        <option value="audi">Audi</option>
                                                     </select>
-
                                                 </div>
 
 
@@ -237,14 +227,11 @@
 
                                         </div>
                                         <div class="col-md-4 ">
-                                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+                                            <div class="d-flex align-items-center flex-column">
+                                                <div class="d-flex align-items-center mt-2 w-100">
                                                     <label for="">Function</label>
                                                     <select name="cars" id="cars" form="" class="play">
                                                         <option value="volvo">Play MP3</option>
-                                                        <option value="saab">Saab</option>
-                                                        <option value="opel">Opel</option>
-                                                        <option value="audi">Audi</option>
                                                     </select>
                                                 </div>
                                                 <a id="option-1-sub-3-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub3()">Replace File</a>
@@ -261,14 +248,11 @@
                                         </div>
 
                                         <div class="col-md-4 mt-5 ">
-                                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+                                            <div class="d-flex align-items-center flex-column">
+                                                <div class="d-flex align-items-center mt-2 w-100">
                                                     <label for="">Function</label>
                                                     <select name="cars" id="cars" form="" class="play">
                                                         <option value="volvo">Play MP3</option>
-                                                        <option value="saab">Saab</option>
-                                                        <option value="opel">Opel</option>
-                                                        <option value="audi">Audi</option>
                                                     </select>
 
                                                 </div>
@@ -285,14 +269,11 @@
 
                                         </div>
                                         <div class="col-md-4 mt-5 ">
-                                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+                                            <div class="d-flex align-items-center flex-column">
+                                                <div class="d-flex align-items-center mt-2 w-100">
                                                     <label for="">Function</label>
                                                     <select name="cars" id="cars" form="" class="play">
                                                         <option value="volvo">Play MP3</option>
-                                                        <option value="saab">Saab</option>
-                                                        <option value="opel">Opel</option>
-                                                        <option value="audi">Audi</option>
                                                     </select>
 
                                                 </div>
@@ -311,14 +292,11 @@
 
 
                                         <div class="col-md-4 mt-5 ">
-                                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+                                            <div class="d-flex align-items-center flex-column">
+                                                <div class="d-flex align-items-center mt-2 w-100">
                                                     <label for="">Function</label>
                                                     <select name="cars" id="cars" form="" class="play">
                                                         <option value="volvo">Play MP3</option>
-                                                        <option value="saab">Saab</option>
-                                                        <option value="opel">Opel</option>
-                                                        <option value="audi">Audi</option>
                                                     </select>
 
                                                 </div>
@@ -337,14 +315,11 @@
 
 
                                         <div class="col-md-4 mt-5 ">
-                                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+                                            <div class="d-flex align-items-center flex-column">
+                                                <div class="d-flex align-items-center mt-2 w-100">
                                                     <label for="">Function</label>
                                                     <select name="cars" id="cars" form="" class="play">
                                                         <option value="volvo">Play MP3</option>
-                                                        <option value="saab">Saab</option>
-                                                        <option value="opel">Opel</option>
-                                                        <option value="audi">Audi</option>
                                                     </select>
 
                                                 </div>
@@ -363,14 +338,11 @@
 
 
                                         <div class="col-md-4 mt-5 ">
-                                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+                                            <div class="d-flex align-items-center flex-column">
+                                                <div class="d-flex align-items-center mt-2 w-100">
                                                     <label for="">Function</label>
                                                     <select name="cars" id="cars" form="" class="play">
                                                         <option value="volvo">Play MP3</option>
-                                                        <option value="saab">Saab</option>
-                                                        <option value="opel">Opel</option>
-                                                        <option value="audi">Audi</option>
                                                     </select>
 
                                                 </div>
@@ -384,19 +356,15 @@
                                                     accept="audio/mp3,audio/*;capture=microphone"
                                                     onchange="uploadFileDigit1Sub8()" />
                                             </div>
-
                                         </div>
 
 
                                         <div class="col-md-4 mt-5 ">
-                                            <div class="d-flex justify-content-center align-items-center flex-column">
-                                                <div class="d-flex justify-content-center align-items-center mt-2 w-100">
+                                            <div class="d-flex align-items-center flex-column">
+                                                <div class="d-flex align-items-center mt-2 w-100">
                                                     <label for="">Function</label>
                                                     <select name="cars" id="cars" form="" class="play">
                                                         <option value="volvo">Play MP3</option>
-                                                        <option value="saab">Saab</option>
-                                                        <option value="opel">Opel</option>
-                                                        <option value="audi">Audi</option>
                                                     </select>
 
                                                 </div>
@@ -490,11 +458,6 @@
                 .catch(error => console.error("Error:", error));
         }
 
-        // function triggerFileInputForDigit2() {
-        //     // Trigger file input click
-        //     document.getElementById("option-2-replace-file-input").click();
-        // }
-
 
         function triggerFileInputForDigit1() {
             // Correct ID
@@ -537,44 +500,6 @@
                 alert("No file selected.");
             }
         }
-
-
-        // function uploadFileDigit2() {
-        //     const fileInput = document.getElementById("option-2-replace-file-input");
-        //     const selectedFile = fileInput.files[0];
-        //     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-        //     if (selectedFile) {
-        //         const formData = new FormData();
-        //         formData.append("audio_file", selectedFile); // Append the selected file
-        //         formData.append("type", "audio"); // Add any other required data
-        //         formData.append("digit", 2); // Add any other required data
-
-        //         fetch("{{ route('mp3-call-action.store') }}", {
-        //                 method: "POST",
-        //                 headers: {
-        //                     "X-CSRF-TOKEN": csrfToken, // Include CSRF token
-        //                 },
-        //                 body: formData, // Send the file and other data
-        //             })
-        //             .then((response) => response.json())
-        //             .then((data) => {
-        //                 if (data.success) {
-        //                     console.log("File uploaded successfully:", data);
-        //                     alert("File uploaded successfully.");
-        //                 } else {
-        //                     console.error("Error uploading file:", data);
-        //                     alert("Failed to upload the file.");
-        //                 }
-        //             })
-        //             .catch((error) => {
-        //                 console.error("Error:", error);
-        //                 alert("An unexpected error occurred.");
-        //             });
-        //     } else {
-        //         alert("No file selected.");
-        //     }
-        // }
 
 
         function triggerFileInputForDigit3() {
@@ -672,43 +597,6 @@
             }
         }
 
-        // function uploadFileDigit6Sub1() {
-        //     const fileInput = document.getElementById("option-1-sub-1-replace-file-input");
-        //     const selectedFile = fileInput.files[0];
-        //     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-        //     if (selectedFile) {
-        //         const formData = new FormData();
-        //         formData.append("audio_file", selectedFile); // Append the selected file
-        //         formData.append("type", "audio"); // Add any other required data
-        //         formData.append("digit", 6); // Add any other required data
-        //         formData.append("sub", 1); // Add any other required data
-
-        //         fetch("{{ route('mp3-call-action-sub.store') }}", {
-        //                 method: "POST",
-        //                 headers: {
-        //                     "X-CSRF-TOKEN": csrfToken, // Include CSRF token
-        //                 },
-        //                 body: formData, // Send the file and other data
-        //             })
-        //             .then((response) => response.json())
-        //             .then((data) => {
-        //                 if (data.success) {
-        //                     console.log("File uploaded successfully:", data);
-        //                     alert("File uploaded successfully.");
-        //                 } else {
-        //                     console.error("Error uploading file:", data);
-        //                     alert("Failed to upload the file.");
-        //                 }
-        //             })
-        //             .catch((error) => {
-        //                 console.error("Error:", error);
-        //                 alert("An unexpected error occurred.");
-        //             });
-        //     } else {
-        //         alert("No file selected.");
-        //     }
-        // }
 
         function uploadFileDigit1Sub2() {
             const fileInput = document.getElementById("option-1-sub-2-replace-file-input");
@@ -1204,41 +1092,6 @@
                     });
             }
         }
-
-        // function saveNumber2() {
-        //     const numberInput = document.getElementById('number-input-2').value;
-        //     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        //     if (numberInput.trim() !== "") {
-        //         fetch("{{ route('call-action.store') }}", {
-        //                 method: "POST",
-        //                 headers: {
-        //                     "Content-Type": "application/json",
-        //                     "X-CSRF-TOKEN": csrfToken,
-        //                 },
-        //                 body: JSON.stringify({
-        //                     type: "transfer", // Replace with the actual type value
-        //                     number: numberInput,
-        //                     afer: 60, // Adjust as needed
-        //                     digit: 2, // Adjust as needed
-        //                 }),
-        //             })
-        //             .then((response) => response.json())
-        //             .then((data) => {
-        //                 if (data.success) {
-        //                     console.log("Data saved successfully:", data);
-        //                     alert("Number saved successfully.");
-        //                 } else {
-        //                     console.error("Error saving data:", data);
-        //                     alert("Failed to save the number.");
-        //                 }
-        //             })
-        //             .catch((error) => {
-        //                 console.error("Error:", error);
-        //                 alert("An unexpected error occurred.");
-        //             });
-        //     }
-        // }
-
 
 
         function saveNumber9() {
