@@ -4,7 +4,6 @@
         <div class="container py-5">
             <div class="text-center pricing-header">
                 <h1 class="fw-bold">Subscription Plan</h1>
-                <p class="text-muted">Choose a plan that fits your needs and grow with us.</p>
             </div>
 
             <div class="row justify-content-center">
@@ -17,7 +16,6 @@
                             <p class="price" id="premiumPrice">${{ $userPlan->monthly_fee}}<span class="price-period">/mo</span></p>
                             <ul class="list-unstyled features-list">
                                 <li>1 Month</li>
-                                <li>video/Audio Calling Oppertunity</li>
                                 <li>24/7 Support</li>
                             </ul>
                             <form action="{{ route('payment.page') }}" method="GET">

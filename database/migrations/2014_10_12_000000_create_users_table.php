@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('number')->unique();
+            $table->string('number')->unique()->nullable();
+            $table->tinyInteger('is_cancel_free_trial')->nullable();
             $table->text('card_number')->nullable();
             $table->string('photo')->nullable();
             $table->timestamp('email_verified_at')->nullable();

@@ -3,10 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\GreetingController;
+use App\Http\Controllers\CallActionController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Subscriber\SubscriberController;
 use App\Http\Controllers\TelnyxWebhookController;
-
+use App\Http\Controllers\Subscriber\SubscriberController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,13 +20,13 @@ use App\Http\Controllers\TelnyxWebhookController;
 */
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return view('home');
-    })->name('home');
+    Route::get('/', [ProfileController::class, 'home'])->name('home');
 
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+    Route::post('/subscription/free-trial/cancel', [SubscriberController::class, 'cancelFreeTrial'])
+        ->name('subscription.free-trial.cancel');
 
     Route::get('/sub-menu', [SubscriberController::class, 'subMenu'])->name('sub-menu');
     Route::get('/manage-subscribers', [SubscriberController::class, 'manageSubscriber'])->name('manage.subscribers');
@@ -64,6 +65,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/user-plan/update/{id}', [PlanController::class, 'updateUserPlan'])->name('userPlan.update');
     Route::get('subscribers', [SubscriberController::class, 'showSubscribers']);
+
+    Route::post('/greetings-subs/update-audio', [CallActionController::class, 'updateAudio'])->name('greetings.updateAudio');
+    Route::post('/greetings-non-subs/update-audio', [CallActionController::class, 'updateAudioNonSubscription'])->name('greetings.updateAudioNonSubscribtion');
+    Route::post('/save-call-action', [CallActionController::class, 'store'])->name('call-action.store');
+    Route::post('/save-mp3-call-action', [CallActionController::class, 'storeMp3CallAction'])->name('mp3-call-action.store');
+    Route::post('/save-mp3-sub-call-action', [CallActionController::class, 'storeMp3SubCallAction'])->name('mp3-call-action-sub.store');
+
+    Route::post('/update-call-action', [CallActionController::class, 'updateCallAction'])->name('update-call-action');
 });
 
 
