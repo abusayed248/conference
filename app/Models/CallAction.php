@@ -21,7 +21,6 @@ class CallAction extends Model implements HasMedia
         'digit',
         'type',
         'transfer_to',
-        'call_transfer_timer',
         'afer_time',
         'audio_link'
     ];

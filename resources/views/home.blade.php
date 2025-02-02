@@ -1254,7 +1254,7 @@
                         body: JSON.stringify({
                             type: "transfer", // Replace with the actual type value
                             number: numberInput,
-                            afer: 2, // Adjust as needed
+                            afer: 60, // Adjust as needed
                             digit: 9, // Adjust as needed
                         }),
                     })

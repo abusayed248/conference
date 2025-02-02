@@ -17,7 +17,7 @@
         <div id="mp3-section2" class="col-md-12" style="display: none;">
             <div class="d-flex justify-content-center align-items-center flex-column">
                 <a id="option-2-replace-file-text" class="text-decoration" href="javascript:void(0)" onclick="triggerFileInputForDigit2()">Replace</a>
-                <input id="option-1-replace-file-input" type="file" name="option_1_replace" style="display:none"
+                <input id="option-2-replace-file-input" type="file" name="option_1_replace" style="display:none"
                     class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit2()" />
             </div>
         </div>

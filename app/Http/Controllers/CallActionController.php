@@ -112,7 +112,6 @@ class CallActionController extends Controller
         if ($callAction) {
             $callAction->update([
                 'transfer_to' => $request->number,
-                'call_transfer_timer' => $request->call_transfer_timer,
                 'afer_time' => $request->afer,
             ]);
         } else {
@@ -120,7 +119,6 @@ class CallActionController extends Controller
                 'type' => $request->type,
                 'digit' => $request->digit,
                 'transfer_to' => $request->number,
-                'call_transfer_timer' => $request->call_transfer_timer,
                 'afer_time' => $request->afer,
             ]);
         }
@@ -230,7 +228,7 @@ class CallActionController extends Controller
                 ->toMediaCollection('audio_file');
 
             $subCallAction->update([
-                'audio_link' => $callAction->getFirstMediaUrl('audio_file')
+                'audio_link' => $subCallAction->getFirstMediaUrl('audio_file')
             ]);
         }
 
