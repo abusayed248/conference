@@ -75,7 +75,7 @@
 
                                     </div>
 
-                                    <a id="option-2-sub-menu-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2SubMenu()">Replace File</a>
+                                    <a id="option-2-sub-menu-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2SubMenu()">Replace</a>
                                     <input
                                         id="option-2-sub-menu-replace-file-input"
                                         type="file"
@@ -96,12 +96,9 @@
                                                 <label for="">Function</label>
                                                 <select name="cars" id="cars" form="" class="play">
                                                     <option value="volvo">Play MP3</option>
-                                                    <option value="saab">Saab</option>
-                                                    <option value="opel">Opel</option>
-                                                    <option value="audi">Audi</option>
                                                 </select>
                                             </div>
-                                            <a id="option-2-sub-1-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub1()">Replace File</a>
+                                            <a id="option-2-sub-1-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub1()">Replace</a>
                                             <input
                                                 id="option-2-sub-1-replace-file-input"
                                                 type="file"
@@ -121,15 +118,12 @@
 
                                                 <select name="cars" id="cars" form="" class="play">
                                                     <option value="volvo">Play MP3</option>
-                                                    <option value="saab">Saab</option>
-                                                    <option value="opel">Opel</option>
-                                                    <option value="audi">Audi</option>
                                                 </select>
 
                                             </div>
 
 
-                                            <a id="option-2-sub-2-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub2()">Replace File</a>
+                                            <a id="option-2-sub-2-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub2()">Replace</a>
                                             <input
                                                 id="option-2-sub-2-replace-file-input"
                                                 type="file"
@@ -147,12 +141,9 @@
                                                 <label for="">Function</label>
                                                 <select name="cars" id="cars" form="" class="play">
                                                     <option value="volvo">Play MP3</option>
-                                                    <option value="saab">Saab</option>
-                                                    <option value="opel">Opel</option>
-                                                    <option value="audi">Audi</option>
                                                 </select>
                                             </div>
-                                            <a id="option-2-sub-3-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub3()">Replace File</a>
+                                            <a id="option-2-sub-3-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub3()">Replace</a>
                                             <input
                                                 id="option-2-sub-3-replace-file-input"
                                                 type="file"
@@ -171,13 +162,10 @@
                                                 <label for="">Function</label>
                                                 <select name="cars" id="cars" form="" class="play">
                                                     <option value="volvo">Play MP3</option>
-                                                    <option value="saab">Saab</option>
-                                                    <option value="opel">Opel</option>
-                                                    <option value="audi">Audi</option>
                                                 </select>
 
                                             </div>
-                                            <a id="option-2-sub-4-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub4()">Replace File</a>
+                                            <a id="option-2-sub-4-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub4()">Replace</a>
                                             <input
                                                 id="option-2-sub-4-replace-file-input"
                                                 type="file"
@@ -195,13 +183,10 @@
                                                 <label for="">Function</label>
                                                 <select name="cars" id="cars" form="" class="play">
                                                     <option value="volvo">Play MP3</option>
-                                                    <option value="saab">Saab</option>
-                                                    <option value="opel">Opel</option>
-                                                    <option value="audi">Audi</option>
                                                 </select>
 
                                             </div>
-                                            <a id="option-2-sub-5-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub5()">Replace File</a>
+                                            <a id="option-2-sub-5-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub5()">Replace</a>
                                             <input
                                                 id="option-2-sub-5-replace-file-input"
                                                 type="file"
@@ -221,13 +206,10 @@
                                                 <label for="">Function</label>
                                                 <select name="cars" id="cars" form="" class="play">
                                                     <option value="volvo">Play MP3</option>
-                                                    <option value="saab">Saab</option>
-                                                    <option value="opel">Opel</option>
-                                                    <option value="audi">Audi</option>
                                                 </select>
 
                                             </div>
-                                            <a id="option-2-sub-6-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub6()">Replace File</a>
+                                            <a id="option-2-sub-6-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub6()">Replace</a>
                                             <input
                                                 id="option-2-sub-6-replace-file-input"
                                                 type="file"
@@ -247,13 +229,10 @@
                                                 <label for="">Function</label>
                                                 <select name="cars" id="cars" form="" class="play">
                                                     <option value="volvo">Play MP3</option>
-                                                    <option value="saab">Saab</option>
-                                                    <option value="opel">Opel</option>
-                                                    <option value="audi">Audi</option>
                                                 </select>
 
                                             </div>
-                                            <a id="option-2-sub-7-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub7()">Replace File</a>
+                                            <a id="option-2-sub-7-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub7()">Replace</a>
                                             <input
                                                 id="option-2-sub-7-replace-file-input"
                                                 type="file"
@@ -273,13 +252,10 @@
                                                 <label for="">Function</label>
                                                 <select name="cars" id="cars" form="" class="play">
                                                     <option value="volvo">Play MP3</option>
-                                                    <option value="saab">Saab</option>
-                                                    <option value="opel">Opel</option>
-                                                    <option value="audi">Audi</option>
                                                 </select>
 
                                             </div>
-                                            <a id="option-2-sub-8-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub8()">Replace File</a>
+                                            <a id="option-2-sub-8-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub8()">Replace</a>
                                             <input
                                                 id="option-2-sub-8-replace-file-input"
                                                 type="file"
@@ -299,13 +275,10 @@
                                                 <label for="">Function</label>
                                                 <select name="cars" id="cars" form="" class="play">
                                                     <option value="volvo">Play MP3</option>
-                                                    <option value="saab">Saab</option>
-                                                    <option value="opel">Opel</option>
-                                                    <option value="audi">Audi</option>
                                                 </select>
 
                                             </div>
-                                            <a id="option-2-sub-9-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub9()">Replace File</a>
+                                            <a id="option-2-sub-9-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit2Sub9()">Replace</a>
                                             <input
                                                 id="option-2-sub-9-replace-file-input"
                                                 type="file"
@@ -329,7 +302,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Understood</button>
             </div>
         </div>
     </div>
