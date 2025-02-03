@@ -170,7 +170,7 @@
                                             </div>
                                         </div>
 
-                                        <a id="option-1-sub-menu-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1SubMenu()">Replace File</a>
+                                        <a id="option-1-sub-menu-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1SubMenu()">Replace</a>
                                         <input
                                             id="option-1-sub-menu-replace-file-input"
                                             type="file"
@@ -193,7 +193,7 @@
                                                         <option value="volvo">Play MP3</option>
                                                     </select>
                                                 </div>
-                                                <a id="option-1-sub-1-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub1()">Replace File</a>
+                                                <a id="option-1-sub-1-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub1()">Replace</a>
                                                 <input
                                                     id="option-1-sub-1-replace-file-input"
                                                     type="file"
@@ -214,7 +214,7 @@
                                                 </div>
 
 
-                                                <a id="option-1-sub-2-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub2()">Replace File</a>
+                                                <a id="option-1-sub-2-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub2()">Replace</a>
                                                 <input
                                                     id="option-1-sub-2-replace-file-input"
                                                     type="file"
@@ -234,7 +234,7 @@
                                                         <option value="volvo">Play MP3</option>
                                                     </select>
                                                 </div>
-                                                <a id="option-1-sub-3-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub3()">Replace File</a>
+                                                <a id="option-1-sub-3-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub3()">Replace</a>
                                                 <input
                                                     id="option-1-sub-3-replace-file-input"
                                                     type="file"
@@ -256,7 +256,7 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-4-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub4()">Replace File</a>
+                                                <a id="option-1-sub-4-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub4()">Replace</a>
                                                 <input
                                                     id="option-1-sub-4-replace-file-input"
                                                     type="file"
@@ -277,7 +277,7 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-5-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub5()">Replace File</a>
+                                                <a id="option-1-sub-5-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub5()">Replace</a>
                                                 <input
                                                     id="option-1-sub-5-replace-file-input"
                                                     type="file"
@@ -300,7 +300,7 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-6-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub6()">Replace File</a>
+                                                <a id="option-1-sub-6-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub6()">Replace</a>
                                                 <input
                                                     id="option-1-sub-6-replace-file-input"
                                                     type="file"
@@ -323,7 +323,7 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-7-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub7()">Replace File</a>
+                                                <a id="option-1-sub-7-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub7()">Replace</a>
                                                 <input
                                                     id="option-1-sub-7-replace-file-input"
                                                     type="file"
@@ -346,7 +346,7 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-8-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub8()">Replace File</a>
+                                                <a id="option-1-sub-8-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub8()">Replace</a>
                                                 <input
                                                     id="option-1-sub-8-replace-file-input"
                                                     type="file"
@@ -368,7 +368,7 @@
                                                     </select>
 
                                                 </div>
-                                                <a id="option-1-sub-9-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub9()">Replace File</a>
+                                                <a id="option-1-sub-9-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit1Sub9()">Replace</a>
                                                 <input
                                                     id="option-1-sub-9-replace-file-input"
                                                     type="file"
@@ -392,7 +392,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Understood</button>
                 </div>
             </div>
         </div>

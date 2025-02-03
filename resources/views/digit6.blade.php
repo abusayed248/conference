@@ -63,7 +63,7 @@
                             <div class="col-md-4 my-0">
                                 <div class="d-flex bg-green-600 mt-10 justify-content-center flex-column align-items-center">
                                     <h3 class="h3">Greeting for Sub-menu 6</h3>
-                                    <a id="option-6-sub-menu-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6SubMenu()">Replace File</a>
+                                    <a id="option-6-sub-menu-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6SubMenu()">Replace</a>
                                     <input id="option-6-sub-menu-replace-file-input" type="file" name="option_6_replace_sub" style="display:none"
                                         class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit6SubMenu()" />
                                 </div>
@@ -76,11 +76,8 @@
                                             <label for="">Function</label>
                                             <select name="cars" id="cars" class="play">
                                                 <option value="volvo">Play MP3</option>
-                                                <option value="saab">Saab</option>
-                                                <option value="opel">Opel</option>
-                                                <option value="audi">Audi</option>
                                             </select>
-                                            <a id="option-6-sub-1-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub1()">Replace File</a>
+                                            <a id="option-6-sub-1-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub1()">Replace</a>
                                             <input id="option-6-sub-1-replace-file-input" type="file" name="option_6_replace_sub_1" style="display:none"
                                                 class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit6Sub1()" />
                                         </div>
@@ -90,11 +87,8 @@
                                             <label for="">Function</label>
                                             <select name="cars" id="cars" class="play">
                                                 <option value="volvo">Play MP3</option>
-                                                <option value="saab">Saab</option>
-                                                <option value="opel">Opel</option>
-                                                <option value="audi">Audi</option>
                                             </select>
-                                            <a id="option-6-sub-2-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub2()">Replace File</a>
+                                            <a id="option-6-sub-2-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub2()">Replace</a>
                                             <input id="option-6-sub-2-replace-file-input" type="file" name="option_6_replace_sub_2" style="display:none"
                                                 class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit6Sub2()" />
                                         </div>
@@ -104,11 +98,8 @@
                                             <label for="">Function</label>
                                             <select name="cars" id="cars" class="play">
                                                 <option value="volvo">Play MP3</option>
-                                                <option value="saab">Saab</option>
-                                                <option value="opel">Opel</option>
-                                                <option value="audi">Audi</option>
                                             </select>
-                                            <a id="option-6-sub-3-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub3()">Replace File</a>
+                                            <a id="option-6-sub-3-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub3()">Replace</a>
                                             <input id="option-6-sub-3-replace-file-input" type="file" name="option_6_replace_sub_3" style="display:none"
                                                 class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit6Sub3()" />
                                         </div>
@@ -119,11 +110,8 @@
                                             <label for="">Function</label>
                                             <select name="cars" id="cars" class="play">
                                                 <option value="volvo">Play MP3</option>
-                                                <option value="saab">Saab</option>
-                                                <option value="opel">Opel</option>
-                                                <option value="audi">Audi</option>
                                             </select>
-                                            <a id="option-6-sub-4-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub4()">Replace File</a>
+                                            <a id="option-6-sub-4-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub4()">Replace</a>
                                             <input id="option-6-sub-4-replace-file-input" type="file" name="option_6_replace_sub_4" style="display:none"
                                                 class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit6Sub4()" />
                                         </div>
@@ -133,11 +121,8 @@
                                             <label for="">Function</label>
                                             <select name="cars" id="cars" class="play">
                                                 <option value="volvo">Play MP3</option>
-                                                <option value="saab">Saab</option>
-                                                <option value="opel">Opel</option>
-                                                <option value="audi">Audi</option>
                                             </select>
-                                            <a id="option-6-sub-5-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub5()">Replace File</a>
+                                            <a id="option-6-sub-5-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub5()">Replace</a>
                                             <input id="option-6-sub-5-replace-file-input" type="file" name="option_6_replace_sub_5" style="display:none"
                                                 class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit6Sub5()" />
                                         </div>
@@ -147,11 +132,8 @@
                                             <label for="">Function</label>
                                             <select name="cars" id="cars" class="play">
                                                 <option value="volvo">Play MP3</option>
-                                                <option value="saab">Saab</option>
-                                                <option value="opel">Opel</option>
-                                                <option value="audi">Audi</option>
                                             </select>
-                                            <a id="option-6-sub-6-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub6()">Replace File</a>
+                                            <a id="option-6-sub-6-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub6()">Replace</a>
                                             <input id="option-6-sub-6-replace-file-input" type="file" name="option_6_replace_sub_6" style="display:none"
                                                 class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit6Sub6()" />
                                         </div>
@@ -161,11 +143,8 @@
                                             <label for="">Function</label>
                                             <select name="cars" id="cars" class="play">
                                                 <option value="volvo">Play MP3</option>
-                                                <option value="saab">Saab</option>
-                                                <option value="opel">Opel</option>
-                                                <option value="audi">Audi</option>
                                             </select>
-                                            <a id="option-6-sub-7-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub7()">Replace File</a>
+                                            <a id="option-6-sub-7-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub7()">Replace</a>
                                             <input id="option-6-sub-7-replace-file-input" type="file" name="option_6_replace_sub_7" style="display:none"
                                                 class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit6Sub7()" />
                                         </div>
@@ -175,11 +154,8 @@
                                             <label for="">Function</label>
                                             <select name="cars" id="cars" class="play">
                                                 <option value="volvo">Play MP3</option>
-                                                <option value="saab">Saab</option>
-                                                <option value="opel">Opel</option>
-                                                <option value="audi">Audi</option>
                                             </select>
-                                            <a id="option-6-sub-8-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub8()">Replace File</a>
+                                            <a id="option-6-sub-8-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub8()">Replace</a>
                                             <input id="option-6-sub-8-replace-file-input" type="file" name="option_6_replace_sub_8" style="display:none"
                                                 class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit6Sub8()" />
                                         </div>
@@ -190,11 +166,8 @@
                                             <label for="">Function</label>
                                             <select name="cars" id="cars" class="play">
                                                 <option value="volvo">Play MP3</option>
-                                                <option value="saab">Saab</option>
-                                                <option value="opel">Opel</option>
-                                                <option value="audi">Audi</option>
                                             </select>
-                                            <a id="option-6-sub-10-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub10()">Replace File</a>
+                                            <a id="option-6-sub-10-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" onclick="triggerFileInputForDigit6Sub10()">Replace</a>
                                             <input id="option-6-sub-10-replace-file-input" type="file" name="option_6_replace_sub_7" style="display:none"
                                                 class="replace-img" accept="audio/mp3,audio/*;capture=microphone" onchange="uploadFileDigit6Sub10()" />
                                         </div>
@@ -210,7 +183,6 @@
             </div> <!-- End of modal-body -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Understood</button>
             </div>
         </div> <!-- End of modal-content -->
     </div> <!-- End of modal-dialog -->
