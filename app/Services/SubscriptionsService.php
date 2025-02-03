@@ -5,11 +5,8 @@ namespace App\Services;
 use Carbon\Carbon;
 use App\Models\User;
 
-
-
 class SubscriptionsService
 {
-
     public function isActive($phoneNumber)
     {
         $user = User::query()->where('phone', $phoneNumber)->first();

@@ -1,36 +1,46 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\CallAction;
+use App\Models\SubCallAction;
+
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\Log;
+
+use App\Services\SubscriptionsService;
 
 class TelnyxWebhookController extends Controller
 {
     private $apiKey;
     private $apiBaseUrl;
 
-    public function __construct()
+    private $subscriptionsService;
+
+    public function __construct(SubscriptionsService $subscriptionsService)
     {
         $this->apiKey = env('TELNYX_API_KEY');
         $this->apiBaseUrl = env('TELNYX_API_BASE_URL', 'https://api.telnyx.com/v2');
+
+        $this->subscriptionsService = $subscriptionsService;
     }
 
     public function handle(Request $request)
     {
-        \Log::info('Call initiated');
+        Log::info('Call initiated');
 
         // Log telnyx request
-        \Log::info('Telnyx API Request', [
+        Log::info('Telnyx API Request', [
             'request' => $request,
         ]);
 
         // Get the raw POST data from the webhook
         $rawPayload = file_get_contents('php://input');
         $payload = json_decode($rawPayload, true);
-    
+
         // Log telnyx request
-        \Log::info('Telnyx API Request', [
+        Log::info('Telnyx API Request', [
             'payload' => $payload,
         ]);
 
@@ -44,50 +54,164 @@ class TelnyxWebhookController extends Controller
         switch ($event) {
             case 'call.initiated':
                 // Handle the event when the call is initiated
-                $this->handleCallInit($callControlId, $payload['data']['payload']);
+                $this->callInitAction($callControlId, $payload['data']['payload'], false);
                 break;
 
             case 'call.answered':
                 // Handle the event when the call is answered
-                $this->handleCallAnswered($callControlId, $payload['data']['payload']);
+                $this->callAnswerAction($callControlId, $payload['data']['payload']);
                 break;
 
             case 'call.dtmf.received':
                 // Handle the event when a DTMF digit (button press) is received
                 $digit = $payload['data']['payload']['digit'] ?? null;
-                if ($digit !== null && method_exists($this, "handleDigit$digit")) {
-                    \Log::info('Processing DTMF digit', ['digit' => $digit]);
-                    $this->{"handleDigit$digit"}($callControlId, $payload['data']['payload']);
+                if ($digit !== null) {
+                    Log::info('Processing DTMF digit', ['digit' => $digit]);
+
+                    if ($digit == '0' || $digit == 0) {
+                        // Back to the main menu
+                        $this->callAnswerAction($callControlId, $payload['data']['payload']);
+                    }
+                    else {
+                        $callAction = CallAction::query()->where('digit', $digit)->first();
+
+                        if ($callAction) {
+                            if ($callAction->type == 'transfer' && $callAction->transfer_to) {
+                                $this->{"handleDigit$digit"}($callControlId, $payload['data']['payload']);
+                                $this->callTransfer($callControlId, $payload, $callAction);
+                            }
+                            elseif ($callAction->type == 'audio' && $callAction->audio_link) {
+                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
+                            }
+                            elseif ($callAction->type == 'sub_menu' && $callAction->audio_link) {
+                                // Call initiated to manage submenu
+                                $this->callInitAction($callControlId, $payload['data']['payload'], true);
+                            }
+                            else {
+                                Log::info('Invalid data found in database', $callAction);
+                            }
+                        }
+                        else {
+                            Log::info('No data found with the digit ' . $digit, $payload);
+                        }
+                    }
                 }
                 break;
 
             case 'call.hangup':
                 // Handle the event when the call is hung up
-                \Log::info('Call hangup received', ['call_control_id' => $callControlId]);
+                Log::info('Call hangup received', ['call_control_id' => $callControlId]);
                 break;
 
             case 'call.gather.ended':
                 // Handle the event when the gather has ended (no input received)
                 $result = $payload['data']['result'];
                 if ($result === 'no_input') {
-                    $this->handleTimeout($callControlId, $payload['data']['payload']);
+                    $this->timeoutAction($callControlId, $payload['data']['payload']);
                 }
                 break;
 
             default:
                 // Handle any other events that do not match
-                \Log::info('Unhandled event type', ['event' => $event]);
+                Log::info('Unhandled event type', ['event' => $event]);
                 break;
         }
     }
 
-    private function handleCallInit(string $callControlId, $payload): void
+    public function handleSubmenu(Request $request) {
+        Log::info('Call initiated for submenu');
+
+        // Log telnyx request
+        Log::info('Telnyx API Request', [
+            'request' => $request,
+        ]);
+
+        // Get the raw POST data from the webhook
+        $rawPayload = file_get_contents('php://input');
+        $payload = json_decode($rawPayload, true);
+
+        // Log telnyx request
+        Log::info('Telnyx API Request', [
+            'payload' => $payload,
+        ]);
+
+        $event = $payload['data']['event_type'] ?? null;
+        $callControlId = $payload['data']['payload']['call_control_id'] ?? null;
+
+        if (!$event || !$callControlId) {
+            return response()->json(['error' => 'Invalid payload'], 400);
+        }
+
+        switch ($event) {
+            case 'call.answered':
+                // Handle the event when the call is answered
+                $this->callAnswerAction($callControlId, $payload['data']['payload'], true);
+                break;
+
+            case 'call.dtmf.received':
+                // Handle the event when a DTMF digit (button press) is received
+                $digit = $payload['data']['payload']['digit'] ?? null;
+                if ($digit !== null) {
+                    Log::info('Processing DTMF digit', ['digit' => $digit]);
+
+                    if ($digit == '0' || $digit == 0) {
+                        // Back to the main menu
+                        // Handle the event when the call is initiated
+                        $this->callInitAction($callControlId, $payload['data']['payload'], false);
+                    }
+                    else {
+                        $callAction = CallAction::query()->where('digit', $digit)->first();
+
+                        if ($callAction) {
+                            if ($callAction->type == 'transfer' && $callAction->transfer_to) {
+                                $this->{"handleDigit$digit"}($callControlId, $payload['data']['payload']);
+                                $this->callTransfer($callControlId, $payload, $callAction);
+                            }
+                            elseif ($callAction->type == 'audio' && $callAction->audio_link) {
+                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
+                            }
+                            elseif ($callAction->type == 'sub_menu' && $callAction->audio_link) {
+                                // Call initiated to manage submenu
+                                $this->callInitAction($callControlId, $payload['data']['payload'], true);
+                            }
+                            else {
+                                Log::info('Invalid data found in database', $callAction);
+                            }
+                        }
+                        else {
+                            Log::info('No data found with the digit ' . $digit, $payload);
+                        }
+                    }
+                }
+                break;
+
+            case 'call.hangup':
+                // Handle the event when the call is hung up
+                Log::info('Call hangup received', ['call_control_id' => $callControlId]);
+                break;
+
+            case 'call.gather.ended':
+                // Handle the event when the gather has ended (no input received)
+                $result = $payload['data']['result'];
+                if ($result === 'no_input') {
+                    $this->timeoutAction($callControlId, $payload['data']['payload']);
+                }
+                break;
+
+            default:
+                // Handle any other events that do not match
+                Log::info('Unhandled event type', ['event' => $event]);
+                break;
+        }
+    }
+
+    private function callInitAction(string $callControlId, $payload, $isSubmenu = false): void
     {
-        \Log::info('Call initiated for answer');
+        Log::info('Call initiated for answer');
         $endpoint = "/calls/$callControlId/actions/answer";
         $commandId = Uuid::uuid4()->toString();
 
-        \Log::info('Attempting to answer call', [
+        Log::info('Attempting to answer call', [
             'call_control_id' => $callControlId,
         ]);
 
@@ -95,88 +219,62 @@ class TelnyxWebhookController extends Controller
             $response = $this->makeTelnyxApiCall($endpoint, 'POST', [
                 'client_state' => $payload['client_state'],
                 'command_id' => $commandId,
-                'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx',
+                'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx' . ($isSubmenu ? '/submenu' : ''),
                 'webhook_url_method' => 'POST',
                 'send_silence_when_idle' => true,
             ]);
 
-            \Log::info('Call answered successfully', [
+            Log::info('Call answered successfully', [
                 'response' => $response,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Error answering call', [
+            Log::error('Error answering call', [
                 'call_control_id' => $callControlId,
                 'error' => $e->getMessage(),
             ]);
         }
     }
 
-    private function handleCallAnswered(string $callControlId, $payload): void
+    private function callAnswerAction(string $callControlId, $payload, $isSubmenu = false): void
     {
-        \Log::info('Call answered', ['call_control_id' => $callControlId]);
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
+        Log::info('Call answered', ['call_control_id' => $callControlId]);
+
+        if ($isSubmenu) {
+            $callAction = SubCallAction::query()
+                ->where('type', 'greetings')
+                ->whereNotNull('audio_link')
+                ->where('audio_link', '!=', '')
+                ->first();
+        }
+        else
+        {
+            $hasSubscription = $this->subscriptionsService->isActive($payload['from']);
+            $type = $hasSubscription ? 'greetings' : 'non_subscriber_greetings';
+
+            $callAction = CallAction::query()
+                ->where('type', $type)
+                ->whereNotNull('audio_link')
+                ->where('audio_link', '!=', '')
+                ->first();
+        }
+
+        if ($callAction) {
+            $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
+        }
+        else {
+            Log::info('No greetings audio found', ['call_control_id' => $callControlId]);
+        }
     }
 
-    private function handleDigit0(string $callControlId, $payload): void
+    private function timeoutAction(string $callControlId, $payload): void
     {
-        \Log::info('No input timeout', ['call_control_id' => $callControlId]);
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
-    }
-
-    private function handleDigit1(string $callControlId, $payload): void
-    {
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fires.mp3", $payload);
-    }
-
-    private function handleDigit2(string $callControlId, $payload): void
-    {
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
-    }
-
-    private function handleDigit3(string $callControlId, $payload): void
-    {
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fires.mp3", $payload);
-    }
-
-    private function handleDigit4(string $callControlId, $payload): void
-    {
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
-    }
-
-    private function handleDigit5(string $callControlId, $payload): void
-    {
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fires.mp3", $payload);
-    }
-
-    private function handleDigit6(string $callControlId, $payload): void
-    {
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
-    }
-
-    private function handleDigit7(string $callControlId, $payload): void
-    {
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fires.mp3", $payload);
-    }
-
-    private function handleDigit8(string $callControlId, $payload): void
-    {
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
-    }
-
-    private function handleDigit9(string $callControlId, $payload): void
-    {
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fires.mp3", $payload);
-    }
-
-    private function handleTimeout(string $callControlId, $payload): void
-    {
-        \Log::info('No input timeout', ['call_control_id' => $callControlId]);
+        Log::info('No input timeout', ['call_control_id' => $callControlId]);
         $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
     }
 
     private function playAudioPrompt(string $callControlId, string $audioUrl, $payload): void
     {
-        \Log::info('Attempting to play audio prompt', [
+        Log::info('Attempting to play audio prompt', [
             'call_control_id' => $callControlId,
             'audio_url' => $audioUrl,
         ]);
@@ -194,16 +292,52 @@ class TelnyxWebhookController extends Controller
                 'client_state' => $payload['client_state'],
                 'command_id' => $commandId,
             ]);
-    
+
             // Log the response from Telnyx
-            \Log::info('Audio prompt played successfully', [
+            Log::info('Audio prompt played successfully', [
                 'response' => $response,
             ]);
         } catch (\Exception $e) {
             // Log the error if the API call fails
-            \Log::error('Error playing audio prompt', [
+            Log::error('Error playing audio prompt', [
                 'call_control_id' => $callControlId,
                 'audio_url' => $audioUrl,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function callTransfer(string $callControlId, $payload, $callAction): void
+    {
+        Log::info('Attempting to transfer call', [
+            'payload' => $payload,
+            'callAction' => $callAction,
+        ]);
+
+        $endpoint = "/calls/$callControlId/actions/transfer";
+        $commandId = Uuid::uuid4()->toString();
+
+        try {
+            $response = $this->makeTelnyxApiCall($endpoint, 'POST', [
+                'to' => $callAction->transfer_to,
+                'from' => '+13606638463',
+                'from_display_name' => 'Kids Conversation',
+                'time_limit_secs' => $callAction->afer_time || 60,
+                'client_state' => $payload['client_state'],
+                'command_id' => $commandId,
+                'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx',
+                'webhook_url_method' => 'POST',
+            ]);
+
+            // Log the response from Telnyx
+            Log::info('Audio prompt played successfully', [
+                'response' => $response,
+            ]);
+        } catch (\Exception $e) {
+            // Log the error if the API call fails
+            Log::error('Error to transfer call', [
+                'payload' => $payload,
+                'callAction' => $callAction,
                 'error' => $e->getMessage(),
             ]);
         }
@@ -212,14 +346,14 @@ class TelnyxWebhookController extends Controller
     private function makeTelnyxApiCall($endpoint, $method = 'GET', $data = [])
     {
         $client = new Client();
-        
+
         $options = [
             'headers' => [
                 'Authorization' => "Bearer $this->apiKey",
                 'Content-Type' => 'application/json',
             ],
         ];
-        
+
         if ($method === 'POST' || $method === 'PUT') {
             $options['json'] = $data;
         }
