@@ -37,8 +37,6 @@
                     </form>
 
 
-
-
                     <form action="{{ route('greetings.updateAudioNonSubscribtion') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="d-flex mt-5 justify-content-center flex-column align-items-center">
@@ -116,7 +114,7 @@
                                         </div>
                                         <div class="d-flex justify-content-center align-items-center mt-2 w-100">
                                             <label for="">Enter after (minutes)</label>
-                                            <input name="afer" type="number" readonly class="w-100" value="60" />
+                                            <input name="afer_time" type="number" class="w-100" id="afer-number-input-1" placeholder="60" value="{{ @$callAction1->afer_time}}" onblur="saveNumber1()"/>
                                         </div>
                                     </div>
                                 </div>
@@ -1037,7 +1035,7 @@
                         body: JSON.stringify({
                             type: "transfer", // Replace with the actual type value
                             number: numberInput,
-                            afer: afer, // Adjust as needed
+                            afer_: afer, // Adjust as needed
                             digit: digit, // Adjust as needed
                         }),
                     })
@@ -1060,6 +1058,7 @@
 
         function saveNumber1() {
             const numberInput = document.getElementById('number-input-1').value;
+            const aferNumberInput = document.getElementById('afer-number-input-1').value;
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             if (numberInput.trim() !== "") {
                 fetch("{{ route('call-action.store') }}", {
@@ -1071,7 +1070,7 @@
                         body: JSON.stringify({
                             type: "transfer", // Replace with the actual type value
                             number: numberInput,
-                            afer: 60, // Adjust as needed
+                            afer_time: aferNumberInput, // Adjust as needed
                             digit: 1, // Adjust as needed
                         }),
                     })
@@ -1095,6 +1094,7 @@
 
         function saveNumber9() {
             const numberInput = document.getElementById('number-input-9').value;
+            const aferNumberInput9 = document.getElementById('afer-number-input-9').value;
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             if (numberInput.trim() !== "") {
                 fetch("{{ route('call-action.store') }}", {
@@ -1106,7 +1106,7 @@
                         body: JSON.stringify({
                             type: "transfer", // Replace with the actual type value
                             number: numberInput,
-                            afer: 60, // Adjust as needed
+                            afer_time: aferNumberInput9, // Adjust as needed
                             digit: 9, // Adjust as needed
                         }),
                     })
