@@ -326,7 +326,7 @@ class TelnyxWebhookController extends Controller
                 'to' => $callAction->transfer_to,
                 'from' => '+13606638463',
                 'from_display_name' => 'Kids Conversation',
-                'time_limit_secs' => $callAction->afer_time || 60,
+                'time_limit_secs' => (int) $callAction->afer_time,
                 'client_state' => $payload['client_state'],
                 'command_id' => $commandId,
                 'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx',
