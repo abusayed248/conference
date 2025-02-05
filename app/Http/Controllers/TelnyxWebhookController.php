@@ -74,21 +74,22 @@ class TelnyxWebhookController extends Controller
                     }
                     else {
                         $callAction = CallAction::query()->where('digit', $digit)->first();
+                        Log::info('CallAction data found in database', $callAction->toArray());
 
                         if ($callAction) {
                             if ($callAction->type == 'transfer' && $callAction->transfer_to) {
-                                $this->{"handleDigit$digit"}($callControlId, $payload['data']['payload']);
-                                $this->callTransfer($callControlId, $payload, $callAction);
+                                // $this->{"handleDigit$digit"}($callControlId, $payload['data']['payload']);
+                                $this->callTransfer($callControlId, $payload['data']['payload'], $callAction);
                             }
                             elseif ($callAction->type == 'audio' && $callAction->audio_link) {
-                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
+                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload['data']['payload']);
                             }
-                            elseif ($callAction->type == 'sub_menu' && $callAction->audio_link) {
+                            elseif ($callAction->type == 'sub_menu') {
                                 // Call initiated to manage submenu
                                 $this->callInitAction($callControlId, $payload['data']['payload'], true);
                             }
                             else {
-                                Log::info('Invalid data found in database', $callAction);
+                                Log::info('Invalid data found in database', $callAction->toArray());
                             }
                         }
                         else {
@@ -160,22 +161,23 @@ class TelnyxWebhookController extends Controller
                         $this->callInitAction($callControlId, $payload['data']['payload'], false);
                     }
                     else {
-                        $callAction = CallAction::query()->where('digit', $digit)->first();
+                        $callAction = SubCallAction::query()->where('digit', $digit)->first();
+                        Log::info('SubCallAction data found in database', $callAction->toArray());
 
                         if ($callAction) {
                             if ($callAction->type == 'transfer' && $callAction->transfer_to) {
-                                $this->{"handleDigit$digit"}($callControlId, $payload['data']['payload']);
-                                $this->callTransfer($callControlId, $payload, $callAction);
+                                // $this->{"handleDigit$digit"}($callControlId, $payload['data']['payload']);
+                                $this->callTransfer($callControlId, $payload['data']['payload'], $callAction);
                             }
                             elseif ($callAction->type == 'audio' && $callAction->audio_link) {
-                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
+                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload['data']['payload']);
                             }
-                            elseif ($callAction->type == 'sub_menu' && $callAction->audio_link) {
+                            elseif ($callAction->type == 'sub_menu') {
                                 // Call initiated to manage submenu
                                 $this->callInitAction($callControlId, $payload['data']['payload'], true);
                             }
                             else {
-                                Log::info('Invalid data found in database', $callAction);
+                                Log::info('Invalid data found in database', $callAction->toArray());
                             }
                         }
                         else {
@@ -217,7 +219,7 @@ class TelnyxWebhookController extends Controller
 
         try {
             $response = $this->makeTelnyxApiCall($endpoint, 'POST', [
-                'client_state' => $payload['client_state'],
+                'client_state' => $payload['client_state'] || null,
                 'command_id' => $commandId,
                 'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx' . ($isSubmenu ? '/submenu' : ''),
                 'webhook_url_method' => 'POST',
@@ -289,7 +291,7 @@ class TelnyxWebhookController extends Controller
                 'overlay' => true,
                 'stop' => 'current',
                 'target_legs' => 'self',
-                'client_state' => $payload['client_state'],
+                'client_state' => $payload['client_state'] || null,
                 'command_id' => $commandId,
             ]);
 
@@ -323,7 +325,7 @@ class TelnyxWebhookController extends Controller
                 'from' => '+13606638463',
                 'from_display_name' => 'Kids Conversation',
                 'time_limit_secs' => $callAction->afer_time || 60,
-                'client_state' => $payload['client_state'],
+                'client_state' => $payload['client_state'] || null,
                 'command_id' => $commandId,
                 'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx',
                 'webhook_url_method' => 'POST',

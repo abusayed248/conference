@@ -80,5 +80,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // admin routes end
 
 Route::post('/webhook/telnyx', [TelnyxWebhookController::class, 'handle']);
+Route::post('/webhook/telnyx/submenu', [TelnyxWebhookController::class, 'handleSubmenu']);
 
 require __DIR__ . '/auth.php';
