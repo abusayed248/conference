@@ -36,16 +36,17 @@ class TelnyxWebhookController extends Controller
         ]);
 
         // Get the raw POST data from the webhook
-        $rawPayload = file_get_contents('php://input');
-        $payload = json_decode($rawPayload, true);
+        $rawInputData = file_get_contents('php://input');
+        $requestData = json_decode($rawInputData, true);
 
         // Log telnyx request
         Log::info('Telnyx API Request', [
-            'payload' => $payload,
+            'requestData' => $requestData,
         ]);
 
-        $event = $payload['data']['event_type'] ?? null;
-        $callControlId = $payload['data']['payload']['call_control_id'] ?? null;
+        $event = $requestData['data']['event_type'] ?? null;
+        $payload = $requestData['data']['payload'];
+        $callControlId = $payload['call_control_id'] ?? null;
 
         if (!$event || !$callControlId) {
             return response()->json(['error' => 'Invalid payload'], 400);
@@ -54,23 +55,23 @@ class TelnyxWebhookController extends Controller
         switch ($event) {
             case 'call.initiated':
                 // Handle the event when the call is initiated
-                $this->callInitAction($callControlId, $payload['data']['payload'], false);
+                $this->callInitAction($callControlId, $payload, false);
                 break;
 
             case 'call.answered':
                 // Handle the event when the call is answered
-                $this->callAnswerAction($callControlId, $payload['data']['payload']);
+                $this->callAnswerAction($callControlId, $payload);
                 break;
 
             case 'call.dtmf.received':
                 // Handle the event when a DTMF digit (button press) is received
-                $digit = $payload['data']['payload']['digit'] ?? null;
+                $digit = $payload['digit'] ?? null;
                 if ($digit !== null) {
                     Log::info('Processing DTMF digit', ['digit' => $digit]);
 
                     if ($digit == '0' || $digit == 0) {
                         // Back to the main menu
-                        $this->callAnswerAction($callControlId, $payload['data']['payload']);
+                        $this->callAnswerAction($callControlId, $payload);
                     }
                     else {
                         $callAction = CallAction::query()->where('digit', $digit)->first();
@@ -79,21 +80,21 @@ class TelnyxWebhookController extends Controller
                         if ($callAction) {
                             if ($callAction->type == 'transfer' && $callAction->transfer_to) {
                                 // $this->{"handleDigit$digit"}($callControlId, $payload['data']['payload']);
-                                $this->callTransfer($callControlId, $payload['data']['payload'], $callAction);
+                                $this->callTransfer($callControlId, $payload, $callAction);
                             }
                             elseif ($callAction->type == 'audio' && $callAction->audio_link) {
-                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload['data']['payload']);
+                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
                             }
                             elseif ($callAction->type == 'sub_menu') {
                                 // Call initiated to manage submenu
-                                $this->callInitAction($callControlId, $payload['data']['payload'], true);
+                                $this->callInitAction($callControlId, $payload, true);
                             }
                             else {
                                 Log::info('Invalid data found in database', $callAction->toArray());
                             }
                         }
                         else {
-                            Log::info('No data found with the digit ' . $digit, $payload);
+                            Log::info('No data found with the digit ' . $digit, $requestData);
                         }
                     }
                 }
@@ -106,9 +107,9 @@ class TelnyxWebhookController extends Controller
 
             case 'call.gather.ended':
                 // Handle the event when the gather has ended (no input received)
-                $result = $payload['data']['result'];
+                $result = $requestData['data']['result'];
                 if ($result === 'no_input') {
-                    $this->timeoutAction($callControlId, $payload['data']['payload']);
+                    $this->timeoutAction($callControlId, $payload);
                 }
                 break;
 
@@ -128,16 +129,17 @@ class TelnyxWebhookController extends Controller
         ]);
 
         // Get the raw POST data from the webhook
-        $rawPayload = file_get_contents('php://input');
-        $payload = json_decode($rawPayload, true);
+        $rawInputData = file_get_contents('php://input');
+        $requestData = json_decode($rawInputData, true);
 
         // Log telnyx request
         Log::info('Telnyx API Request', [
-            'payload' => $payload,
+            'requestData' => $requestData,
         ]);
 
-        $event = $payload['data']['event_type'] ?? null;
-        $callControlId = $payload['data']['payload']['call_control_id'] ?? null;
+        $event = $requestData['data']['event_type'] ?? null;
+        $payload = $requestData['data']['payload'];
+        $callControlId = $payload['call_control_id'] ?? null;
 
         if (!$event || !$callControlId) {
             return response()->json(['error' => 'Invalid payload'], 400);
@@ -146,19 +148,19 @@ class TelnyxWebhookController extends Controller
         switch ($event) {
             case 'call.answered':
                 // Handle the event when the call is answered
-                $this->callAnswerAction($callControlId, $payload['data']['payload'], true);
+                $this->callAnswerAction($callControlId, $payload, true);
                 break;
 
             case 'call.dtmf.received':
                 // Handle the event when a DTMF digit (button press) is received
-                $digit = $payload['data']['payload']['digit'] ?? null;
+                $digit = $payload['digit'] ?? null;
                 if ($digit !== null) {
                     Log::info('Processing DTMF digit', ['digit' => $digit]);
 
                     if ($digit == '0' || $digit == 0) {
                         // Back to the main menu
                         // Handle the event when the call is initiated
-                        $this->callInitAction($callControlId, $payload['data']['payload'], false);
+                        $this->callInitAction($callControlId, $payload, false);
                     }
                     else {
                         $callAction = SubCallAction::query()->where('digit', $digit)->first();
@@ -166,22 +168,22 @@ class TelnyxWebhookController extends Controller
 
                         if ($callAction) {
                             if ($callAction->type == 'transfer' && $callAction->transfer_to) {
-                                // $this->{"handleDigit$digit"}($callControlId, $payload['data']['payload']);
-                                $this->callTransfer($callControlId, $payload['data']['payload'], $callAction);
+                                // $this->{"handleDigit$digit"}($callControlId, $payload);
+                                $this->callTransfer($callControlId, $payload, $callAction);
                             }
                             elseif ($callAction->type == 'audio' && $callAction->audio_link) {
-                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload['data']['payload']);
+                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
                             }
                             elseif ($callAction->type == 'sub_menu') {
                                 // Call initiated to manage submenu
-                                $this->callInitAction($callControlId, $payload['data']['payload'], true);
+                                $this->callInitAction($callControlId, $payload, true);
                             }
                             else {
                                 Log::info('Invalid data found in database', $callAction->toArray());
                             }
                         }
                         else {
-                            Log::info('No data found with the digit ' . $digit, $payload);
+                            Log::info('No data found with the digit ' . $digit, $requestData);
                         }
                     }
                 }
@@ -194,9 +196,9 @@ class TelnyxWebhookController extends Controller
 
             case 'call.gather.ended':
                 // Handle the event when the gather has ended (no input received)
-                $result = $payload['data']['result'];
+                $result = $requestData['data']['result'];
                 if ($result === 'no_input') {
-                    $this->timeoutAction($callControlId, $payload['data']['payload']);
+                    $this->timeoutAction($callControlId, $payload);
                 }
                 break;
 
@@ -219,7 +221,7 @@ class TelnyxWebhookController extends Controller
 
         try {
             $response = $this->makeTelnyxApiCall($endpoint, 'POST', [
-                'client_state' => $payload['client_state'] || null,
+                'client_state' => $payload['client_state'],
                 'command_id' => $commandId,
                 'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx' . ($isSubmenu ? '/submenu' : ''),
                 'webhook_url_method' => 'POST',
@@ -291,7 +293,7 @@ class TelnyxWebhookController extends Controller
                 'overlay' => true,
                 'stop' => 'current',
                 'target_legs' => 'self',
-                'client_state' => $payload['client_state'] || null,
+                'client_state' => $payload['client_state'],
                 'command_id' => $commandId,
             ]);
 
@@ -325,7 +327,7 @@ class TelnyxWebhookController extends Controller
                 'from' => '+13606638463',
                 'from_display_name' => 'Kids Conversation',
                 'time_limit_secs' => $callAction->afer_time || 60,
-                'client_state' => $payload['client_state'] || null,
+                'client_state' => $payload['client_state'],
                 'command_id' => $commandId,
                 'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx',
                 'webhook_url_method' => 'POST',
