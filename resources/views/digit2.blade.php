@@ -847,7 +847,7 @@
         const numberInput = document.getElementById('number-input-2').value;
         const aferNumberInput2 = document.getElementById('afer-number-input-2').value;
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        if (numberInput.trim() !== "") {
+        if (numberInput.trim() !== "" || aferNumberInput2.trim() !== "") {
             fetch("{{ route('call-action.store') }}", {
                     method: "POST",
                     headers: {
@@ -877,5 +877,4 @@
                 });
         }
     }
-
 </script>

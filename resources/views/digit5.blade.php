@@ -257,6 +257,7 @@
         // Trigger file input click
         document.getElementById("option-5-sub-5-replace-file-input").click();
     }
+
     function triggerFileInputForDigit5Sub6() {
         // Trigger file input click
         document.getElementById("option-5-sub-6-replace-file-input").click();
@@ -720,7 +721,7 @@
         const numberInput = document.getElementById('number-input-5').value;
         const aferNumberInput5 = document.getElementById('afer-number-input-5').value;
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        if (numberInput.trim() !== "") {
+        if (numberInput.trim() !== "" || aferNumberInput5.trim() !== "") {
             fetch("{{ route('call-action.store') }}", {
                     method: "POST",
                     headers: {

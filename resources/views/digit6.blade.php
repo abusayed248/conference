@@ -39,7 +39,7 @@
                 <div class="d-flex justify-content-center align-items-center mt-2 w-100">
                     <label for="">Enter after (minutes)</label>
                     <input name="afer_time" type="number" class="w-100" value="{{ @$callAction6->afer_time}}" id="afer-number-input-6"
-                    onblur="saveNumber6()" />
+                        onblur="saveNumber6()" />
                 </div>
             </div>
         </div>
@@ -772,7 +772,7 @@
         const numberInput = document.getElementById('number-input-6').value;
         const aferNumberInput6 = document.getElementById('afer-number-input-6').value;
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        if (numberInput.trim() !== "") {
+        if (numberInput.trim() !== "" || aferNumberInput6.trim() !== "") {
             fetch("{{ route('call-action.store') }}", {
                     method: "POST",
                     headers: {
