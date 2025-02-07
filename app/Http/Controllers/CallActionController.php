@@ -156,7 +156,7 @@ class CallActionController extends Controller
             'number' => 'nullable|string|max:15',
             'afer' => 'nullable',
         ]);
-        info($request->all());
+
         $callAction = CallAction::query()->where([
             'type' => $request->type,
             'digit' => $request->digit
