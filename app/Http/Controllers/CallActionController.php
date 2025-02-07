@@ -17,6 +17,25 @@ class CallActionController extends Controller
         //
     }
 
+    public function getCallAction()
+    {
+        $callActions = CallAction::whereNotNull('digit')->orderBy('digit', 'asc')->get();
+        return response()->json($callActions);
+    }
+
+    public function getByDigit($digit)
+    {
+        $callAction = CallAction::query()->where('digit', $digit)->first();
+
+        if (!$callAction) {
+            return response()->json(['message' => "Call action not found"]);
+        }
+        $subactions = SubCallAction::query()->whereNotNull('digit')->where('call_action_id', $callAction->id)->get();
+
+        return response()->json(['subactions' => $subactions]);
+    }
+
+
     public function updateAudio(Request $request)
     {
         $request->validate([
@@ -137,7 +156,7 @@ class CallActionController extends Controller
             'number' => 'nullable|string|max:15',
             'afer' => 'nullable',
         ]);
-
+        info($request->all());
         $callAction = CallAction::query()->where([
             'type' => $request->type,
             'digit' => $request->digit
@@ -235,7 +254,7 @@ class CallActionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Call action sub saved successfully.',
-            'data' => $callAction,
+            'data' => $subCallAction,
         ], 201);
     }
 

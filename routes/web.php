@@ -73,6 +73,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/save-mp3-sub-call-action', [CallActionController::class, 'storeMp3SubCallAction'])->name('mp3-call-action-sub.store');
 
     Route::post('/update-call-action', [CallActionController::class, 'updateCallAction'])->name('update-call-action');
+    Route::get('/subactions/{digit}', [CallActionController::class, 'getByDigit']);
+    Route::get('/all-call-action', [CallActionController::class, 'getCallAction']);
 });
 
 

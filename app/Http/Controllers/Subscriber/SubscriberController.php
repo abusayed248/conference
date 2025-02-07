@@ -103,7 +103,13 @@ class SubscriberController extends Controller
         $search = $request->get('search', '');
 
         // Query the User model to get subscribers who have payment_done = 1
-        $query = User::query()->where('payment_done', 1);
+
+        $query = User::query()
+        ->where('payment_done', 1)
+        ->orWhere(function ($q) {
+            $q->whereNotNull('free_trial')
+              ->whereDate('free_trial', '>=', now());
+        });
 
         // If search query is provided, filter the results by name or phone
         if (!empty($search)) {
