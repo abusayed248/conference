@@ -102,7 +102,7 @@ class CallActionController extends Controller
         $request->validate([
             'type' => 'required|string',
             'number' => 'nullable|string|max:15',
-            'afer' => 'nullable',
+            'afer_time' => 'nullable',
         ]);
 
         $callAction = CallAction::query()->where([
@@ -112,14 +112,14 @@ class CallActionController extends Controller
         if ($callAction) {
             $callAction->update([
                 'transfer_to' => $request->number,
-                'afer_time' => $request->afer,
+                'afer_time' => $request->afer_time,
             ]);
         } else {
             $callAction = CallAction::create([
                 'type' => $request->type,
                 'digit' => $request->digit,
                 'transfer_to' => $request->number,
-                'afer_time' => $request->afer,
+                'afer_time' => $request->afer_time,
             ]);
         }
 

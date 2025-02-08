@@ -38,7 +38,8 @@
                 </div>
                 <div class="d-flex justify-content-center align-items-center mt-2 w-100">
                     <label for="">Enter after (minutes)</label>
-                    <input name="afer" type="number" readonly class="w-100" value="60" />
+                    <input name="afer_time" type="number" value="{{ @$callAction9->afer_time}}"
+                        class="w-100" placeholder="60" id="afer-number-input-9" onblur="saveNumber9()" />
                 </div>
             </div>
         </div>
@@ -716,8 +717,9 @@
 
     function saveNumber9() {
         const numberInput = document.getElementById('number-input-9').value;
+        const aferNumberInput9 = document.getElementById('afer-number-input-9').value;
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        if (numberInput.trim() !== "") {
+        if (numberInput.trim() !== "" || aferNumberInput9.trim() !== "") {
             fetch("{{ route('call-action.store') }}", {
                     method: "POST",
                     headers: {
@@ -727,7 +729,7 @@
                     body: JSON.stringify({
                         type: "transfer",
                         number: numberInput,
-                        afer: 60,
+                        afer_time: aferNumberInput9,
                         digit: 9,
                     }),
                 })

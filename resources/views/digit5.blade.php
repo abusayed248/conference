@@ -38,7 +38,7 @@
                 </div>
                 <div class="d-flex justify-content-center align-items-center mt-2 w-100">
                     <label for="">Enter after (minutes)</label>
-                    <input name="afer" type="number" readonly class="w-100" value="60" />
+                    <input name="afer_time" type="number" id="afer-number-input-5" class="w-100" value="{{ @$callAction5->afer_time}}" onblur="saveNumber5()" />
                 </div>
             </div>
         </div>
@@ -257,6 +257,7 @@
         // Trigger file input click
         document.getElementById("option-5-sub-5-replace-file-input").click();
     }
+
     function triggerFileInputForDigit5Sub6() {
         // Trigger file input click
         document.getElementById("option-5-sub-6-replace-file-input").click();
@@ -718,8 +719,9 @@
 
     function saveNumber5() {
         const numberInput = document.getElementById('number-input-5').value;
+        const aferNumberInput5 = document.getElementById('afer-number-input-5').value;
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        if (numberInput.trim() !== "") {
+        if (numberInput.trim() !== "" || aferNumberInput5.trim() !== "") {
             fetch("{{ route('call-action.store') }}", {
                     method: "POST",
                     headers: {
@@ -729,7 +731,7 @@
                     body: JSON.stringify({
                         type: "transfer",
                         number: numberInput,
-                        afer: 60,
+                        afer_time: aferNumberInput5,
                         digit: 5,
                     }),
                 })
