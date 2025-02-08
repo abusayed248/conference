@@ -69,7 +69,10 @@
 
                 <div class="col-md-8 py-5 bg-green-600">
                     <div class="row">
-                        <div class="col-md-4 mt-3" v-for="(callAction, index) in callActions" :key="index">
+                        <div v-if="isLoading" class="text-center mt-3">
+                            <p>Loading call actions...</p>
+                        </div>
+                        <div v-else class="col-md-4 mt-3" v-for="(callAction, index) in callActions" :key="index">
 
                             <div class="d-flex justify-content-center align-items-center flex-column">
                                 <h1 style="font-size: 40px !important;">@{{ callAction.digit }}</h1>
@@ -235,7 +238,9 @@
                 data: {
                     callActions: [],
                     selectedSubmenuDigit: null,
-                    subactions: []
+                    subactions: [],
+                    lastTransferData: {},
+                    isLoading: true
                 },
                 methods: {
                     // Fetch existing call actions from API
@@ -252,6 +257,9 @@
                             })
                             .catch(error => {
                                 console.error('Error fetching call actions:', error);
+                            })
+                            .finally(() => {
+                                this.isLoading = false; // Stop loading
                             });
                     },
 
@@ -340,6 +348,22 @@
                     // Save transfer details dynamically
                     saveTransfer(index) {
                         let action = this.callActions[index];
+
+                        // Check if data is unchanged
+                        if (
+                            this.lastTransferData[index] &&
+                            this.lastTransferData[index].number === action.transferNumber &&
+                            this.lastTransferData[index].after_time === action.transferAfterTime
+                        ) {
+                            return; // Prevent unnecessary API calls
+                        }
+
+                        // Store last saved data to prevent duplicate calls
+                        this.lastTransferData[index] = {
+                            number: action.transferNumber,
+                            after_time: action.transferAfterTime
+                        };
+
                         axios.post("save-call-action", {
                                 type: "transfer",
                                 number: action.transferNumber,
