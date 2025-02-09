@@ -15,8 +15,6 @@ class SubscriberResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-
-
         if ($this->payment_done && $this->payment_end && Carbon::now()->lt($this->payment_end)) {
             $status = 'Subscriber';
         } elseif (Carbon::now() <= $this->free_trial) {
@@ -26,10 +24,6 @@ class SubscriberResource extends JsonResource
         } elseif (Carbon::now() >= $this->free_trial) {
             $status = 'Free Trial Expire';
         }
-
-
-
-
 
         return [
             'id' => $this->id,
