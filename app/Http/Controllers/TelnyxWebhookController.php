@@ -326,9 +326,9 @@ class TelnyxWebhookController extends Controller
 
         $request = [
             'audio_url' => $audioUrl,
-            'loop' => 'infinity',
-            'overlay' => true,
-            'stop' => 'current',
+            'loop' => 1,
+            'overlay' => false,
+            'stop' => 'all',
             'target_legs' => 'self',
             'client_state' => $payload['client_state'],
             'command_id' => $commandId,
@@ -380,17 +380,17 @@ class TelnyxWebhookController extends Controller
             ->first();
         if (!$lastAudioEvent) {
             Log::info('Nothing found to stop', ['call_control_id' => $callControlId]);
-            return false;
+            return true;
         }
 
         $endpoint = "/calls/$callControlId/actions/playback_stop";
         $commandId = $lastAudioEvent->command_id;
 
         $request = [
-            'overlay' => true,
-            'stop' => 'current',
+            // 'overlay' => false,
+            'stop' => 'all',
             // 'client_state' => $payload['client_state'],
-            'command_id' => $commandId,
+            // 'command_id' => $commandId,
         ];
 
         try {
@@ -419,6 +419,10 @@ class TelnyxWebhookController extends Controller
             Log::info('Audio prompt stopped successfully', [
                 'response' => $response,
             ]);
+
+            if (isset($response['data']['result'])) {
+                return true;
+            }
         }
         catch (\Exception $e) {
             // Log the error if the API call fails
@@ -429,12 +433,19 @@ class TelnyxWebhookController extends Controller
         }
     }
 
-    private function callTransfer(string $callControlId, $payload, $callAction): void
+    private function callTransfer(string $callControlId, $payload, $callAction)
     {
         Log::info('Attempting to transfer call', [
             'payload' => $payload,
             'callAction' => $callAction,
         ]);
+
+        if (!$this->stopAudioPrompt($callControlId, $payload)) {
+            Log::info('Failed to transfer call due to audio not stopped', []);
+            return false;
+        }
+
+        sleep(2);
 
         $endpoint = "/calls/$callControlId/actions/transfer";
         $commandId = Uuid::uuid4()->toString();
@@ -470,14 +481,14 @@ class TelnyxWebhookController extends Controller
         }
 
         try {
-            $this->stopAudioPrompt($callControlId, $payload);
             $response = $this->makeTelnyxApiCall($endpoint, 'POST', $request);
 
             // Log the response from Telnyx
             Log::info('Call transferred successfully', [
                 'response' => $response,
             ]);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             // Log the error if the API call fails
             Log::error('Error to transfer call', [
                 'payload' => $payload,
