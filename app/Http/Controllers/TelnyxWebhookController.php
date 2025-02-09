@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CallAction;
 use App\Models\SubCallAction;
+use App\Models\TelnyxEvent;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -220,6 +221,24 @@ class TelnyxWebhookController extends Controller
         ]);
 
         try {
+            TelnyxEvent::create([
+                'phone' => $payload['from'],
+                'call_control_id' => $callControlId,
+                'event_type' => 'call.initiated',
+                'command_id' => null,
+                'client_state' => $payload['client_state'],
+                'payload' => $payload,
+                'request' => null
+            ]);
+        }
+        catch(\Exception $e) {
+            Log::error('Error failed to create telnyx event in callInitAction', [
+                'call_control_id' => $callControlId,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
             $response = $this->makeTelnyxApiCall($endpoint, 'POST', [
                 'client_state' => $payload['client_state'],
                 'command_id' => $commandId,
@@ -231,7 +250,8 @@ class TelnyxWebhookController extends Controller
             Log::info('Call answered successfully', [
                 'response' => $response,
             ]);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             Log::error('Error answering call', [
                 'call_control_id' => $callControlId,
                 'error' => $e->getMessage(),
@@ -263,6 +283,24 @@ class TelnyxWebhookController extends Controller
         }
 
         if ($callAction) {
+            try {
+                TelnyxEvent::create([
+                    'phone' => $payload['from'],
+                    'call_control_id' => $callControlId,
+                    'event_type' => 'call.answered',
+                    'command_id' => null,
+                    'client_state' => $payload['client_state'],
+                    'payload' => $payload,
+                    'request' => null
+                ]);
+            }
+            catch(\Exception $e) {
+                Log::error('Error failed to create telnyx event in callAnswerAction', [
+                    'call_control_id' => $callControlId,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
             $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
         }
         else {
@@ -286,16 +324,37 @@ class TelnyxWebhookController extends Controller
         $endpoint = "/calls/$callControlId/actions/playback_start";
         $commandId = Uuid::uuid4()->toString();
 
+        $request = [
+            'audio_url' => $audioUrl,
+            'loop' => 1,
+            'overlay' => false,
+            'stop' => 'all',
+            'target_legs' => 'self',
+            'client_state' => $payload['client_state'],
+            'command_id' => $commandId,
+        ];
+
         try {
-            $response = $this->makeTelnyxApiCall($endpoint, 'POST', [
-                'audio_url' => $audioUrl,
-                'loop' => 'infinity',
-                'overlay' => true,
-                'stop' => 'current',
-                'target_legs' => 'self',
-                'client_state' => $payload['client_state'],
+            TelnyxEvent::create([
+                'phone' => $payload['from'],
+                'call_control_id' => $callControlId,
+                'event_type' => 'playback_start',
                 'command_id' => $commandId,
+                'client_state' => $payload['client_state'],
+                'payload' => $payload,
+                'request' => $request
             ]);
+        }
+        catch(\Exception $e) {
+            Log::error('Error failed to create telnyx event in playAudioPrompt', [
+                'call_control_id' => $callControlId,
+                'request' => $request,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $response = $this->makeTelnyxApiCall($endpoint, 'POST', $request);
 
             // Log the response from Telnyx
             Log::info('Audio prompt played successfully', [
@@ -311,33 +370,125 @@ class TelnyxWebhookController extends Controller
         }
     }
 
-    private function callTransfer(string $callControlId, $payload, $callAction): void
+    private function stopAudioPrompt(string $callControlId, $payload)
+    {
+        Log::info('Attempting to stop audio prompt', $payload);
+
+        $lastAudioEvent = TelnyxEvent::where('call_control_id', $callControlId)
+            ->where('event_type', 'playback_start')
+            ->latest()
+            ->first();
+        if (!$lastAudioEvent) {
+            Log::info('Nothing found to stop', ['call_control_id' => $callControlId]);
+            return true;
+        }
+
+        $endpoint = "/calls/$callControlId/actions/playback_stop";
+        $commandId = $lastAudioEvent->command_id;
+
+        $request = [
+            // 'overlay' => false,
+            'stop' => 'all',
+            // 'client_state' => $payload['client_state'],
+            // 'command_id' => $commandId,
+        ];
+
+        try {
+            TelnyxEvent::create([
+                'phone' => $payload['from'],
+                'call_control_id' => $callControlId,
+                'event_type' => 'playback_stop',
+                'command_id' => $commandId,
+                'client_state' => $payload['client_state'],
+                'payload' => $payload,
+                'request' => $request
+            ]);
+        }
+        catch(\Exception $e) {
+            Log::error('Error failed to create telnyx event in stopAudioPrompt', [
+                'call_control_id' => $callControlId,
+                'request' => $request,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $response = $this->makeTelnyxApiCall($endpoint, 'POST', $request);
+
+            // Log the response from Telnyx
+            Log::info('Audio prompt stopped successfully', [
+                'response' => $response,
+            ]);
+
+            if (isset($response['data']['result'])) {
+                return true;
+            }
+        }
+        catch (\Exception $e) {
+            // Log the error if the API call fails
+            Log::error('Error stopping audio prompt', [
+                'call_control_id' => $callControlId,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function callTransfer(string $callControlId, $payload, $callAction)
     {
         Log::info('Attempting to transfer call', [
             'payload' => $payload,
             'callAction' => $callAction,
         ]);
 
+        if (!$this->stopAudioPrompt($callControlId, $payload)) {
+            Log::info('Failed to transfer call due to audio not stopped', []);
+            return false;
+        }
+
+        sleep(2);
+
         $endpoint = "/calls/$callControlId/actions/transfer";
         $commandId = Uuid::uuid4()->toString();
 
+        $request = [
+            'to' => $callAction->transfer_to,
+            'from' => '+13606638463',
+            'from_display_name' => 'Kids Conversation',
+            'time_limit_secs' => (int) $callAction->afer_time,
+            'client_state' => $payload['client_state'],
+            'command_id' => $commandId,
+            'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx',
+            'webhook_url_method' => 'POST',
+        ];
+
         try {
-            $response = $this->makeTelnyxApiCall($endpoint, 'POST', [
-                'to' => $callAction->transfer_to,
-                'from' => '+13606638463',
-                'from_display_name' => 'Kids Conversation',
-                'time_limit_secs' => (int) $callAction->afer_time,
-                'client_state' => $payload['client_state'],
+            TelnyxEvent::create([
+                'phone' => $payload['from'],
+                'call_control_id' => $callControlId,
+                'event_type' => 'transfer',
                 'command_id' => $commandId,
-                'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx',
-                'webhook_url_method' => 'POST',
+                'client_state' => $payload['client_state'],
+                'payload' => $payload,
+                'request' => $request
             ]);
+        }
+        catch(\Exception $e) {
+            Log::error('Error failed to create telnyx event in callTransfer', [
+                'call_control_id' => $callControlId,
+                'request' => $request,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $response = $this->makeTelnyxApiCall($endpoint, 'POST', $request);
 
             // Log the response from Telnyx
-            Log::info('Audio prompt played successfully', [
+            Log::info('Call transferred successfully', [
                 'response' => $response,
             ]);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             // Log the error if the API call fails
             Log::error('Error to transfer call', [
                 'payload' => $payload,

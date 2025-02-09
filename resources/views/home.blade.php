@@ -165,7 +165,7 @@
                                             <div class="col-md-4 my-0">
                                                 <div class="d-flex bg-green-600 mt-10 justify-content-center flex-column align-items-center">
                                                     <h3 class="h3">Greeting for Sub-menu</h3>
-                                                    <div class="d-flex justify-content-center align-items-center">
+                                                    {{-- <div class="d-flex justify-content-center align-items-center">
                                                         <div class="col-md-1">
                                                             <label id="file-name" for="file-input"> File</label>
                                                         </div>
@@ -175,7 +175,7 @@
                                                                 <input type="file" id="file-input" class="file-input" />
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
 
                                                     <a id="option-1-sub-1-replace-file-text" class="text-decoration no-style" href="javascript:void(0)" @click="triggerGreetingSubmenuFileInput(selectedSubmenuDigit)">Replace</a>
 
@@ -193,15 +193,13 @@
 
 
 
-
-
                                             <div class="col-md-8 py-5 bg-green-600">
                                                 <div class="row">
                                                     <div class="col-md-4 mt-3" v-for="(subaction, subIndex) in subactions" :key="subIndex">
                                                         <div class="d-flex align-items-center flex-column">
                                                             <p class="fw-bold">@{{ subIndex + 1 }}</p>
+                                                            <label for="">Function</label>
                                                             <div class="d-flex align-items-center mt-2 w-100">
-                                                                <label for="">Function</label>
                                                                 <select name="cars" id="cars" form="" class="play">
                                                                     <option value="volvo">Play MP3</option>
                                                                 </select>
