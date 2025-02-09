@@ -166,7 +166,6 @@ class SubscriberController extends Controller
             'data' => SubscriberResource::collection($subscribers),
             'next_page_url' => $subscribers->nextPageUrl(), // Check if more pages exist
         ]);
-        return SubscriberResource::collection($subscribers);
     }
 
     public function createProduct()
