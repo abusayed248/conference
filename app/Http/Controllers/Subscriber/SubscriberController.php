@@ -6,16 +6,59 @@ use App\Models\User;
 use Stripe\StripeClient;
 use App\Models\UserPlans;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
+use App\Http\Resources\SubscriberResource;
 
 class SubscriberController extends Controller
 {
+
     public function subMenu()
     {
         return view('sub-menu');
     }
+
+
+    public function updateSubscription(Request $request, $id)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable',
+        ]);
+
+        // Start a transaction
+        DB::beginTransaction();
+
+        try {
+
+            $subscriber = User::query()->where('id', $id)->first();
+            $subscriber->update([
+                'email' => $request->email,
+                'phone' => $request->phone,
+            ]);
+
+            if ($request->filled('password')) {
+                $subscriber->update([
+                    'password' => Hash::make($request->password)
+                ]);
+            }
+
+            // Commit the transaction
+            DB::commit();
+
+            // Return success response
+            return response()->json(['message' => 'Subscriber updated successfully']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating subscriber: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while updating the subscriber. Please try again.'], 500);
+        }
+    }
+
     public function manageSubscriber()
     {
 
@@ -99,19 +142,18 @@ class SubscriberController extends Controller
 
     public function showSubscribers(Request $request)
     {
-        $perPage = $request->get('per_page', 2);
+        $perPage = $request->get('per_page', 8);
         $search = $request->get('search', '');
 
         // Query the User model to get subscribers who have payment_done = 1
 
         $query = User::query()
-        ->where('payment_done', 1)
-        ->orWhere(function ($q) {
-            $q->whereNotNull('free_trial')
-              ->whereDate('free_trial', '>=', now());
-        });
+            ->where(function ($q) {
+                $q->where('payment_done', 1)
+                    ->orWhereNotNull('free_trial');
+            });
 
-        // If search query is provided, filter the results by name or phone
+        // If search query is provided, filter the results by name or email
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -119,12 +161,12 @@ class SubscriberController extends Controller
             });
         }
 
-        // Paginate the result and return the data
         $subscribers = $query->paginate($perPage);
-
-        // Return the subscribers as JSON
-        //  return response()->json($subscribers);
-        return response()->json($subscribers)->header('Access-Control-Allow-Origin', '*');
+        return response()->json([
+            'data' => SubscriberResource::collection($subscribers),
+            'next_page_url' => $subscribers->nextPageUrl(), // Check if more pages exist
+        ]);
+        return SubscriberResource::collection($subscribers);
     }
 
     public function createProduct()

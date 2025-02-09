@@ -7,7 +7,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             @endif
-
+            <?php
+            $allGreeting = App\Models\CallAction::query()->whereIn('type', ['greetings', 'non_subscriber_greetings'])->get();
+            $greetings =  $allGreeting->where('type', 'greetings')->first();
+            $non_subscriber_greetings =  $allGreeting->where('type', 'non_subscriber_greetings')->first();
+            ?>
             <div class="row sub-menu" id="call-subcall-action">
                 <div class="col-md-4 my-0">
                     <form action="{{ route('greetings.updateAudio') }}" method="POST" enctype="multipart/form-data">
@@ -31,7 +35,12 @@
                                 </div>
 
                             </div>
+                            @if($greetings->audio_link)
                             <button id="replace-file-text" type="submit" class="text-decoration  no-style">Replace</button>
+                            <a class="text-decoration" href="{{ $greetings->audio_link }}" target="_blank">View</a>
+                            @else
+                            <button id="replace-file-text" type="submit" class="text-decoration  no-style">Upload</button>
+                            @endif
                         </div>
                     </form>
 
@@ -54,7 +63,12 @@
                                     </div>
                                 </div>
                             </div>
+                            @if($non_subscriber_greetings->audio_link)
                             <button id="replace-file-non-sub-text" type="submit" class="text-decoration no-style">Replace</button>
+                            <a class="text-decoration" href="{{ $non_subscriber_greetings->audio_link }}" target="_blank">View</a>
+                            @else
+                            <button id="replace-file-non-sub-text" type="submit" class="text-decoration no-style">Upload</button>
+                            @endif
                         </div>
                     </form>
 
