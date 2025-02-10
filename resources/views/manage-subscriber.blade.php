@@ -58,7 +58,8 @@
                                     <h2>@{{ subscriber.name }}</h2>
                                     <h3>@{{ subscriber.email }}</h3>
                                     <h4>@{{ subscriber.phone }}</h4>
-                                    <button @click="openSubscriberModal(subscriber)">More Info</button>
+                                    <h4>@{{ subscriber.status }}</h4>
+                                    <button @click="openSubscriberModal(subscriber)">More Info</button>/ <button @click="openEditModal(subscriber)">Edit</button>
 
                                 </div>
                             </div>
@@ -103,6 +104,36 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="modal fade" id="editSubscriberModal" tabindex="-1" aria-labelledby="editSubscriberModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editSubscriberModalLabel">Edit Subscriber</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form @submit.prevent="updateSubscriber">
+                                    <div class="mb-3">
+                                        <label for="editEmail" class="form-label">Email</label>
+                                        <input type="email" v-model="editSubscriber.email" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editEmail" class="form-label">Phone</label>
+                                        <input type="input" v-model="editSubscriber.phone" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editPassword" class="form-label">New Password</label>
+                                        <input type="password" v-model="editSubscriber.password" class="form-control">
+                                        <small class="text-muted">Leave blank to keep the current password.</small>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -115,11 +146,17 @@
             data: {
                 subscribers: [],
                 page: 1,
-                perPage: 2,
+                perPage: 20,
                 hasMore: true,
                 searchQuery: '',
                 totalSubscribers: 0,
                 selectedSubscriber: null,
+                editSubscriber: {
+                    id: null,
+                    email: '',
+                    phone: '',
+                    password: ''
+                },
             },
             methods: {
                 fetchSubscribers() {
@@ -132,7 +169,12 @@
                             }
                         })
                         .then((response) => {
-                            this.subscribers = [...this.subscribers, ...response.data.data];
+                            // Ensure unique data before appending
+                            let newSubscribers = response.data.data.filter(
+                                sub => !this.subscribers.some(existing => existing.id === sub.id)
+                            );
+
+                            this.subscribers = [...this.subscribers, ...newSubscribers];
                             this.hasMore = response.data.next_page_url !== null;
                             this.totalSubscribers = response.data.total;
                             this.page++;
@@ -141,7 +183,6 @@
                             console.error(error);
                         });
                 },
-
                 isFreeTrialActive(subscriber) {
                     if (!subscriber.free_trial) return false; // No free trial info available
                     let today = new Date();
@@ -149,14 +190,49 @@
                     return today <= freeTrialEnd; // Returns true if trial is still active
                 },
 
+                openEditModal(subscriber) {
+                    this.editSubscriber = {
+                        id: subscriber.id,
+                        email: subscriber.email,
+                        phone: subscriber.phone,
+                        password: ''
+                    };
+                    var modal = new bootstrap.Modal(document.getElementById('editSubscriberModal'));
+                    modal.show();
+                },
+
+                updateSubscriber() {
+                    axios
+                        .post(`/update-subscription-user/${this.editSubscriber.id}`, {
+                            email: this.editSubscriber.email,
+                            phone: this.editSubscriber.phone,
+                            password: this.editSubscriber.password
+                        })
+                        .then(response => {
+
+                            alert(response.data.message);
+                            var modal = bootstrap.Modal.getInstance(document.getElementById('editSubscriberModal'));
+                            modal.hide();
+                            this.page = 1;
+                            this.subscribers = [];
+                            this.fetchSubscribers();
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                },
+
                 loadMore() {
                     this.fetchSubscribers();
                 },
+
                 searchSubscribers() {
                     this.page = 1;
-                    this.subscribers = [];
+                    this.subscribers = []; // Clear existing data
+                    this.hasMore = true; // Reset pagination flag
                     this.fetchSubscribers();
                 },
+
                 openSubscriberModal(subscriber) {
                     this.selectedSubscriber = subscriber;
                     console.log(this.selectedSubscriber, 'this.selectedSubscriber');
