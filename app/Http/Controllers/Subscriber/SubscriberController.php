@@ -73,10 +73,23 @@ class SubscriberController extends Controller
 
     public function cancelFreeTrial()
     {
-        $user = auth()->user();
 
-        // Set free_trial to null or mark as canceled
-        $user->update(['is_cancel_free_trial' => 1]);
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $user = auth()->user();
+        // Update user record
+
+        if ($user->stripe_subcription_id) {
+            $subscription = $stripe->subscriptions->retrieve($user->stripe_subcription_id);
+            if ($subscription && $subscription->status !== 'canceled') {
+                $stripe->subscriptions->cancel($user->stripe_subcription_id);
+                $user->update([
+                    'stripe_subcription_id' => null,
+                    'is_cancel_free_trial' => 1,
+                ]);
+            } else {
+                return redirect()->back()->with('error', 'Subscription is already canceled or invalid.');
+            }
+        }
 
         return redirect()->back()->with('success', 'Your free trial has been canceled.');
     }
@@ -85,32 +98,50 @@ class SubscriberController extends Controller
     public function showFreeTrialForm()
     {
         $user = auth()->user();
+        $userPlan = UserPlans::query()->first();
 
-        // $cardNumber = Crypt::decryptString($user->card_number);
-        return view('free-trial', compact('user'));
+        return view('free-trial', compact('user', 'userPlan'));
     }
 
     public function processFreeTrial(Request $request)
     {
-        // Validate the request
-        $validated = $request->validate([
-            'card_number' => ['required', 'numeric', 'digits_between:13,19'], // Card number validation
-            'expiry_date' => ['required', 'regex:/^(0[1-9]|1[0-2])\/?([0-9]{2})$/'], // MM/YY format
-            'ccv' => ['required', 'numeric', 'digits:3'], // CCV should be exactly 3 digits
-        ]);
 
-        // Simulate card validation (replace this with actual payment gateway logic if needed)
-        if (!$this->isValidCard($validated['card_number'])) {
-            return back()->withErrors(['card_number' => 'Invalid card number'])->withInput();
-        }
-        $userPlans =      UserPlans::query()->first();
-        $free_trial_day =   $userPlans->free_trial;
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
         $user = auth()->user();
 
+        if (!$user->stripe_customer_id) {
+            $customer = $stripe->customers->create([
+                'email' => $user->email,
+                'name' => $user->name,
+            ]);
+            $user->stripe_customer_id = $customer->id;
+            $user->save();
+        }
 
+        $stripe->paymentMethods->attach(
+            $request->token, // Payment method from Stripe Elements
+            ['customer' => $user->stripe_customer_id]
+        );
+
+        $stripe->customers->update(
+            $user->stripe_customer_id,
+            ['invoice_settings' => ['default_payment_method' => $request->token]]
+        );
+
+        $userPlan = UserPlans::query()->first();
+        $freeTrialDays = $userPlan->free_trial;
+
+        $subscription = $stripe->subscriptions->create([
+            'customer' => $user->stripe_customer_id,
+            'items' => [['price' => $userPlan->stripe_price_id]], // Replace with your actual price ID
+            'trial_period_days' => $freeTrialDays,
+            'default_payment_method' => $request->token,
+        ]);
+
+        // Save subscription ID to user for future reference
         $user->update([
-            'card_number' => encrypt($validated['card_number']),
-            'free_trial' => now()->addDays($free_trial_day)
+            'stripe_subcription_id' => $subscription->id,
+            'free_trial' => now()->addDays($freeTrialDays),
         ]);
 
         // Redirect with success message
