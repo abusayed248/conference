@@ -75,6 +75,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/update-call-action', [CallActionController::class, 'updateCallAction'])->name('update-call-action');
     Route::get('/subactions/{digit}', [CallActionController::class, 'getByDigit']);
     Route::get('/all-call-action', [CallActionController::class, 'getCallAction']);
+    Route::post('/update-subscription-user/{id}', [SubscriberController::class, 'updateSubscription']);
 });
 
 
