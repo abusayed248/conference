@@ -75,37 +75,55 @@ class TelnyxWebhookController extends Controller
                     if ($lastEvent && $lastEvent->event_type === 'sub_menu' && $lastEvent->status === 'processing') {
                         $hasSubmenu = true;
                     }
+                    Log::info('lastEvent', ['lastEvent' => $lastEvent]);
+                    Log::info('hasSubmenu', ['hasSubmenu' => $hasSubmenu]);
+                    Log::info('digit', ['digit' => $digit]);
 
                     if ($digit == '0' || $digit == 0) {
                         // Back to the main menu on press 0 with initial audio playback
                         $this->callAnswerAction($callControlId, $payload);
                     }
                     else {
-                        $callAction = CallAction::query()->where('digit', $digit)->first();
-                        Log::info('CallAction data found in database', $callAction->toArray());
+                        if ($hasSubmenu) {
+                            $callAction = CallAction::query()->where('digit', $lastEvent->payload['digit'])->first();
+                            Log::info('sub callAction', ['callAction' => $callAction]);
 
-                        if ($callAction) {
-                            $subCallAction = null;
-                            if ($hasSubmenu) {
+                            if ($callAction) {
+                                Log::info('CallAction data found in database', $callAction->toArray());
+
                                 $subCallAction = SubCallAction::query()
                                     ->where('call_action_id', $callAction->id)
                                     ->where('digit', $digit)
                                     ->first();
-                            }
+                                Log::info('subCallAction', ['subCallAction' => $subCallAction]);
 
-                            if ($callAction->type == 'transfer' && $callAction->transfer_to) {
-                                $this->callTransfer($callControlId, $payload, $callAction);
-                            }
-                            elseif ($callAction->type == 'audio' && $callAction->audio_link) {
                                 if ($subCallAction) {
-                                    if ($subCallAction->audio_link) {
+                                    if ($subCallAction->type == 'transfer' && $subCallAction->transfer_to) {
+                                        $this->callTransfer($callControlId, $payload, $subCallAction);
+                                    }
+                                    elseif ($subCallAction->type == 'audio' && $subCallAction->audio_link) {
                                         $this->playAudioPrompt($callControlId, $subCallAction->audio_link, $payload);
                                     }
                                     else {
-                                        Log::info("Audio link not found for submenu. Digit: $digit");
+                                        Log::info('Invalid data found in database', $subCallAction->toArray());
                                     }
                                 }
-                                else {
+                            }
+                            else {
+                                Log::info('No data found with the digit ' . $digit, $requestData);
+                            }
+                        }
+                        else {
+                            $callAction = CallAction::query()->where('digit', $digit)->first();
+                            Log::info('callAction', ['callAction' => $callAction]);
+
+                            if ($callAction) {
+                                Log::info('CallAction data found in database', $callAction->toArray());
+
+                                if ($callAction->type == 'transfer' && $callAction->transfer_to) {
+                                    $this->callTransfer($callControlId, $payload, $callAction);
+                                }
+                                elseif ($callAction->type == 'audio' && $callAction->audio_link) {
                                     if ($callAction->audio_link) {
                                         $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
                                     }
@@ -113,26 +131,27 @@ class TelnyxWebhookController extends Controller
                                         Log::info("Audio link not found for digit: $digit");
                                     }
                                 }
-                            }
-                            elseif ($callAction->type == 'sub_menu') {
-                                TelnyxEvent::create([
-                                    'phone' => $payload['from'],
-                                    'call_control_id' => $callControlId,
-                                    'event_type' => 'sub_menu',
-                                    'command_id' => null,
-                                    'client_state' => $payload['client_state'],
-                                    'payload' => $payload,
-                                    'request' => []
-                                ]);
-                                // Play greetings audio for initial of submenu
-                                $this->callAnswerAction($callControlId, $payload, true);
+                                elseif ($callAction->type == 'sub_menu') {
+                                    TelnyxEvent::create([
+                                        'phone' => $payload['from'],
+                                        'call_control_id' => $callControlId,
+                                        'event_type' => 'sub_menu',
+                                        'command_id' => null,
+                                        'client_state' => $payload['client_state'],
+                                        'payload' => $payload,
+                                        'request' => []
+                                    ]);
+
+                                    // Play greetings audio for initial of submenu
+                                    $this->callAnswerAction($callControlId, $payload, true);
+                                }
+                                else {
+                                    Log::info('Invalid data found in database', $callAction->toArray());
+                                }
                             }
                             else {
-                                Log::info('Invalid data found in database', $callAction->toArray());
+                                Log::info('No data found with the digit ' . $digit, $requestData);
                             }
-                        }
-                        else {
-                            Log::info('No data found with the digit ' . $digit, $requestData);
                         }
                     }
                 }
@@ -156,7 +175,7 @@ class TelnyxWebhookController extends Controller
 
             default:
                 // Making events done
-                TelnyxEvent::where('call_control_id', $callControlId)->update(['status' => 'completed']);
+                // TelnyxEvent::where('call_control_id', $callControlId)->update(['status' => 'completed']);
 
                 // Handle any other events that do not match
                 Log::info('Unhandled event type', ['event' => $event]);
