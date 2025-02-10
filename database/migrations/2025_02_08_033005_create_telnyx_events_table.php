@@ -20,7 +20,14 @@ return new class extends Migration
             $table->string('client_state')->nullable();
             $table->json('payload')->nullable();
             $table->json('request')->nullable();
+            $table->enum('status', ['processing', 'completed'])->default('processing');
             $table->timestamps();
+
+            // Adding indexes
+            $table->index('phone');
+            $table->index('call_control_id');
+            $table->index('event_type');
+            $table->index('status');
         });
     }
 

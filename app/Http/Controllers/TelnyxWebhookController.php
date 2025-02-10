@@ -70,8 +70,14 @@ class TelnyxWebhookController extends Controller
                 if ($digit !== null) {
                     Log::info('Processing DTMF digit', ['digit' => $digit]);
 
+                    $hasSubmenu = false;
+                    $lastEvent = TelnyxEvent::where('call_control_id', $callControlId)->latest()->first();
+                    if ($lastEvent && $lastEvent->event_type === 'sub_menu' && $lastEvent->status === 'processing') {
+                        $hasSubmenu = true;
+                    }
+
                     if ($digit == '0' || $digit == 0) {
-                        // Back to the main menu
+                        // Back to the main menu on press 0 with initial audio playback
                         $this->callAnswerAction($callControlId, $payload);
                     }
                     else {
@@ -79,16 +85,47 @@ class TelnyxWebhookController extends Controller
                         Log::info('CallAction data found in database', $callAction->toArray());
 
                         if ($callAction) {
+                            $subCallAction = null;
+                            if ($hasSubmenu) {
+                                $subCallAction = SubCallAction::query()
+                                    ->where('call_action_id', $callAction->id)
+                                    ->where('digit', $digit)
+                                    ->first();
+                            }
+
                             if ($callAction->type == 'transfer' && $callAction->transfer_to) {
-                                // $this->{"handleDigit$digit"}($callControlId, $payload['data']['payload']);
                                 $this->callTransfer($callControlId, $payload, $callAction);
                             }
                             elseif ($callAction->type == 'audio' && $callAction->audio_link) {
-                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
+                                if ($subCallAction) {
+                                    if ($subCallAction->audio_link) {
+                                        $this->playAudioPrompt($callControlId, $subCallAction->audio_link, $payload);
+                                    }
+                                    else {
+                                        Log::info("Audio link not found for submenu. Digit: $digit");
+                                    }
+                                }
+                                else {
+                                    if ($callAction->audio_link) {
+                                        $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
+                                    }
+                                    else {
+                                        Log::info("Audio link not found for digit: $digit");
+                                    }
+                                }
                             }
                             elseif ($callAction->type == 'sub_menu') {
-                                // Call initiated to manage submenu
-                                $this->callInitAction($callControlId, $payload, true);
+                                TelnyxEvent::create([
+                                    'phone' => $payload['from'],
+                                    'call_control_id' => $callControlId,
+                                    'event_type' => 'sub_menu',
+                                    'command_id' => null,
+                                    'client_state' => $payload['client_state'],
+                                    'payload' => $payload,
+                                    'request' => []
+                                ]);
+                                // Play greetings audio for initial of submenu
+                                $this->callAnswerAction($callControlId, $payload, true);
                             }
                             else {
                                 Log::info('Invalid data found in database', $callAction->toArray());
@@ -102,6 +139,9 @@ class TelnyxWebhookController extends Controller
                 break;
 
             case 'call.hangup':
+                // Making events done
+                TelnyxEvent::where('call_control_id', $callControlId)->update(['status' => 'completed']);
+
                 // Handle the event when the call is hung up
                 Log::info('Call hangup received', ['call_control_id' => $callControlId]);
                 break;
@@ -115,95 +155,9 @@ class TelnyxWebhookController extends Controller
                 break;
 
             default:
-                // Handle any other events that do not match
-                Log::info('Unhandled event type', ['event' => $event]);
-                break;
-        }
-    }
+                // Making events done
+                TelnyxEvent::where('call_control_id', $callControlId)->update(['status' => 'completed']);
 
-    public function handleSubmenu(Request $request) {
-        Log::info('Call initiated for submenu');
-
-        // Log telnyx request
-        Log::info('Telnyx API Request', [
-            'request' => $request,
-        ]);
-
-        // Get the raw POST data from the webhook
-        $rawInputData = file_get_contents('php://input');
-        $requestData = json_decode($rawInputData, true);
-
-        // Log telnyx request
-        Log::info('Telnyx API Request', [
-            'requestData' => $requestData,
-        ]);
-
-        $event = $requestData['data']['event_type'] ?? null;
-        $payload = $requestData['data']['payload'];
-        $callControlId = $payload['call_control_id'] ?? null;
-
-        if (!$event || !$callControlId) {
-            return response()->json(['error' => 'Invalid payload'], 400);
-        }
-
-        switch ($event) {
-            case 'call.answered':
-                // Handle the event when the call is answered
-                $this->callAnswerAction($callControlId, $payload, true);
-                break;
-
-            case 'call.dtmf.received':
-                // Handle the event when a DTMF digit (button press) is received
-                $digit = $payload['digit'] ?? null;
-                if ($digit !== null) {
-                    Log::info('Processing DTMF digit', ['digit' => $digit]);
-
-                    if ($digit == '0' || $digit == 0) {
-                        // Back to the main menu
-                        // Handle the event when the call is initiated
-                        $this->callInitAction($callControlId, $payload, false);
-                    }
-                    else {
-                        $callAction = SubCallAction::query()->where('digit', $digit)->first();
-                        Log::info('SubCallAction data found in database', $callAction->toArray());
-
-                        if ($callAction) {
-                            if ($callAction->type == 'transfer' && $callAction->transfer_to) {
-                                // $this->{"handleDigit$digit"}($callControlId, $payload);
-                                $this->callTransfer($callControlId, $payload, $callAction);
-                            }
-                            elseif ($callAction->type == 'audio' && $callAction->audio_link) {
-                                $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
-                            }
-                            elseif ($callAction->type == 'sub_menu') {
-                                // Call initiated to manage submenu
-                                $this->callInitAction($callControlId, $payload, true);
-                            }
-                            else {
-                                Log::info('Invalid data found in database', $callAction->toArray());
-                            }
-                        }
-                        else {
-                            Log::info('No data found with the digit ' . $digit, $requestData);
-                        }
-                    }
-                }
-                break;
-
-            case 'call.hangup':
-                // Handle the event when the call is hung up
-                Log::info('Call hangup received', ['call_control_id' => $callControlId]);
-                break;
-
-            case 'call.gather.ended':
-                // Handle the event when the gather has ended (no input received)
-                $result = $requestData['data']['result'];
-                if ($result === 'no_input') {
-                    $this->timeoutAction($callControlId, $payload);
-                }
-                break;
-
-            default:
                 // Handle any other events that do not match
                 Log::info('Unhandled event type', ['event' => $event]);
                 break;

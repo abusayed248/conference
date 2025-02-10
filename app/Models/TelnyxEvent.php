@@ -21,6 +21,7 @@ class TelnyxEvent extends Model
         'client_state',
         'payload',
         'request',
+        'status',
     ];
 
     protected $casts = [
