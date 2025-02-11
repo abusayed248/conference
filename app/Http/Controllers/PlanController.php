@@ -84,9 +84,22 @@ class PlanController extends Controller
 
     public function createSubscriptions(Request $request)
     {
+
         $stripe = new StripeClient(env('STRIPE_SECRET'));
 
         $user = Auth::user();
+
+
+
+        if ($user->stripe_subcription_id) {
+            $subscription = $stripe->subscriptions->retrieve($user->stripe_subcription_id);
+            if ($subscription && $subscription->status !== 'canceled') {
+                $stripe->subscriptions->cancel($user->stripe_subcription_id);
+                $user->update([
+                    'stripe_subcription_id' => null,
+                ]);
+            }
+        }
 
         // Step 1: Create a Stripe customer if not already exists
         if (!$user->stripe_customer_id) {
@@ -98,26 +111,22 @@ class PlanController extends Controller
             $user->save();
         }
 
-        // Step 2: Attach payment method to the customer
         $stripe->paymentMethods->attach(
             $request->token, // Payment method from Stripe Elements
             ['customer' => $user->stripe_customer_id]
         );
 
-        // Step 3: Set the default payment method for the customer
         $stripe->customers->update(
             $user->stripe_customer_id,
             ['invoice_settings' => ['default_payment_method' => $request->token]]
         );
 
-        // Step 4: Create the subscription
         $subscription = $stripe->subscriptions->create([
             'customer' => $user->stripe_customer_id,
-            'items' => [['price' => $request->plan]], // Use the price ID from the form
-            'expand' => ['latest_invoice.payment_intent'], // Expand to get payment details
+            'items' => [['price' => $request->plan]],
+            'expand' => ['latest_invoice.payment_intent'],
         ]);
 
-        // Step 5: Check payment status
         $paymentIntent = $subscription->latest_invoice->payment_intent;
 
         if ($paymentIntent->status === 'succeeded') {
