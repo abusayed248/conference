@@ -143,7 +143,7 @@ class TelnyxWebhookController extends Controller
                                     ]);
 
                                     // Play greetings audio for initial of submenu
-                                    $this->callAnswerAction($callControlId, $payload, true);
+                                    $this->callAnswerAction($callControlId, $payload, true, $callAction->id);
                                 }
                                 else {
                                     Log::info('Invalid data found in database', $callAction->toArray());
@@ -232,12 +232,13 @@ class TelnyxWebhookController extends Controller
         }
     }
 
-    private function callAnswerAction(string $callControlId, $payload, $isSubmenu = false): void
+    private function callAnswerAction(string $callControlId, $payload, $isSubmenu = false, $callActionId = null): void
     {
         Log::info('Call answered', ['call_control_id' => $callControlId]);
 
         if ($isSubmenu) {
             $callAction = SubCallAction::query()
+                ->where('call_action_id', $callActionId)
                 ->where('type', 'greetings')
                 ->whereNotNull('audio_link')
                 ->where('audio_link', '!=', '')
