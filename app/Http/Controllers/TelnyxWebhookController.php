@@ -80,6 +80,11 @@ class TelnyxWebhookController extends Controller
                     Log::info('digit', ['digit' => $digit]);
 
                     if ($digit == '0' || $digit == 0) {
+                        // Making events done
+                        TelnyxEvent::where('call_control_id', $callControlId)
+                            ->where('event_type', 'sub_menu')
+                            ->update(['status' => 'completed']);
+
                         // Back to the main menu on press 0 with initial audio playback
                         $this->callAnswerAction($callControlId, $payload);
                     }
@@ -133,7 +138,7 @@ class TelnyxWebhookController extends Controller
                                 }
                                 elseif ($callAction->type == 'sub_menu') {
                                     TelnyxEvent::create([
-                                        'phone' => $payload['from'],
+                                        'phone' => $this->getPhone($payload['from']),
                                         'call_control_id' => $callControlId,
                                         'event_type' => 'sub_menu',
                                         'command_id' => null,
@@ -195,7 +200,7 @@ class TelnyxWebhookController extends Controller
 
         try {
             TelnyxEvent::create([
-                'phone' => $payload['from'],
+                'phone' => $this->getPhone($payload['from']),
                 'call_control_id' => $callControlId,
                 'event_type' => 'call.initiated',
                 'command_id' => null,
@@ -235,6 +240,7 @@ class TelnyxWebhookController extends Controller
     private function callAnswerAction(string $callControlId, $payload, $isSubmenu = false, $callActionId = null): void
     {
         Log::info('Call answered', ['call_control_id' => $callControlId]);
+        $phone = $this->getPhone($payload['from']);
 
         if ($isSubmenu) {
             $callAction = SubCallAction::query()
@@ -246,7 +252,7 @@ class TelnyxWebhookController extends Controller
         }
         else
         {
-            $hasSubscription = $this->subscriptionsService->isActive($payload['from']);
+            $hasSubscription = $this->subscriptionsService->isActive($phone);
             $type = $hasSubscription ? 'greetings' : 'non_subscriber_greetings';
 
             $callAction = CallAction::query()
@@ -259,7 +265,7 @@ class TelnyxWebhookController extends Controller
         if ($callAction) {
             try {
                 TelnyxEvent::create([
-                    'phone' => $payload['from'],
+                    'phone' => $phone,
                     'call_control_id' => $callControlId,
                     'event_type' => 'call.answered',
                     'command_id' => null,
@@ -310,7 +316,7 @@ class TelnyxWebhookController extends Controller
 
         try {
             TelnyxEvent::create([
-                'phone' => $payload['from'],
+                'phone' => $this->getPhone($payload['from']),
                 'call_control_id' => $callControlId,
                 'event_type' => 'playback_start',
                 'command_id' => $commandId,
@@ -369,7 +375,7 @@ class TelnyxWebhookController extends Controller
 
         try {
             TelnyxEvent::create([
-                'phone' => $payload['from'],
+                'phone' => $this->getPhone($payload['from']),
                 'call_control_id' => $callControlId,
                 'event_type' => 'playback_stop',
                 'command_id' => $commandId,
@@ -437,7 +443,7 @@ class TelnyxWebhookController extends Controller
 
         try {
             TelnyxEvent::create([
-                'phone' => $payload['from'],
+                'phone' => $this->getPhone($payload['from']),
                 'call_control_id' => $callControlId,
                 'event_type' => 'transfer',
                 'command_id' => $commandId,
@@ -490,5 +496,9 @@ class TelnyxWebhookController extends Controller
         $response = $client->request($method, $this->apiBaseUrl . $endpoint, $options);
 
         return json_decode((string) $response->getBody(), true);
+    }
+
+    private function getPhone($from) {
+        return explode('@', $from)[0]; // Get the part before '@'
     }
 }

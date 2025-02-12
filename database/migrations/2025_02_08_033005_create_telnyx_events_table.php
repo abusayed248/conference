@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('telnyx_events', function (Blueprint $table) {
             $table->id();
-            $table->string('phone', 28);
+            $table->string('phone', 128); // Ex: +880811858256381@208.69.81.78:5060 | I hve exploded but taking more length for safety
             $table->string('call_control_id');
             $table->string('event_type', 128);
             $table->string('command_id')->nullable();
