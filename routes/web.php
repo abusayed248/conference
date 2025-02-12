@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
     Route::post('/subscription/free-trial/cancel', [SubscriberController::class, 'cancelFreeTrial'])
         ->name('subscription.free-trial.cancel');
-
+    Route::get('/subscription/free-trial', [SubscriberController::class, 'showFreeTrialForm'])->name('subscription.free-trial');
     Route::get('/sub-menu', [SubscriberController::class, 'subMenu'])->name('sub-menu');
     Route::get('/manage-subscribers', [SubscriberController::class, 'manageSubscriber'])->name('manage.subscribers');
     Route::get('/billing-subscription-plan', [SubscriberController::class, 'subscriptionPlan'])->name('subscription.plans');
@@ -46,7 +46,6 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/subscription/create', [PlanController::class, 'createSubscriptions'])->name('subscription.create');
 
 
-    Route::get('/subscription/free-trial', [SubscriberController::class, 'showFreeTrialForm'])->name('subscription.free-trial');
     Route::post('/subscription/free-trial', [SubscriberController::class, 'processFreeTrial'])->name('subscription.free-trial.process');
 
 
