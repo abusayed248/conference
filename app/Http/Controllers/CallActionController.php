@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\CallAction;
-use App\Models\CallActionDetails;
-use App\Models\SubCallAction;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\SubCallAction;
+use App\Models\CallActionDetails;
 
 class CallActionController extends Controller
 {
@@ -54,7 +56,13 @@ class CallActionController extends Controller
                 $callAction->clearMediaCollection('audio_file');
             }
 
-            $callAction->addMedia($request->file('audio_file'))
+            $file = $request->file('audio_file');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $sanitizedFilename = Str::slug($originalName) . '.' . $file->getClientOriginalExtension();
+
+            $callAction
+                ->addMedia($file)
+                ->usingFileName($sanitizedFilename) // Apply the formatted filename
                 ->toMediaCollection('audio_file');
 
             $callAction->update([
@@ -65,7 +73,13 @@ class CallActionController extends Controller
                 'type' => $request->type
             ]);
 
-            $callAction->addMedia($request->file('audio_file'))
+            $file = $request->file('audio_file');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $sanitizedFilename = Str::slug($originalName) . '.' . $file->getClientOriginalExtension();
+
+            $callAction
+                ->addMedia($file)
+                ->usingFileName($sanitizedFilename) // Apply the formatted filename
                 ->toMediaCollection('audio_file');
 
             $callAction->update([
@@ -95,7 +109,13 @@ class CallActionController extends Controller
                 $callAction->clearMediaCollection('audio_file');
             }
 
-            $callAction->addMedia($request->file('audio_file'))
+            $file = $request->file('audio_file');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $sanitizedFilename = Str::slug($originalName) . '.' . $file->getClientOriginalExtension();
+
+            $callAction
+                ->addMedia($file)
+                ->usingFileName($sanitizedFilename) // Apply the formatted filename
                 ->toMediaCollection('audio_file');
 
             $callAction->update([
@@ -106,7 +126,13 @@ class CallActionController extends Controller
                 'type' => $request->type
             ]);
 
-            $callAction->addMedia($request->file('audio_file'))
+            $file = $request->file('audio_file');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $sanitizedFilename = Str::slug($originalName) . '.' . $file->getClientOriginalExtension();
+
+            $callAction
+                ->addMedia($file)
+                ->usingFileName($sanitizedFilename) // Apply the formatted filename
                 ->toMediaCollection('audio_file');
 
             $callAction->update([
@@ -168,7 +194,13 @@ class CallActionController extends Controller
                 $callAction->clearMediaCollection('audio_file');
             }
 
-            $callAction->addMedia($request->file('audio_file'))
+            $file = $request->file('audio_file');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $sanitizedFilename = Str::slug($originalName) . '.' . $file->getClientOriginalExtension();
+
+            $callAction
+                ->addMedia($file)
+                ->usingFileName($sanitizedFilename) // Apply the formatted filename
                 ->toMediaCollection('audio_file');
 
             $callAction->update([
@@ -180,8 +212,13 @@ class CallActionController extends Controller
                 'digit' => $request->digit
             ]);
 
+            $file = $request->file('audio_file');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $sanitizedFilename = Str::slug($originalName) . '.' . $file->getClientOriginalExtension();
 
-            $callAction->addMedia($request->file('audio_file'))
+            $callAction
+                ->addMedia($file)
+                ->usingFileName($sanitizedFilename) // Apply the formatted filename
                 ->toMediaCollection('audio_file');
 
             $callAction->update([
@@ -227,11 +264,15 @@ class CallActionController extends Controller
                 // Delete the existing media
                 $subCallAction->clearMediaCollection('audio_file');
             }
+            $file = $request->file('audio_file');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $sanitizedFilename = Str::slug($originalName) . '.' . $file->getClientOriginalExtension();
 
-            $media =  $subCallAction->addMedia($request->file('audio_file'))
+            $media = $subCallAction
+                ->addMedia($file)
+                ->usingFileName($sanitizedFilename) // Apply the formatted filename
                 ->toMediaCollection('audio_file');
             $audioUrl = $media->getUrl(); // Get the URL of the uploaded file
-
             $subCallAction->update([
                 'audio_link' => $audioUrl
             ]);
@@ -242,8 +283,13 @@ class CallActionController extends Controller
                 'type' => $request->sub_type,
                 'digit' => $request->sub
             ]);
+            $file = $request->file('audio_file');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $sanitizedFilename = Str::slug($originalName) . '.' . $file->getClientOriginalExtension();
 
-            $subCallAction->addMedia($request->file('audio_file'))
+            $subCallAction
+                ->addMedia($file)
+                ->usingFileName($sanitizedFilename)
                 ->toMediaCollection('audio_file');
 
             $subCallAction->update([
