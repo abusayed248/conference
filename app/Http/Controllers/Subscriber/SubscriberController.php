@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Subscriber;
 
+use Stripe\Webhook;
 use App\Models\User;
 use Stripe\StripeClient;
 use App\Models\UserPlans;
@@ -20,6 +21,39 @@ class SubscriberController extends Controller
     public function subMenu()
     {
         return view('sub-menu');
+    }
+
+    public function handleWebhook(Request $request)
+    {
+
+        $endpointSecret = config('services.stripe.webhook_secret');
+        $payload = $request->getContent();
+        $sigHeader = $request->header('Stripe-Signature');
+
+        try {
+            $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
+            Log::info('Stripe webhook payload', ['event' => $event]);
+        } catch (\UnexpectedValueException $e) {
+            Log::error('Invalid Stripe webhook payload', ['exception' => $e]);
+            return response()->json(['error' => 'Invalid payload'], 400);
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+            Log::error('Invalid Stripe webhook signature', ['exception' => $e]);
+            return response()->json(['error' => 'Invalid signature'], 400);
+        }
+
+        // switch ($event->type) {
+        //     case 'invoice.payment_succeeded':
+        //         $invoice = $event->data->object;
+        //         $this->handleInvoicePaymentSucceeded($invoice);
+        //         break;
+
+        //         // Handle other event types as needed
+        //     default:
+        //         Log::info('Received unhandled Stripe event type', ['type' => $event->type]);
+        //         break;
+        // }
+
+        return response()->json(['status' => 'success'], 200);
     }
 
 

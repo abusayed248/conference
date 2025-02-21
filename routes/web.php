@@ -78,7 +78,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 
-
+Route::post('/webhook/stripe', [SubscriberController::class, 'handleWebhook']);
 // admin routes end
 
 Route::post('/webhook/telnyx', [TelnyxWebhookController::class, 'handle']);
