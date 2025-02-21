@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Subscriber;
 
+use Stripe\Webhook;
 use App\Models\User;
 use Stripe\StripeClient;
 use App\Models\UserPlans;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
+use App\Services\SubscriptionsService;
 use App\Http\Resources\SubscriberResource;
 
 class SubscriberController extends Controller
@@ -22,6 +24,87 @@ class SubscriberController extends Controller
         return view('sub-menu');
     }
 
+    public function handleWebhook(Request $request)
+    {
+
+        $stripeSecretKey = config('services.stripe.secret');
+        \Stripe\Stripe::setApiKey($stripeSecretKey);
+        $endpoint_secret = config('services.stripe.webhook_secret');
+
+        $payload = @file_get_contents('php://input');
+        $event = null;
+
+        try {
+            $event = \Stripe\Event::constructFrom(
+                json_decode($payload, true)
+            );
+        } catch (\UnexpectedValueException $e) {
+            echo '⚠️  Webhook error while parsing basic request.';
+            http_response_code(400);
+            exit();
+        }
+        if ($endpoint_secret) {
+            $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+            try {
+                $event = \Stripe\Webhook::constructEvent(
+                    $payload,
+                    $sig_header,
+                    $endpoint_secret
+                );
+            } catch (\Stripe\Exception\SignatureVerificationException $e) {
+                echo '⚠️  Webhook error while validating signature.';
+                http_response_code(400);
+                exit();
+            }
+        }
+
+        // Handle the event
+        switch ($event->type) {
+            case 'invoice.payment_succeeded':
+                $invoice = $event->data->object;
+                $this->handleInvoicePaymentSucceeded($invoice);
+                break;
+            case 'invoice.payment_failed':
+                $invoice = $event->data->object;
+                $this->handleInvoicePaymentFailed($invoice);
+                break;
+                // ... handle other event types
+            default:
+                Log::warning('Unhandled event type: ' . $event->type);
+                break;
+        }
+
+        http_response_code(200);
+        return response()->json(['status' => 'success'], 200);
+    }
+
+    protected function handleInvoicePaymentSucceeded($invoice)
+    {
+
+        $paidAmount = $invoice->amount_paid;
+        if ($paidAmount > 100) {
+            $stripeCustomerId = $invoice->customer;
+            $user = User::where('stripe_customer_id', $stripeCustomerId)->first();
+            if ($user) {
+                $user->update([
+                    'payment_done' => 1,
+                    'payment_date' => now(),
+                    'payment_end' => now()->addMonth(),
+                ]);
+            }
+        }
+    }
+
+    protected function handleInvoicePaymentFailed($invoice)
+    {
+        $stripeCustomerId = $invoice->customer;
+        $user = User::where('stripe_customer_id', $stripeCustomerId)->first();
+        if ($user) {
+            Log::warning('Subscription payment failed for user', ['user_id' => $user->id]);
+        } else {
+            Log::warning('User not found for Stripe customer ID', ['stripe_customer_id' => $stripeCustomerId]);
+        }
+    }
 
     public function updateSubscription(Request $request, $id)
     {
@@ -301,6 +384,52 @@ class SubscriberController extends Controller
     public function subscriptionPlan()
     {
         $userPlan = UserPlans::query()->first();
-        return view("subscription", compact("userPlan"));
+
+        $user = auth()->user();
+        $subscriptionsService = new SubscriptionsService();
+        $hasSubscription = $subscriptionsService->isActivePremimium($user->phone);
+        return view("subscription", compact("userPlan", "hasSubscription", "user"));
+    }
+
+    public function updatePaymentMethod(Request $request)
+    {
+        $user = auth()->user();
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+        // Attach the new payment method
+        $newPaymentMethod = $stripe->paymentMethods->attach(
+            $request->token, // New payment method token from Stripe Elements
+            ['customer' => $user->stripe_customer_id]
+        );
+
+        // Update the customer's default payment method
+        $stripe->customers->update(
+            $user->stripe_customer_id,
+            ['invoice_settings' => ['default_payment_method' => $newPaymentMethod->id]]
+        );
+
+        // Update the subscription to use the new payment method
+        $stripe->subscriptions->update($user->stripe_subcription_id, [
+            'default_payment_method' => $newPaymentMethod->id,
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function cancelSubscription(Request $request)
+    {
+        $user = auth()->user();
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+        try {
+            // Cancel the subscription at the end of the billing period
+            $stripe->subscriptions->update($user->stripe_subcription_id, [
+                'cancel_at_period_end' => true,
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Subscription will not renew.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to cancel subscription.'], 500);
+        }
     }
 }

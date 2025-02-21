@@ -27,10 +27,13 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
     Route::post('/subscription/free-trial/cancel', [SubscriberController::class, 'cancelFreeTrial'])
         ->name('subscription.free-trial.cancel');
-
+    Route::get('/subscription/free-trial', [SubscriberController::class, 'showFreeTrialForm'])->name('subscription.free-trial');
     Route::get('/sub-menu', [SubscriberController::class, 'subMenu'])->name('sub-menu');
     Route::get('/manage-subscribers', [SubscriberController::class, 'manageSubscriber'])->name('manage.subscribers');
     Route::get('/billing-subscription-plan', [SubscriberController::class, 'subscriptionPlan'])->name('subscription.plans');
+    Route::post('/update-payment-method', [SubscriberController::class, 'updatePaymentMethod']);
+    Route::post('/cancel-subscription', [SubscriberController::class, 'cancelSubscription'])->name('cancel.subscription');
+    Route::post('/update-phone-number', [ProfileController::class, 'updatePhoneNumber'])->name('update.phone.number');
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
@@ -46,7 +49,6 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/subscription/create', [PlanController::class, 'createSubscriptions'])->name('subscription.create');
 
 
-    Route::get('/subscription/free-trial', [SubscriberController::class, 'showFreeTrialForm'])->name('subscription.free-trial');
     Route::post('/subscription/free-trial', [SubscriberController::class, 'processFreeTrial'])->name('subscription.free-trial.process');
 
 
@@ -79,7 +81,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 
-
+Route::post('/webhook/stripe', [SubscriberController::class, 'handleWebhook']);
 // admin routes end
 
 Route::post('/webhook/telnyx', [TelnyxWebhookController::class, 'handle']);

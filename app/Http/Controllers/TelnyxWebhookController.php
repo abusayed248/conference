@@ -119,6 +119,13 @@ class TelnyxWebhookController extends Controller
                             }
                         }
                         else {
+                            // Check caller subscription
+                            $phone = $this->getPhone($payload['from']);
+                            if (!$this->subscriptionsService->isActive($phone)) {
+                                Log::info('Call hangup due to not a subscriber');
+                                return;
+                            }
+
                             $callAction = CallAction::query()->where('digit', $digit)->first();
                             Log::info('callAction', ['callAction' => $callAction]);
 
@@ -499,6 +506,6 @@ class TelnyxWebhookController extends Controller
     }
 
     private function getPhone($from) {
-        return explode('@', $from)[0]; // Get the part before '@'
+        return $from ? explode('@', $from)[0] : ''; // Get the part before '@'
     }
 }
