@@ -71,4 +71,20 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
         return view('auth.login');
     }
+
+    public function updatePhoneNumber(Request $request)
+    {
+        $user = auth()->user();
+
+        // Validate the input
+        $request->validate([
+            'phone_number' => 'required|string|max:20',
+        ]);
+
+        // Update the user's phone number
+        $user->phone = $request->phone_number;
+        $user->save();
+
+        return response()->json(['success' => true]);
+    }
 }
