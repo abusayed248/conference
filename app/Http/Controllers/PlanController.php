@@ -131,10 +131,7 @@ class PlanController extends Controller
 
         if ($paymentIntent->status === 'succeeded') {
 
-            $user->payment_done = 1;
-            $user->payment_date = now();
             $user->stripe_subcription_id = $subscription->id;
-            $user->payment_end = now()->addMonth();
             $user->save();
             return redirect()->route('payment.page')->with('success', 'Your payment was successful. Thank you for subscribing!');
         } else {
