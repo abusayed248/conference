@@ -49,7 +49,9 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+        $url = $request->user()->role === "admin" ? "/" : "/billing-subscription-plan";
 
-        return redirect(RouteServiceProvider::HOME);
+        // Use redirect() directly instead of redirect()->intended()
+        return redirect($url);
     }
 }
