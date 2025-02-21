@@ -26,20 +26,79 @@ class SubscriberController extends Controller
     public function handleWebhook(Request $request)
     {
 
-        $endpointSecret = config('services.stripe.webhook_secret');
-        $payload = $request->getContent();
-        $sigHeader = $request->header('Stripe-Signature');
+        $stripeSecretKey = config('services.stripe.secret');
+        \Stripe\Stripe::setApiKey($stripeSecretKey);
+        $endpoint_secret = config('services.stripe.webhook_secret');
+
+        $payload = @file_get_contents('php://input');
+        $event = null;
 
         try {
-            $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
-            Log::info('Stripe webhook payload', ['event' => $event]);
+            $event = \Stripe\Event::constructFrom(
+                json_decode($payload, true)
+            );
+            Log::info('event payload', ['event' => $event]);
         } catch (\UnexpectedValueException $e) {
-            Log::error('Invalid Stripe webhook payload', ['exception' => $e]);
-            return response()->json(['error' => 'Invalid payload'], 400);
-        } catch (\Stripe\Exception\SignatureVerificationException $e) {
-            Log::error('Invalid Stripe webhook signature', ['exception' => $e]);
-            return response()->json(['error' => 'Invalid signature'], 400);
+            echo '⚠️  Webhook error while parsing basic request.';
+            http_response_code(400);
+            exit();
         }
+        if ($endpoint_secret) {
+            // Only verify the event if there is an endpoint secret defined
+            // Otherwise use the basic decoded event
+            $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+            try {
+                $event = \Stripe\Webhook::constructEvent(
+                    $payload,
+                    $sig_header,
+                    $endpoint_secret
+                );
+                Log::info('Stripe webhook payload', ['event' => $event]);
+            } catch (\Stripe\Exception\SignatureVerificationException $e) {
+                // Invalid signature
+                echo '⚠️  Webhook error while validating signature.';
+                http_response_code(400);
+                exit();
+            }
+        }
+
+        http_response_code(200);
+
+        // // Handle the event
+        // switch ($event->type) {
+        //     case 'payment_intent.succeeded':
+        //         $paymentIntent = $event->data->object; // contains a \Stripe\PaymentIntent
+        //         // Then define and call a method to handle the successful payment intent.
+        //         // handlePaymentIntentSucceeded($paymentIntent);
+        //         break;
+        //     case 'payment_method.attached':
+        //         $paymentMethod = $event->data->object; // contains a \Stripe\PaymentMethod
+        //         // Then define and call a method to handle the successful attachment of a PaymentMethod.
+        //         // handlePaymentMethodAttached($paymentMethod);
+        //         break;
+        //     default:
+        //         // Unexpected event type
+        //         error_log('Received unknown event type');
+        // }
+
+        http_response_code(200);
+
+        // $endpointSecret = config('services.stripe.webhook_secret');
+        // $payload = $request->getContent();
+        // $sigHeader = $request->header('Stripe-Signature');
+
+        // try {
+        //     $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
+
+        //     dd()
+        //     Log::info('Stripe webhook payload', ['event' => $event]);
+        // } catch (\UnexpectedValueException $e) {
+        //     Log::error('Invalid Stripe webhook payload', ['exception' => $e]);
+        //     return response()->json(['error' => 'Invalid payload'], 400);
+        // } catch (\Stripe\Exception\SignatureVerificationException $e) {
+        //     Log::error('Invalid Stripe webhook signature', ['exception' => $e]);
+        //     return response()->json(['error' => 'Invalid signature'], 400);
+        // }
 
         // switch ($event->type) {
         //     case 'invoice.payment_succeeded':
