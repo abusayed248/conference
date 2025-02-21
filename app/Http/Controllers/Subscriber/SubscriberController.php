@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
+use App\Services\SubscriptionsService;
 use App\Http\Resources\SubscriberResource;
 
 class SubscriberController extends Controller
@@ -79,14 +80,18 @@ class SubscriberController extends Controller
 
     protected function handleInvoicePaymentSucceeded($invoice)
     {
-        $stripeCustomerId = $invoice->customer;
-        $user = User::where('stripe_customer_id', $stripeCustomerId)->first();
-        if ($user) {
-            $user->update([
-                'payment_done' => 1,
-                'payment_date' => now(),
-                'payment_end' => now()->addMonth(),
-            ]);
+
+        $paidAmount = $invoice->amount_paid;
+        if ($paidAmount > 100) {
+            $stripeCustomerId = $invoice->customer;
+            $user = User::where('stripe_customer_id', $stripeCustomerId)->first();
+            if ($user) {
+                $user->update([
+                    'payment_done' => 1,
+                    'payment_date' => now(),
+                    'payment_end' => now()->addMonth(),
+                ]);
+            }
         }
     }
 
@@ -100,7 +105,6 @@ class SubscriberController extends Controller
             Log::warning('User not found for Stripe customer ID', ['stripe_customer_id' => $stripeCustomerId]);
         }
     }
-
 
     public function updateSubscription(Request $request, $id)
     {
@@ -380,6 +384,52 @@ class SubscriberController extends Controller
     public function subscriptionPlan()
     {
         $userPlan = UserPlans::query()->first();
-        return view("subscription", compact("userPlan"));
+
+        $user = auth()->user();
+        $subscriptionsService = new SubscriptionsService();
+        $hasSubscription = $subscriptionsService->isActivePremimium($user->phone);
+        return view("subscription", compact("userPlan", "hasSubscription", "user"));
+    }
+
+    public function updatePaymentMethod(Request $request)
+    {
+        $user = auth()->user();
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+        // Attach the new payment method
+        $newPaymentMethod = $stripe->paymentMethods->attach(
+            $request->token, // New payment method token from Stripe Elements
+            ['customer' => $user->stripe_customer_id]
+        );
+
+        // Update the customer's default payment method
+        $stripe->customers->update(
+            $user->stripe_customer_id,
+            ['invoice_settings' => ['default_payment_method' => $newPaymentMethod->id]]
+        );
+
+        // Update the subscription to use the new payment method
+        $stripe->subscriptions->update($user->stripe_subcription_id, [
+            'default_payment_method' => $newPaymentMethod->id,
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function cancelSubscription(Request $request)
+    {
+        $user = auth()->user();
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+        try {
+            // Cancel the subscription at the end of the billing period
+            $stripe->subscriptions->update($user->stripe_subcription_id, [
+                'cancel_at_period_end' => true,
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Subscription will not renew.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to cancel subscription.'], 500);
+        }
     }
 }

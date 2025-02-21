@@ -31,6 +31,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/sub-menu', [SubscriberController::class, 'subMenu'])->name('sub-menu');
     Route::get('/manage-subscribers', [SubscriberController::class, 'manageSubscriber'])->name('manage.subscribers');
     Route::get('/billing-subscription-plan', [SubscriberController::class, 'subscriptionPlan'])->name('subscription.plans');
+    Route::post('/update-payment-method', [SubscriberController::class, 'updatePaymentMethod']);
+    Route::post('/cancel-subscription', [SubscriberController::class, 'cancelSubscription'])->name('cancel.subscription');
+    Route::post('/update-phone-number', [ProfileController::class, 'updatePhoneNumber'])->name('update.phone.number');
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
