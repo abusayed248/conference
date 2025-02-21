@@ -37,15 +37,12 @@ class SubscriberController extends Controller
             $event = \Stripe\Event::constructFrom(
                 json_decode($payload, true)
             );
-            Log::info('event payload', ['event' => $event]);
         } catch (\UnexpectedValueException $e) {
             echo '⚠️  Webhook error while parsing basic request.';
             http_response_code(400);
             exit();
         }
         if ($endpoint_secret) {
-            // Only verify the event if there is an endpoint secret defined
-            // Otherwise use the basic decoded event
             $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
             try {
                 $event = \Stripe\Webhook::constructEvent(
@@ -53,66 +50,55 @@ class SubscriberController extends Controller
                     $sig_header,
                     $endpoint_secret
                 );
-                Log::info('Stripe webhook payload', ['event' => $event]);
             } catch (\Stripe\Exception\SignatureVerificationException $e) {
-                // Invalid signature
                 echo '⚠️  Webhook error while validating signature.';
                 http_response_code(400);
                 exit();
             }
         }
 
-        http_response_code(200);
-
-        // // Handle the event
-        // switch ($event->type) {
-        //     case 'payment_intent.succeeded':
-        //         $paymentIntent = $event->data->object; // contains a \Stripe\PaymentIntent
-        //         // Then define and call a method to handle the successful payment intent.
-        //         // handlePaymentIntentSucceeded($paymentIntent);
-        //         break;
-        //     case 'payment_method.attached':
-        //         $paymentMethod = $event->data->object; // contains a \Stripe\PaymentMethod
-        //         // Then define and call a method to handle the successful attachment of a PaymentMethod.
-        //         // handlePaymentMethodAttached($paymentMethod);
-        //         break;
-        //     default:
-        //         // Unexpected event type
-        //         error_log('Received unknown event type');
-        // }
+        // Handle the event
+        switch ($event->type) {
+            case 'invoice.payment_succeeded':
+                $invoice = $event->data->object;
+                $this->handleInvoicePaymentSucceeded($invoice);
+                break;
+            case 'invoice.payment_failed':
+                $invoice = $event->data->object;
+                $this->handleInvoicePaymentFailed($invoice);
+                break;
+                // ... handle other event types
+            default:
+                Log::warning('Unhandled event type: ' . $event->type);
+                break;
+        }
 
         http_response_code(200);
-
-        // $endpointSecret = config('services.stripe.webhook_secret');
-        // $payload = $request->getContent();
-        // $sigHeader = $request->header('Stripe-Signature');
-
-        // try {
-        //     $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
-
-        //     dd()
-        //     Log::info('Stripe webhook payload', ['event' => $event]);
-        // } catch (\UnexpectedValueException $e) {
-        //     Log::error('Invalid Stripe webhook payload', ['exception' => $e]);
-        //     return response()->json(['error' => 'Invalid payload'], 400);
-        // } catch (\Stripe\Exception\SignatureVerificationException $e) {
-        //     Log::error('Invalid Stripe webhook signature', ['exception' => $e]);
-        //     return response()->json(['error' => 'Invalid signature'], 400);
-        // }
-
-        // switch ($event->type) {
-        //     case 'invoice.payment_succeeded':
-        //         $invoice = $event->data->object;
-        //         $this->handleInvoicePaymentSucceeded($invoice);
-        //         break;
-
-        //         // Handle other event types as needed
-        //     default:
-        //         Log::info('Received unhandled Stripe event type', ['type' => $event->type]);
-        //         break;
-        // }
-
         return response()->json(['status' => 'success'], 200);
+    }
+
+    protected function handleInvoicePaymentSucceeded($invoice)
+    {
+        $stripeCustomerId = $invoice->customer;
+        $user = User::where('stripe_customer_id', $stripeCustomerId)->first();
+        if ($user) {
+            $user->update([
+                'payment_done' => 1,
+                'payment_date' => now(),
+                'payment_end' => now()->addMonth(),
+            ]);
+        }
+    }
+
+    protected function handleInvoicePaymentFailed($invoice)
+    {
+        $stripeCustomerId = $invoice->customer;
+        $user = User::where('stripe_customer_id', $stripeCustomerId)->first();
+        if ($user) {
+            Log::warning('Subscription payment failed for user', ['user_id' => $user->id]);
+        } else {
+            Log::warning('User not found for Stripe customer ID', ['stripe_customer_id' => $stripeCustomerId]);
+        }
     }
 
 
