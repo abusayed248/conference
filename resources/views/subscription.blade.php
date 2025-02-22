@@ -99,7 +99,7 @@
                 <!-- Phone Number Input with Country Code -->
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" class="form-control" placeholder="Enter phone number" required>
+                    <input type="tel" id="phone" class="form-control" placeholder="Enter phone number" required value="{{ $user->phone ?? '' }}">
                 </div>
 
                 <!-- Submit Button -->
