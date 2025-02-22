@@ -49,7 +49,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-        $url = $request->user()->role === "admin" ? "/" : "/billing-subscription-plan";
+        $url = $request->user()->role === "admin" ? "/" : "/subscription/free-trial";
 
         // Use redirect() directly instead of redirect()->intended()
         return redirect($url);

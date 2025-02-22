@@ -22,9 +22,6 @@ use App\Http\Controllers\Subscriber\SubscriberController;
 Route::middleware('auth')->group(function () {
     Route::get('/', [ProfileController::class, 'home'])->name('home');
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
     Route::post('/subscription/free-trial/cancel', [SubscriberController::class, 'cancelFreeTrial'])
         ->name('subscription.free-trial.cancel');
     Route::get('/subscription/free-trial', [SubscriberController::class, 'showFreeTrialForm'])->name('subscription.free-trial');
