@@ -426,9 +426,12 @@ class SubscriberController extends Controller
             $stripe->subscriptions->update($user->stripe_subcription_id, [
                 'cancel_at_period_end' => true,
             ]);
-
+            $user->update([
+                'is_cancel_subscription' => 1
+            ]);
             return response()->json(['success' => true, 'message' => 'Subscription will not renew.']);
         } catch (\Exception $e) {
+            info($e);
             return response()->json(['success' => false, 'message' => 'Failed to cancel subscription.'], 500);
         }
     }

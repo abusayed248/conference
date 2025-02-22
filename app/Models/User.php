@@ -32,7 +32,8 @@ class User extends Authenticatable
         'stripe_subcription_id',
         'payment_done',
         'payment_date',
-        'payment_end'
+        'payment_end',
+        'is_cancel_subscription'
 
     ];
 
