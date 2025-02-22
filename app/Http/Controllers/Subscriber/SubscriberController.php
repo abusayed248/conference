@@ -88,6 +88,7 @@ class SubscriberController extends Controller
             if ($user) {
                 $user->update([
                     'payment_done' => 1,
+                    'is_cancel_subscription' => 0,
                     'payment_date' => now(),
                     'payment_end' => now()->addMonth(),
                 ]);
