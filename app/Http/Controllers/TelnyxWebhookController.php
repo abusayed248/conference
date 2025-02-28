@@ -71,10 +71,17 @@ class TelnyxWebhookController extends Controller
                     Log::info('Processing DTMF digit', ['digit' => $digit]);
 
                     $hasSubmenu = false;
+                    $hasCallTransfer = false;
                     $lastEvent = TelnyxEvent::where('call_control_id', $callControlId)->latest()->first();
-                    if ($lastEvent && $lastEvent->event_type === 'sub_menu' && $lastEvent->status === 'processing') {
-                        $hasSubmenu = true;
+                    if ($lastEvent) {
+                        if ($lastEvent->event_type === 'sub_menu' && $lastEvent->status === 'processing') {
+                            $hasSubmenu = true;
+                        }
+                        if ($lastEvent->event_type === 'transfer' && $lastEvent->status === 'processing') {
+                            $hasCallTransfer = true;
+                        }
                     }
+
                     Log::info('lastEvent', ['lastEvent' => $lastEvent]);
                     Log::info('hasSubmenu', ['hasSubmenu' => $hasSubmenu]);
                     Log::info('digit', ['digit' => $digit]);
@@ -89,6 +96,10 @@ class TelnyxWebhookController extends Controller
                         $this->callAnswerAction($callControlId, $payload);
                     }
                     else {
+                        if ($hasCallTransfer) {
+                            break;
+                        }
+
                         if ($hasSubmenu) {
                             $callAction = CallAction::query()->where('digit', $lastEvent->payload['digit'])->first();
                             Log::info('sub callAction', ['callAction' => $callAction]);
