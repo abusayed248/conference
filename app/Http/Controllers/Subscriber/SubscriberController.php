@@ -32,6 +32,8 @@ class SubscriberController extends Controller
         $endpoint_secret = config('services.stripe.webhook_secret');
 
         $payload = @file_get_contents('php://input');
+        Log::info('Stripe Webhook Received: ', ['payload' => json_decode($payload, true)]);
+
         $event = null;
 
         try {
@@ -57,7 +59,7 @@ class SubscriberController extends Controller
                 exit();
             }
         }
-
+        Log::info('Stripe Event Type: ' . $event->type);
         // Handle the event
         switch ($event->type) {
             case 'invoice.payment_succeeded':
@@ -68,7 +70,7 @@ class SubscriberController extends Controller
                 $invoice = $event->data->object;
                 $this->handleInvoicePaymentFailed($invoice);
                 break;
-                // ... handle other event types
+            // ... handle other event types
             default:
                 Log::warning('Unhandled event type: ' . $event->type);
                 break;
