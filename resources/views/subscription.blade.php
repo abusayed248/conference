@@ -120,7 +120,7 @@
         </div>
     </div>
 
-    @elseif($hasSubscription && $user->is_cancel_subscription)
+    @elseif(isset($hasSubscription) && $user->is_cancel_subscription)
     <div class="mt-3 text-center">
         <p class="text-danger">You have canceled your subscription renewal. Your subscription will remain active until {{ \Carbon\Carbon::parse($user->payment_end)->format('m/d/Y') }}.</p>
     </div>
