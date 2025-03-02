@@ -189,28 +189,19 @@ class TelnyxWebhookController extends Controller
                 break;
 
             case 'call.gather.ended':
+                Log::info('call.gather.ended started');
                 // Handle the event when the gather has ended (no input received)
                 $result = $requestData['data']['result'];
                 if ($result === 'no_input') {
+                    Log::info('call.gather.ended no_input');
                     $this->timeoutAction($callControlId, $payload);
                 }
                 break;
 
             case 'call.playback.ended':
-                $lastEvent = TelnyxEvent::where('call_control_id', $callControlId)->latest()->first();
-
-                // Call hangup due to audio completed
-                if (!$lastEvent || !$lastEvent->phone || strpos($lastEvent->event_type, 'greetings') !== false) {
-                    $this->makeCallEnded($callControlId, null, $payload);
-                }
-
-                $phone = $this->getPhone($lastEvent->phone) ?? 0;
+                $firstEvent = TelnyxEvent::where('call_control_id', $callControlId)->latest()->last();
+                $phone = $firstEvent && $this->getPhone($firstEvent->phone) ?? 0;
                 $payload['from'] = $phone;
-
-                    // User has an active subscription, go back to the main menu
-                if ($this->subscriptionsService->isActive($phone)) {
-                    $this->callAnswerAction($callControlId, $payload);
-                }
 
                 // User does not have an active subscription, fetch last playback event
                 $lastPlaybackEvent = TelnyxEvent::where('call_control_id', $callControlId)
@@ -220,8 +211,37 @@ class TelnyxWebhookController extends Controller
 
                 $commandId = $lastPlaybackEvent->command_id ?? '';
 
-                // Mark events as completed and end the call
-                $this->makeCallEnded($callControlId, $commandId, $payload);
+                if ($this->subscriptionsService->isActive($phone)) {
+                    // Log::info('Call playback ended case 1');
+                    // $lastEvent = TelnyxEvent::where('call_control_id', $callControlId)->latest()->first();
+
+                    // Log::info('Event type greetings:: ' . $lastEvent->event_type);
+
+                    // if ($lastEvent->phone && $lastEvent->event_type == 'playback_start') {
+                    //     Log::info('Call re-initiated');
+                    //     $phone = $this->getPhone($lastEvent->phone) ?? 0;
+                    //     $payload['from'] = $phone;
+                    //     $this->callAnswerAction($callControlId, $payload);
+                    //     break;
+                    // }
+
+                    // // User does not have an active subscription, fetch last playback event
+                    // $lastPlaybackEvent = TelnyxEvent::where('call_control_id', $callControlId)
+                    //     ->where('event_type', 'playback_start')
+                    //     ->latest()
+                    //     ->first();
+
+                    // $commandId = $lastPlaybackEvent->command_id ?? '';
+
+                    // // Mark events as completed and end the call
+                    // Log::info('Call playback ended case 2');
+                    // $this->makeCallEnded($callControlId, $commandId, $payload);
+
+                }
+                else {
+                    Log::info('Call playback ended case 2');
+                    $this->makeCallEnded($callControlId, $commandId, $payload);
+                }
                 break;
 
             default:
