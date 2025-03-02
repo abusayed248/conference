@@ -196,10 +196,47 @@ class TelnyxWebhookController extends Controller
                 }
                 break;
 
-            default:
-                // Making events done
-                // TelnyxEvent::where('call_control_id', $callControlId)->update(['status' => 'completed']);
+            case 'call.playback.ended':
+                $lastEvent = TelnyxEvent::where('call_control_id', $callControlId)->latest()->first();
 
+                if (!$lastEvent || !$lastEvent->phone) {
+                    // No valid last event or phone, mark events completed and end call
+                    TelnyxEvent::where('call_control_id', $callControlId)
+                        ->where('event_type', 'sub_menu')
+                        ->update(['status' => 'completed']);
+
+                    $this->makeCallEnded($callControlId, null, $payload);
+                }
+
+                $phone = $this->getPhone($lastEvent->phone) ?? 0;
+
+                if ($this->subscriptionsService->isActive($phone)) {
+                    // User has an active subscription, go back to the main menu
+                    TelnyxEvent::where('call_control_id', $callControlId)
+                        ->where('event_type', 'sub_menu')
+                        ->update(['status' => 'completed']);
+
+                    $payload['from'] = $phone;
+                    $this->callAnswerAction($callControlId, $payload);
+                }
+
+                // User does not have an active subscription, fetch last playback event
+                $lastPlaybackEvent = TelnyxEvent::where('call_control_id', $callControlId)
+                    ->where('event_type', 'playback_start')
+                    ->latest()
+                    ->first();
+
+                $commandId = $lastPlaybackEvent->command_id ?? '';
+
+                // Mark events as completed and end the call
+                TelnyxEvent::where('call_control_id', $callControlId)
+                    ->where('event_type', 'sub_menu')
+                    ->update(['status' => 'completed']);
+
+                $this->makeCallEnded($callControlId, $commandId, $payload);
+                break;
+
+            default:
                 // Handle any other events that do not match
                 Log::info('Unhandled event type', ['event' => $event]);
                 break;
@@ -309,7 +346,50 @@ class TelnyxWebhookController extends Controller
     private function timeoutAction(string $callControlId, $payload): void
     {
         Log::info('No input timeout', ['call_control_id' => $callControlId]);
-        $this->playAudioPrompt($callControlId, "https://onetimeonetime.net/audio/fingerer.mp3", $payload);
+
+        // User does not have an active subscription, fetch last playback event
+        $lastPlaybackEvent = TelnyxEvent::where('call_control_id', $callControlId)
+            ->where('event_type', 'playback_start')
+            ->latest()
+            ->first();
+
+        $commandId = $lastPlaybackEvent->command_id ?? '';
+
+        // No valid last event or phone, mark events completed and end call
+        TelnyxEvent::where('call_control_id', $callControlId)
+            ->where('event_type', 'sub_menu')
+            ->update(['status' => 'completed']);
+
+        $this->makeCallEnded($callControlId, $commandId, $payload);
+    }
+
+    private function makeCallEnded(string $callControlId, $commandId, $payload): void
+    {
+        Log::info('Attempting to end call', ['call_control_id' => $callControlId]);
+
+        $endpoint = "/calls/$callControlId/actions/hangup";
+
+        $request = [
+            'client_state' => $payload['client_state'],
+        ];
+        if ($commandId) {
+            $request['command_id'] = $commandId;
+        }
+
+        Log::info('Call ended successfully', ['request' => $request]);
+
+        try {
+            $response = $this->makeTelnyxApiCall($endpoint, 'POST', $request);
+
+            // Log the response from Telnyx
+            Log::info('Call ended successfully', ['response' => $response]);
+        } catch (\Exception $e) {
+            // Log the error if the API call fails
+            Log::error('Error playing audio prompt', [
+                'call_control_id' => $callControlId,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     private function playAudioPrompt(string $callControlId, string $audioUrl, $payload): void
@@ -517,6 +597,6 @@ class TelnyxWebhookController extends Controller
     }
 
     private function getPhone($from) {
-        return $from ? explode('@', $from)[0] : ''; // Get the part before '@'
+        return $from ? explode('@', $from)[0] : 0; // Get the part before '@'
     }
 }
