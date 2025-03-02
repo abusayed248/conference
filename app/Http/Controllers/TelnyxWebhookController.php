@@ -199,24 +199,16 @@ class TelnyxWebhookController extends Controller
             case 'call.playback.ended':
                 $lastEvent = TelnyxEvent::where('call_control_id', $callControlId)->latest()->first();
 
-                if (!$lastEvent || !$lastEvent->phone) {
-                    // No valid last event or phone, mark events completed and end call
-                    TelnyxEvent::where('call_control_id', $callControlId)
-                        ->where('event_type', 'sub_menu')
-                        ->update(['status' => 'completed']);
-
+                // Call hangup due to audio completed
+                if (!$lastEvent || !$lastEvent->phone || strpos($lastEvent->event_type, 'greetings') !== false) {
                     $this->makeCallEnded($callControlId, null, $payload);
                 }
 
                 $phone = $this->getPhone($lastEvent->phone) ?? 0;
+                $payload['from'] = $phone;
 
-                if ($this->subscriptionsService->isActive($phone)) {
                     // User has an active subscription, go back to the main menu
-                    TelnyxEvent::where('call_control_id', $callControlId)
-                        ->where('event_type', 'sub_menu')
-                        ->update(['status' => 'completed']);
-
-                    $payload['from'] = $phone;
+                if ($this->subscriptionsService->isActive($phone)) {
                     $this->callAnswerAction($callControlId, $payload);
                 }
 
@@ -229,10 +221,6 @@ class TelnyxWebhookController extends Controller
                 $commandId = $lastPlaybackEvent->command_id ?? '';
 
                 // Mark events as completed and end the call
-                TelnyxEvent::where('call_control_id', $callControlId)
-                    ->where('event_type', 'sub_menu')
-                    ->update(['status' => 'completed']);
-
                 $this->makeCallEnded($callControlId, $commandId, $payload);
                 break;
 
@@ -297,6 +285,8 @@ class TelnyxWebhookController extends Controller
         Log::info('Call answered', ['call_control_id' => $callControlId]);
         $phone = $this->getPhone($payload['from']);
 
+        $playbackType = 'playback_start';
+
         if ($isSubmenu) {
             $callAction = SubCallAction::query()
                 ->where('call_action_id', $callActionId)
@@ -309,6 +299,7 @@ class TelnyxWebhookController extends Controller
         {
             $hasSubscription = $this->subscriptionsService->isActive($phone);
             $type = $hasSubscription ? 'greetings' : 'non_subscriber_greetings';
+            $playbackType = $type . '_' . $playbackType;
 
             $callAction = CallAction::query()
                 ->where('type', $type)
@@ -336,7 +327,7 @@ class TelnyxWebhookController extends Controller
                 ]);
             }
 
-            $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload);
+            $this->playAudioPrompt($callControlId, $callAction->audio_link, $payload, $playbackType);
         }
         else {
             Log::info('No greetings audio found', ['call_control_id' => $callControlId]);
@@ -367,6 +358,11 @@ class TelnyxWebhookController extends Controller
     {
         Log::info('Attempting to end call', ['call_control_id' => $callControlId]);
 
+        // No valid last event or phone, mark events completed and end call
+        TelnyxEvent::where('call_control_id', $callControlId)
+            ->where('event_type', 'sub_menu')
+            ->update(['status' => 'completed']);
+
         $endpoint = "/calls/$callControlId/actions/hangup";
 
         $request = [
@@ -392,7 +388,7 @@ class TelnyxWebhookController extends Controller
         }
     }
 
-    private function playAudioPrompt(string $callControlId, string $audioUrl, $payload): void
+    private function playAudioPrompt(string $callControlId, string $audioUrl, $payload, $playbackType = 'playback_start'): void
     {
         Log::info('Attempting to play audio prompt', [
             'call_control_id' => $callControlId,
@@ -416,7 +412,7 @@ class TelnyxWebhookController extends Controller
             TelnyxEvent::create([
                 'phone' => $this->getPhone($payload['from']),
                 'call_control_id' => $callControlId,
-                'event_type' => 'playback_start',
+                'event_type' => $playbackType,
                 'command_id' => $commandId,
                 'client_state' => $payload['client_state'],
                 'payload' => $payload,
