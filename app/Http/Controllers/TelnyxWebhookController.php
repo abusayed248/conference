@@ -199,9 +199,12 @@ class TelnyxWebhookController extends Controller
                 break;
 
             case 'call.playback.ended':
-                $firstEvent = TelnyxEvent::where('call_control_id', $callControlId)->latest()->last();
-                $phone = $firstEvent && $this->getPhone($firstEvent->phone) ?? 0;
+                $firstEvent = TelnyxEvent::where('call_control_id', $callControlId)->oldest()->first();
+                $phone = $firstEvent ? $this->getPhone($firstEvent->phone) : 0;
                 $payload['from'] = $phone;
+                Log::info('Call playback ended', ['phone' => $phone]);
+                $mediaUrl = $payload['media_url'];
+                Log::info('Call playback ended', ['mediaUrl' => $mediaUrl]);
 
                 // User does not have an active subscription, fetch last playback event
                 $lastPlaybackEvent = TelnyxEvent::where('call_control_id', $callControlId)
@@ -210,33 +213,17 @@ class TelnyxWebhookController extends Controller
                     ->first();
 
                 $commandId = $lastPlaybackEvent->command_id ?? '';
+                Log::info('Call playback ended', ['commandId' => $commandId]);
 
                 if ($this->subscriptionsService->isActive($phone)) {
-                    // Log::info('Call playback ended case 1');
-                    // $lastEvent = TelnyxEvent::where('call_control_id', $callControlId)->latest()->first();
-
-                    // Log::info('Event type greetings:: ' . $lastEvent->event_type);
-
-                    // if ($lastEvent->phone && $lastEvent->event_type == 'playback_start') {
-                    //     Log::info('Call re-initiated');
-                    //     $phone = $this->getPhone($lastEvent->phone) ?? 0;
-                    //     $payload['from'] = $phone;
-                    //     $this->callAnswerAction($callControlId, $payload);
-                    //     break;
-                    // }
-
-                    // // User does not have an active subscription, fetch last playback event
-                    // $lastPlaybackEvent = TelnyxEvent::where('call_control_id', $callControlId)
-                    //     ->where('event_type', 'playback_start')
-                    //     ->latest()
-                    //     ->first();
-
-                    // $commandId = $lastPlaybackEvent->command_id ?? '';
-
-                    // // Mark events as completed and end the call
-                    // Log::info('Call playback ended case 2');
-                    // $this->makeCallEnded($callControlId, $commandId, $payload);
-
+                    Log::info('Call playback ended case 1');
+                    Log::info('Call playback ended case 1 payload', $payload);
+                    $callAction = CallAction::query()->where('audio_link', 'LIKE', "%{$mediaUrl}%")->first();
+                    Log::info('Call playback ended case 1 callAction', $callAction->toArray());
+                    if ($callAction && $callAction->type != 'greetings') {
+                        $this->callAnswerAction($callControlId, $payload);
+                        break;
+                    }
                 }
                 else {
                     Log::info('Call playback ended case 2');
@@ -541,12 +528,15 @@ class TelnyxWebhookController extends Controller
 
         sleep(2);
 
+        $phone = $this->getPhone($payload['from']);
+
         $endpoint = "/calls/$callControlId/actions/transfer";
         $commandId = Uuid::uuid4()->toString();
 
         $request = [
             'to' => $callAction->transfer_to,
-            'from' => '+13606638463',
+            // 'from' => '+13606638463',
+            'from' => $phone,
             'from_display_name' => 'Kids Conversation',
             'time_limit_secs' => (int) $callAction->afer_time,
             'client_state' => $payload['client_state'],
@@ -557,7 +547,7 @@ class TelnyxWebhookController extends Controller
 
         try {
             TelnyxEvent::create([
-                'phone' => $this->getPhone($payload['from']),
+                'phone' => $phone,
                 'call_control_id' => $callControlId,
                 'event_type' => 'transfer',
                 'command_id' => $commandId,
