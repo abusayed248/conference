@@ -456,9 +456,11 @@ class TelnyxWebhookController extends Controller
         Log::info('Attempting to stop audio prompt', $payload);
 
         $lastAudioEvent = TelnyxEvent::where('call_control_id', $callControlId)
-            ->where('event_type', 'playback_start')
-            ->latest()
-            ->first();
+        ->where(function($query) {
+            $query->where('event_type', 'playback_start')->orWhere('event_type', 'greetings_playback_start');
+        })
+        ->latest()
+        ->first();
         if (!$lastAudioEvent) {
             Log::info('Nothing found to stop', ['call_control_id' => $callControlId]);
             return true;
@@ -535,8 +537,8 @@ class TelnyxWebhookController extends Controller
 
         $request = [
             'to' => $callAction->transfer_to,
-            // 'from' => '+13606638463',
-            'from' => $phone,
+            'from' => '+13606638463',
+            // 'from' => $phone,
             'from_display_name' => 'Kids Conversation',
             'time_limit_secs' => (int) $callAction->afer_time,
             'client_state' => $payload['client_state'],
