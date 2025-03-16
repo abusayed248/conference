@@ -55,13 +55,25 @@ class TelnyxWebhookController extends Controller
 
         switch ($event) {
             case 'call.initiated':
-                // Handle the event when the call is initiated
-                $this->callInitAction($callControlId, $payload, false);
+                if ($payload['direction'] == 'incoming') {
+                    // Handle the event when the call is initiated
+                    $this->callInitAction($callControlId, $payload, false);
+                }
                 break;
 
             case 'call.answered':
                 // Handle the event when the call is answered
-                $this->callAnswerAction($callControlId, $payload);
+                $phone = $this->getPhone($payload['from']);
+                $lastTransfer = TelnyxEvent::where('phone', $phone)
+                    ->where('event_type', 'transfer')
+                    ->where('status', 'processing')
+                    ->latest()
+                    ->first();
+                if ($phone != '+13606638463' && !$lastTransfer) {
+                // if ($phone != '+13606638463') {
+                    $this->callAnswerAction($callControlId, $payload);
+                    return;
+                }
                 break;
 
             case 'call.dtmf.received':
@@ -83,6 +95,7 @@ class TelnyxWebhookController extends Controller
                     }
 
                     Log::info('lastEvent', ['lastEvent' => $lastEvent]);
+                    Log::info('hasCallTransfer', ['hasCallTransfer' => $hasCallTransfer]);
                     Log::info('hasSubmenu', ['hasSubmenu' => $hasSubmenu]);
                     Log::info('digit', ['digit' => $digit]);
 
@@ -198,38 +211,39 @@ class TelnyxWebhookController extends Controller
                 }
                 break;
 
-            case 'call.playback.ended':
-                $firstEvent = TelnyxEvent::where('call_control_id', $callControlId)->oldest()->first();
-                $phone = $firstEvent ? $this->getPhone($firstEvent->phone) : 0;
-                $payload['from'] = $phone;
-                Log::info('Call playback ended', ['phone' => $phone]);
-                $mediaUrl = $payload['media_url'];
-                Log::info('Call playback ended', ['mediaUrl' => $mediaUrl]);
+            // case 'call.playback.ended':
+            //     break;
+                // $firstEvent = TelnyxEvent::where('call_control_id', $callControlId)->oldest()->first();
+                // $phone = $firstEvent ? $this->getPhone($firstEvent->phone) : 0;
+                // $payload['from'] = $phone;
+                // Log::info('Call playback ended', ['phone' => $phone]);
+                // $mediaUrl = $payload['media_url'];
+                // Log::info('Call playback ended', ['mediaUrl' => $mediaUrl]);
 
-                // User does not have an active subscription, fetch last playback event
-                $lastPlaybackEvent = TelnyxEvent::where('call_control_id', $callControlId)
-                    ->where('event_type', 'playback_start')
-                    ->latest()
-                    ->first();
+                // // User does not have an active subscription, fetch last playback event
+                // $lastPlaybackEvent = TelnyxEvent::where('call_control_id', $callControlId)
+                //     ->where('event_type', 'playback_start')
+                //     ->latest()
+                //     ->first();
 
-                $commandId = $lastPlaybackEvent->command_id ?? '';
-                Log::info('Call playback ended', ['commandId' => $commandId]);
+                // $commandId = $lastPlaybackEvent->command_id ?? '';
+                // Log::info('Call playback ended', ['commandId' => $commandId]);
 
-                if ($this->subscriptionsService->isActive($phone)) {
-                    Log::info('Call playback ended case 1');
-                    Log::info('Call playback ended case 1 payload', $payload);
-                    $callAction = CallAction::query()->where('audio_link', 'LIKE', "%{$mediaUrl}%")->first();
-                    Log::info('Call playback ended case 1 callAction', $callAction->toArray());
-                    if ($callAction && $callAction->type != 'greetings') {
-                        $this->callAnswerAction($callControlId, $payload);
-                        break;
-                    }
-                }
-                else {
-                    Log::info('Call playback ended case 2');
-                    $this->makeCallEnded($callControlId, $commandId, $payload);
-                }
-                break;
+                // if ($this->subscriptionsService->isActive($phone)) {
+                //     Log::info('Call playback ended case 1');
+                //     Log::info('Call playback ended case 1 payload', $payload);
+                //     $callAction = CallAction::query()->where('audio_link', 'LIKE', "%{$mediaUrl}%")->first();
+                //     Log::info('Call playback ended case 1 callAction', $callAction->toArray());
+                //     // if ($callAction && $callAction->type != 'greetings') {
+                //     //     $this->callAnswerAction($callControlId, $payload);
+                //     //     break;
+                //     // }
+                // }
+                // else {
+                //     Log::info('Call playback ended case 2');
+                //     $this->makeCallEnded($callControlId, $commandId, $payload);
+                // }
+                // break;
 
             default:
                 // Handle any other events that do not match
@@ -537,9 +551,10 @@ class TelnyxWebhookController extends Controller
 
         $request = [
             'to' => $callAction->transfer_to,
-            'from' => '+13606638463',
-            // 'from' => $phone,
-            'from_display_name' => 'Kids Conversation',
+            // 'from' => '+13606638463',
+            'from' => $phone,
+            'from_display_name' => $phone,
+            // 'from_display_name' => 'Kids Conversation',
             'time_limit_secs' => (int) $callAction->afer_time,
             'client_state' => $payload['client_state'],
             'command_id' => $commandId,
