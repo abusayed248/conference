@@ -172,8 +172,20 @@ class TelnyxWebhookController extends Controller
                                         'request' => []
                                     ]);
 
-                                    // Play greetings audio for initial of submenu
-                                    $this->callAnswerAction($callControlId, $payload, true, $callAction->id);
+                                    $subCallAction = SubCallAction::query()
+                                        ->where('call_action_id', $callAction->id)
+                                        ->where('type', 'greetings')
+                                        ->whereNotNull('audio_link')
+                                        ->where('audio_link', '!=', '')
+                                        ->first();
+                                    if ($subCallAction) {
+                                        // Play greetings audio for initial of submenu
+                                        Log::info('Play greetings audio for initial of submenu');
+                                        $this->playAudioPrompt($callControlId, $subCallAction->audio_link, $payload);
+                                    }
+                                    else {
+                                        Log::info('No valid data found to play submenu greetings');
+                                    }
                                 }
                                 else {
                                     Log::info('Invalid data found in database', $callAction->toArray());
@@ -306,26 +318,36 @@ class TelnyxWebhookController extends Controller
 
         $playbackType = 'playback_start';
 
-        if ($isSubmenu) {
-            $callAction = SubCallAction::query()
-                ->where('call_action_id', $callActionId)
-                ->where('type', 'greetings')
-                ->whereNotNull('audio_link')
-                ->where('audio_link', '!=', '')
-                ->first();
-        }
-        else
-        {
-            $hasSubscription = $this->subscriptionsService->isActive($phone);
-            $type = $hasSubscription ? 'greetings' : 'non_subscriber_greetings';
-            $playbackType = $type . '_' . $playbackType;
+        // if ($isSubmenu) {
+        //     $callAction = SubCallAction::query()
+        //         ->where('call_action_id', $callActionId)
+        //         ->where('type', 'greetings')
+        //         ->whereNotNull('audio_link')
+        //         ->where('audio_link', '!=', '')
+        //         ->first();
+        // }
+        // else
+        // {
+        //     $hasSubscription = $this->subscriptionsService->isActive($phone);
+        //     $type = $hasSubscription ? 'greetings' : 'non_subscriber_greetings';
+        //     $playbackType = $type . '_' . $playbackType;
 
-            $callAction = CallAction::query()
-                ->where('type', $type)
-                ->whereNotNull('audio_link')
-                ->where('audio_link', '!=', '')
-                ->first();
-        }
+        //     $callAction = CallAction::query()
+        //         ->where('type', $type)
+        //         ->whereNotNull('audio_link')
+        //         ->where('audio_link', '!=', '')
+        //         ->first();
+        // }
+
+        $hasSubscription = $this->subscriptionsService->isActive($phone);
+        $type = $hasSubscription ? 'greetings' : 'non_subscriber_greetings';
+        $playbackType = $type . '_' . $playbackType;
+
+        $callAction = CallAction::query()
+            ->where('type', $type)
+            ->whereNotNull('audio_link')
+            ->where('audio_link', '!=', '')
+            ->first();
 
         if ($callAction) {
             try {
