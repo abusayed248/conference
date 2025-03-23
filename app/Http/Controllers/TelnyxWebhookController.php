@@ -31,11 +31,6 @@ class TelnyxWebhookController extends Controller
     {
         Log::info('Call initiated');
 
-        // Log telnyx request
-        Log::info('Telnyx API Request', [
-            'request' => $request,
-        ]);
-
         // Get the raw POST data from the webhook
         $rawInputData = file_get_contents('php://input');
         $requestData = json_decode($rawInputData, true);
@@ -55,13 +50,15 @@ class TelnyxWebhookController extends Controller
 
         switch ($event) {
             case 'call.initiated':
+                Log::info('call.initiated');
+                // Handle the event when the call is initiated
                 if ($payload['direction'] == 'incoming') {
-                    // Handle the event when the call is initiated
                     $this->callInitAction($callControlId, $payload, false);
                 }
                 break;
 
             case 'call.answered':
+                Log::info('call.answered');
                 // Handle the event when the call is answered
                 $phone = $this->getPhone($payload['from']);
                 $lastTransfer = TelnyxEvent::where('phone', $phone)
@@ -69,7 +66,8 @@ class TelnyxWebhookController extends Controller
                     ->where('status', 'processing')
                     ->latest()
                     ->first();
-                if ($phone != '+13606638463' && !$lastTransfer) {
+                if (!$lastTransfer) {
+                // if ($phone != '+13606638463' && !$lastTransfer) {
                 // if ($phone != '+13606638463') {
                     $this->callAnswerAction($callControlId, $payload);
                     return;
@@ -77,27 +75,11 @@ class TelnyxWebhookController extends Controller
                 break;
 
             case 'call.dtmf.received':
+                Log::info('call.dtmf.received');
                 // Handle the event when a DTMF digit (button press) is received
                 $digit = $payload['digit'] ?? null;
                 if ($digit !== null) {
-                    Log::info('Processing DTMF digit', ['digit' => $digit]);
-
-                    $hasSubmenu = false;
-                    $hasCallTransfer = false;
-                    $lastEvent = TelnyxEvent::where('call_control_id', $callControlId)->latest()->first();
-                    if ($lastEvent) {
-                        if ($lastEvent->event_type === 'sub_menu' && $lastEvent->status === 'processing') {
-                            $hasSubmenu = true;
-                        }
-                        if ($lastEvent->event_type === 'transfer' && $lastEvent->status === 'processing') {
-                            $hasCallTransfer = true;
-                        }
-                    }
-
-                    Log::info('lastEvent', ['lastEvent' => $lastEvent]);
-                    Log::info('hasCallTransfer', ['hasCallTransfer' => $hasCallTransfer]);
-                    Log::info('hasSubmenu', ['hasSubmenu' => $hasSubmenu]);
-                    Log::info('digit', ['digit' => $digit]);
+                    Log::info('DTMF digit', ['digit' => $digit]);
 
                     if ($digit == '0' || $digit == 0) {
                         // Making events done
@@ -109,12 +91,24 @@ class TelnyxWebhookController extends Controller
                         $this->callAnswerAction($callControlId, $payload);
                     }
                     else {
+                        $hasCallTransfer = TelnyxEvent::where('call_control_id', $callControlId)
+                            ->where('event_type', 'transfer')
+                            ->where('status', 'processing')
+                            ->latest()
+                            ->first();
+                        Log::info('hasCallTransfer', ['hasCallTransfer' => $hasCallTransfer]);
                         if ($hasCallTransfer) {
                             break;
                         }
 
+                        $hasSubmenu = TelnyxEvent::where('call_control_id', $callControlId)
+                            ->where('event_type', 'sub_menu')
+                            ->where('status', 'processing')
+                            ->latest()
+                            ->first();
+                        Log::info('hasSubmenu', ['hasSubmenu' => $hasSubmenu]);
                         if ($hasSubmenu) {
-                            $callAction = CallAction::query()->where('digit', $lastEvent->payload['digit'])->first();
+                            $callAction = CallAction::query()->where('digit', $hasSubmenu->payload['digit'])->first();
                             Log::info('sub callAction', ['callAction' => $callAction]);
 
                             if ($callAction) {
@@ -194,6 +188,7 @@ class TelnyxWebhookController extends Controller
                 break;
 
             case 'call.hangup':
+                Log::info('call.hangup');
                 // Making events done
                 TelnyxEvent::where('call_control_id', $callControlId)->update(['status' => 'completed']);
 
@@ -202,6 +197,7 @@ class TelnyxWebhookController extends Controller
                 break;
 
             case 'call.gather.ended':
+                Log::info('call.hangup');
                 Log::info('call.gather.ended started');
                 // Handle the event when the gather has ended (no input received)
                 $result = $requestData['data']['result'];
@@ -211,41 +207,43 @@ class TelnyxWebhookController extends Controller
                 }
                 break;
 
-            // case 'call.playback.ended':
-            //     break;
-                // $firstEvent = TelnyxEvent::where('call_control_id', $callControlId)->oldest()->first();
-                // $phone = $firstEvent ? $this->getPhone($firstEvent->phone) : 0;
-                // $payload['from'] = $phone;
-                // Log::info('Call playback ended', ['phone' => $phone]);
-                // $mediaUrl = $payload['media_url'];
-                // Log::info('Call playback ended', ['mediaUrl' => $mediaUrl]);
+            case 'call.playback.ended':
+                Log::info('call.playback.ended');
 
-                // // User does not have an active subscription, fetch last playback event
-                // $lastPlaybackEvent = TelnyxEvent::where('call_control_id', $callControlId)
-                //     ->where('event_type', 'playback_start')
-                //     ->latest()
-                //     ->first();
+                $firstEvent = TelnyxEvent::where('call_control_id', $callControlId)->oldest()->first();
+                $phone = $firstEvent ? $this->getPhone($firstEvent->phone) : 0;
+                $payload['from'] = $phone;
+                Log::info('Call playback ended', ['phone' => $phone]);
+                $mediaUrl = $payload['media_url'];
+                Log::info('Call playback ended', ['mediaUrl' => $mediaUrl]);
 
-                // $commandId = $lastPlaybackEvent->command_id ?? '';
-                // Log::info('Call playback ended', ['commandId' => $commandId]);
+                // User does not have an active subscription, fetch last playback event
+                $lastPlaybackEvent = TelnyxEvent::where('call_control_id', $callControlId)
+                    ->where('event_type', 'playback_start')
+                    ->latest()
+                    ->first();
 
-                // if ($this->subscriptionsService->isActive($phone)) {
-                //     Log::info('Call playback ended case 1');
-                //     Log::info('Call playback ended case 1 payload', $payload);
-                //     $callAction = CallAction::query()->where('audio_link', 'LIKE', "%{$mediaUrl}%")->first();
-                //     Log::info('Call playback ended case 1 callAction', $callAction->toArray());
-                //     // if ($callAction && $callAction->type != 'greetings') {
-                //     //     $this->callAnswerAction($callControlId, $payload);
-                //     //     break;
-                //     // }
-                // }
-                // else {
-                //     Log::info('Call playback ended case 2');
-                //     $this->makeCallEnded($callControlId, $commandId, $payload);
-                // }
-                // break;
+                $commandId = $lastPlaybackEvent->command_id ?? '';
+                Log::info('Call playback ended', ['commandId' => $commandId]);
+
+                if ($this->subscriptionsService->isActive($phone)) {
+                    Log::info('Call playback ended case 1');
+                    Log::info('Call playback ended case 1 payload', $payload);
+                    // $callAction = CallAction::query()->where('audio_link', 'LIKE', "%{$mediaUrl}%")->first();
+                    // Log::info('Call playback ended case 1 callAction', $callAction->toArray());
+                    // if ($callAction && $callAction->type != 'greetings') {
+                    //     $this->callAnswerAction($callControlId, $payload);
+                    //     break;
+                    // }
+                }
+                else {
+                    Log::info('Call playback ended case 2');
+                    $this->makeCallEnded($callControlId, $commandId, $payload);
+                }
+                break;
 
             default:
+                Log::info('default');
                 // Handle any other events that do not match
                 Log::info('Unhandled event type', ['event' => $event]);
                 break;
@@ -284,7 +282,7 @@ class TelnyxWebhookController extends Controller
             $response = $this->makeTelnyxApiCall($endpoint, 'POST', [
                 'client_state' => $payload['client_state'],
                 'command_id' => $commandId,
-                'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx' . ($isSubmenu ? '/submenu' : ''),
+                'webhook_url' => 'https://onetimeonetime.net/webhook/telnyx',
                 'webhook_url_method' => 'POST',
                 'send_silence_when_idle' => true,
             ]);
